@@ -9,6 +9,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+    --font-base: "Montserrat", sans-serif;
+
+    --color-custom-red: #611232;
+    --color-custom-brown: #BC955C;
+    --color-custom-green: #235B4E;
+
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --color-zinc-50: #fafafa;
