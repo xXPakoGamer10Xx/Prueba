@@ -37,6 +37,18 @@ new #[Layout('components.layouts.auth')] class extends Component {
             ]);
         }
 
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Redirigir según el rol del usuario
+        if ($user && $user->rol === 'odontologia') {
+            $this->redirect('/odontologia/consultorio', navigate: true);
+            return;
+        } else {
+            // Redirección por defecto para otros roles o si el rol no es 'odontologia'
+            // $this->redirectIntended(RouteServiceProvider::HOME, navigate: true);
+        }
+
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
@@ -74,33 +86,39 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+    <header class="text-black text-center">
+        <h1 class="text-3xl font-bold mb-2">Iniciar Sesión</h1>
+        <p class="text-zinc-700">Ingrese su correo y contraseña designados para iniciar sesión</p>
+    </header>
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
+        <label for="correo" class="text-gray-700">Correo</label>
         <flux:input
+            id="correo"
             wire:model="email"
-            :label="__('Email address')"
             type="email"
             required
             autofocus
             autocomplete="email"
             placeholder="email@example.com"
+            class="border-1 rounded text-black"
         />
 
         <!-- Password -->
+        <label for="contraseña" class="text-gray-700">Contraseña</label>
         <div class="relative">
             <flux:input
+                id="contraseña"
                 wire:model="password"
-                :label="__('Password')"
                 type="password"
                 required
                 autocomplete="current-password"
-                :placeholder="__('Password')"
                 viewable
+                class="border-1 rounded"
             />
 
             @if (Route::has('password.request'))
@@ -111,15 +129,15 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+        <flux:checkbox wire:model="remember" :label="__('Recuérdame')" />
 
         <div class="flex items-center justify-end">
-            <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
+            <flux:button variant="primary" type="submit" class="w-full bg-custom-brown cursor-pointer hover:opacity-75 duration-250 text-white">{{ __('Iniciar sesión') }}</flux:button>
         </div>
     </form>
 
     @if (Route::has('register'))
-        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
+        <div class="hidden space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
             <span>{{ __('Don\'t have an account?') }}</span>
             <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
         </div>
