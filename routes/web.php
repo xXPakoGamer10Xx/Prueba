@@ -11,6 +11,36 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// --- GRUPO DE RUTAS PROTEGIDAS PARA 'encargado_servicios' ---
+// Solo usuarios autenticados con el rol 'encargado_servicios' podrán acceder.
+Route::middleware(['auth', 'role:encargado_servicios'])->group(function () {
+    Route::get('/servicios', function () {
+        return view('servicios.index');
+    })->name('servicios.index');
+
+    Route::get('/inventario', function () {
+        return view('servicios.inventario');
+    })->name('servicios.inventario');
+
+    Route::get('/mantenimiento', function () {
+        return view('servicios.mantenimiento');
+    })->name('servicios.mantenimiento');
+
+    Route::get('/bajas', function () {
+        return view('servicios.bajas');
+    })->name('servicios.bajas');
+
+    Route::get('/areas', function () {
+        return view('servicios.areas');
+    })->name('servicios.areas');
+
+    Route::get('/encargados', function () {
+        return view('servicios.encargados');
+    })->name('servicios.encargados');
+});
+// --- FIN DEL GRUPO PROTEGIDO ---
+
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 

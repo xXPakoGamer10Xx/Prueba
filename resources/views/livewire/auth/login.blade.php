@@ -37,21 +37,25 @@ new #[Layout('components.layouts.auth')] class extends Component {
             ]);
         }
 
-        // Obtener el usuario autenticado
-        $user = Auth::user();
-
-        // Redirigir según el rol del usuario
-        if ($user && $user->rol === 'odontologia') {
-            $this->redirect('/odontologia/consultorio', navigate: true);
-            return;
-        } else {
-            // Redirección por defecto para otros roles o si el rol no es 'odontologia'
-            // $this->redirectIntended(RouteServiceProvider::HOME, navigate: true);
-        }
-
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Lógica de redirección basada en el rol
+        if ($user && $user->rol === 'encargado_servicios') {
+            // REDIRIGE A LA RUTA DEFINIDA EN TUS RUTAS PARA 'encargado_servicios'
+            $this->redirect(route('servicios.index'), navigate: true);
+            return; // Detiene la ejecución para evitar redirecciones adicionales
+        } elseif ($user && $user->rol === 'odontologia') {
+            // Lógica existente para 'odontologia'
+            $this->redirect(route('odontologia.consultorio'), navigate: true); // Usando nombre de ruta si está definido
+            return;
+        }
+
+        // Si el usuario no tiene los roles específicos mencionados arriba,
+        // o si no se define una redirección para su rol, se usa la redirección por defecto.
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
@@ -91,11 +95,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <p class="text-zinc-700">Ingrese su correo y contraseña designados para iniciar sesión</p>
     </header>
 
-    <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="login" class="flex flex-col gap-6">
-        <!-- Email Address -->
         <label for="correo" class="text-gray-700">Correo</label>
         <flux:input
             id="correo"
@@ -108,7 +110,6 @@ new #[Layout('components.layouts.auth')] class extends Component {
             class="border-1 rounded text-black"
         />
 
-        <!-- Password -->
         <label for="contraseña" class="text-gray-700">Contraseña</label>
         <div class="relative">
             <flux:input
@@ -128,7 +129,6 @@ new #[Layout('components.layouts.auth')] class extends Component {
             @endif
         </div>
 
-        <!-- Remember Me -->
         <flux:checkbox wire:model="remember" :label="__('Recuérdame')" />
 
         <div class="flex items-center justify-end">
