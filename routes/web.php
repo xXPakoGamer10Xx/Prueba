@@ -40,6 +40,28 @@ Route::middleware(['auth', 'role:encargado_servicios'])->group(function () {
 });
 // --- FIN DEL GRUPO PROTEGIDO ---
 
+Route::middleware(['auth', 'role:encargado_ginecologia'])->group(function () {
+    Route::get('/ginecologia', function () {
+        return view('ginecologia.index');
+    })->name('ginecologia.index');
+
+    Route::get('/material', function () {
+        return view('ginecologia.material');
+    })->name('ginecologia.material');
+
+    Route::get('/expediente', function () {
+        return view('ginecologia.expediente');
+    })->name('ginecologia.expediente');
+
+    Route::get('/reporte', function () {
+        return view('ginecologia.reporte');
+    })->name('ginecologia.reporte');
+
+    Route::get('/cirugia', function () {
+        return view('ginecologia.cirugia');
+    })->name('ginecologia.cirugia');
+
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
