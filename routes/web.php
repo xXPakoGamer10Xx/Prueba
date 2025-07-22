@@ -11,6 +11,35 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// --- GRUPO DE RUTAS PROTEGIDAS PARA 'odontologia_consultorio' ---
+// Solo usuarios autenticados con el rol 'odontologia_consultorio' podrán acceder.
+Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
+    Route::get('/odontologia/consultorio', function () {
+        return view('odontologia.consultorio.index');
+    })->name('odontologia.consultorio.index');
+
+    Route::get('/odontologia/materiales', function () {
+        return view('odontologia.consultorio.materiales');
+    })->name('odontologia.consultorio.materiales');
+
+    Route::get('/odontologia/almacen', function () {
+        return view('odontologia.consultorio.almacen');
+    })->name('odontologia.consultorio.almacen');
+
+    Route::get('/odontologia/insumos', function () {
+        return view('odontologia.consultorio.insumos');
+    })->name('odontologia.consultorio.insumos');
+
+    Route::get('/odontologia/peticiones', function () {
+        return view('odontologia.consultorio.peticiones');
+    })->name('odontologia.consultorio.peticiones');
+
+    Route::get('/odontologia/lyp', function () {
+        return view('odontologia.consultorio.lyp');
+    })->name('odontologia.consultorio.lyp');
+});
+// --- FIN DEL GRUPO PROTEGIDO ---
+
 // --- GRUPO DE RUTAS PROTEGIDAS PARA 'encargado_servicios' ---
 // Solo usuarios autenticados con el rol 'encargado_servicios' podrán acceder.
 Route::middleware(['auth', 'role:encargado_servicios'])->group(function () {
@@ -47,7 +76,6 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
-    Volt::route('odontologia/consultorio', 'odontologia.consultorio')->name('odontologia.consultorio');
 });
 
 require __DIR__.'/auth.php';
