@@ -42,13 +42,13 @@
                                 </select>
                                 @error('id_laboratorio') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 {{-- El botón de agregar laboratorio necesitaría su propia lógica o modal --}}
-                                <button
+                                <!-- <button
                                     type="button"
                                     class="btn-agregar border-0 bg-cafe text-white rounded-5 px-2 mb-1"
                                     data-form="laboratorio"
                                 >
                                     <i class="fa-solid fa-plus"></i>
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                     </div>
@@ -71,13 +71,13 @@
                                 </select>
                                 @error('id_presentacion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 {{-- El botón de agregar presentación necesitaría su propia lógica o modal --}}
-                                <button
+                                <!-- <button
                                     type="button"
                                     class="btn-agregar border-0 bg-cafe text-white rounded-5 px-2 mb-1"
                                     data-form="presentacion"
                                 >
                                     <i class="fa-solid fa-plus"></i>
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                     </div>
