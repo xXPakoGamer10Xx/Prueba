@@ -18,17 +18,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($insumosConsultorio as $insumo)
+                    @foreach ($insumosConsultorio as $insumoConsultorio) {{-- Cambiado a $insumoConsultorio para mayor claridad --}}
                         <tr>
-                            <td>{{ $insumo->id_insumo_consultorio }}</td>
-                            <td>{{ $insumo->clave }}</td>
-                            <td>{{ $insumo->descripcion }}</td>
-                            <td>{{ $insumo->laboratorio }}</td>
-                            <td>{{ $insumo->presentacion }}</td>
-                            <td>{{ $insumo->contenido }}</td>
-                            <td>{{ $insumo->caducidad ? $insumo->caducidad->format('Y-m-d') : 'Sin fecha' }}</td>
-                            <td><input class="w-[3rem] text-center" type="number" value="{{ $insumo->cantidad }}"></td>
-                            <td><i class='fa-solid fa-trash-can cursor-pointer'></i></td>
+                            <td>{{ $insumoConsultorio->id_insumo_consultorio }}</td>
+                            {{-- Accede a las propiedades del insumo a través de la relación --}}
+                            <td>{{ $insumoConsultorio->insumo->clave }}</td>
+                            <td>{{ $insumoConsultorio->insumo->descripcion }}</td>
+                            <td>{{ $insumoConsultorio->insumo->laboratorio->descripcion }}</td>
+                            <td>{{ $insumoConsultorio->insumo->presentacion->descripcion }}</td>
+                            <td>{{ $insumoConsultorio->insumo->contenido }}</td>
+                            {{-- Muestra la caducidad formateada --}}
+                            <td>{{ $insumoConsultorio->insumo->caducidad ? $insumoConsultorio->insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</td>
+                            <td>
+                                {{-- Input para la cantidad que actualiza la BD --}}
+                                <input
+                                    class="w-[3rem] text-center"
+                                    type="number"
+                                    value="{{ $insumoConsultorio->cantidad }}"
+                                    wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
+                                    wire:keydown.enter.prevent="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
+                                    min="0"
+                                >
+                            </td>
+                            <td>
+                                <i
+                                    class='fa-solid fa-trash-can cursor-pointer'
+                                    wire:click="confirmDelete({{ $insumoConsultorio->id_insumo_consultorio }})"
+                                    title="Eliminar registro"
+                                ></i>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -39,4 +57,12 @@
             {{ $insumosConsultorio->links() }}
         </div>
     @endif
+
+    <x-modals.delete-confirmation
+        modalId="modalEliminarInsumo"
+        formId="formularioEliminarInsumo"
+        wireModel="insumoToDeleteId"
+        confirmAction="deleteInsumo"
+        message="¿Está seguro que desea eliminar este insumo?"
+    />
 </div>
