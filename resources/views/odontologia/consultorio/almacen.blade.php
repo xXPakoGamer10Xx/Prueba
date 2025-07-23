@@ -3,7 +3,9 @@
 @section('contenido')
 
     <main class="container my-[4rem]">
-        <h1>Almacen</h1>
+        <h2 class="mb-3">Insumos</h2>
+
+        @livewire('odontologia.consultorio.almacen-table')
     </main>
 
 @endsection
