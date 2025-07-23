@@ -14,7 +14,9 @@
                         <th scope="col">Contenido</th>
                         <th scope="col">Caducidad</th>
                         <th scope="col">Cantidad</th>
-                        <th scope="col">Acciones</th>
+                        @if(request()->routeIs('odontologia.consultorio.index'))
+                            <th scope="col">Acciones</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -40,13 +42,15 @@
                                     min="0"
                                 >
                             </td>
-                            <td>
-                                <i
+                            @if(request()->routeIs('odontologia.consultorio.index'))
+                                <td>
+                                    <i
                                     class='fa-solid fa-trash-can cursor-pointer'
                                     wire:click="confirmDelete({{ $insumoConsultorio->id_insumo_consultorio }})"
                                     title="Eliminar registro"
-                                ></i>
-                            </td>
+                                    ></i>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>
