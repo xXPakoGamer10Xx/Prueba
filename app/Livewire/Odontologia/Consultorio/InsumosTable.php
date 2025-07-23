@@ -8,6 +8,7 @@ use App\Models\Odontologia\Consultorio;
 use App\Models\Odontologia\Insumo;
 use App\Models\Odontologia\Laboratorio;
 use App\Models\Odontologia\Presentacion;
+use Illuminate\Support\Facades\Validator; // Importar la fachada Validator
 
 class InsumosTable extends Component
 {
@@ -36,42 +37,39 @@ class InsumosTable extends Component
      */
     public function updateCantidad($consultorioId, $newCantidad)
     {
-        // Define los datos que quieres validar explícitamente en un array
-        // La clave 'cantidad_ingresada' no es una propiedad pública, es solo un nombre para la validación
-        $dataToValidate = ['cantidad_ingresada' => $newCantidad];
-
-        // Define las reglas y mensajes de validación para esos datos
+        // Define las reglas y mensajes de validación
         $rules = [
-            'cantidad_ingresada' => 'required|integer|min:0',
+            'cantidad' => 'required|integer|min:0',
         ];
         $messages = [
-            'cantidad_ingresada.required' => 'La cantidad es obligatoria.',
-            'cantidad_ingresada.integer' => 'La cantidad debe ser un número entero.',
-            'cantidad_ingresada.min' => 'La cantidad no puede ser negativa.',
+            'cantidad.required' => 'La cantidad es obligatoria.',
+            'cantidad.integer' => 'La cantidad debe ser un número entero.',
+            'cantidad.min' => 'La cantidad no puede ser negativa.',
         ];
+
+        // Crea una instancia del validador con los datos y las reglas
+        $validator = Validator::make([
+            'cantidad' => $newCantidad // El dato a validar, con una clave 'cantidad'
+        ], $rules, $messages);
 
         // Realiza la validación
         try {
-            $this->validate($dataToValidate, $rules, $messages);
+            $validator->validate(); // Llama a validate() en la instancia del validador
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Livewire capturará y mostrará estos errores automáticamente en la vista
-            // Opcional: Si quieres un mensaje flash global para errores de validación, puedes usarlo aquí
             session()->flash('error', 'Error de validación: ' . implode(', ', \Illuminate\Support\Arr::flatten($e->errors())));
-            throw $e; // Es importante volver a lanzar la excepción para que Livewire la maneje
+            throw $e; // Vuelve a lanzar la excepción para que Livewire la capture y muestre los errores si es necesario
         }
-
 
         try {
             $consultorioEntry = Consultorio::find($consultorioId);
 
             if ($consultorioEntry) {
-                $consultorioEntry->cantidad = $dataToValidate['cantidad_ingresada']; // Usa el valor validado
+                $consultorioEntry->cantidad = $newCantidad; // Usa el valor validado
                 $consultorioEntry->save();
                 session()->flash('message', 'Cantidad actualizada exitosamente.');
             }
         } catch (\Exception $e) {
             session()->flash('error', 'Error al actualizar la cantidad: ' . $e->getMessage());
-            // Para depuración: \Log::error("Error al actualizar cantidad: " . $e->getMessage());
         }
     }
 
