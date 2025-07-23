@@ -13,6 +13,8 @@ class MaterialesExternosTable extends Component
     public $search = ''; // Propiedad para la búsqueda, si se desea implementar
     public $materialToDeleteId; // Propiedad para almacenar el ID del material a eliminar
 
+    protected $listeners = ['materialAdded' => '$refresh'];
+
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
     {

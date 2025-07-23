@@ -18,6 +18,9 @@
             </div>
         </div>
 
+        <!-- Modal para agregar material -->
+        @livewire('odontologia.consultorio.add-new-material-modal')
+        <!-- Componente para mostrar materiales externos registrados -->
         @livewire('odontologia.consultorio.materiales-externos-table')
     </main>
 
