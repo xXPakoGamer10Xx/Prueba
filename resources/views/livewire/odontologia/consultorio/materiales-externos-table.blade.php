@@ -16,8 +16,17 @@
                     @foreach ($materialesExternos as $material)
                         <tr>
                             <td>{{ $material->id_material }}</td>
-                            <td><input class="w-full" type="text" value="{{ $material->descripcion }}"></td>
-                            <td><input class="w-full" type="number" min="0" value="{{ $material->cantidad }}"></td>
+                            <td>{{ $material->descripcion }}</td>
+                            <td>
+                                <input
+                                    class="w-[3rem] text-center"
+                                    type="number"
+                                    value="{{ $material->cantidad }}"
+                                    wire:change="updateCantidad({{ $material->id_material }}, $event.target.value)"
+                                    wire:keydown.enter.prevent="updateCantidad({{ $material->id_material }}, $event.target.value)"
+                                    min="0"
+                                >
+                            </td>
                             <td>
                                 <i
                                     class='fa-solid fa-trash-can cursor-pointer'
