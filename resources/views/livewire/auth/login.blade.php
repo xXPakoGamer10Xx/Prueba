@@ -49,6 +49,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
         } elseif ($user && $user->rol === 'odontologia_consultorio') {
             $this->redirect(route('odontologia.consultorio.index'), navigate: true);
             return;
+        } elseif ($user && $user->rol === 'odontologia_almacen') {
+            $this->redirect(route('odontologia.almacen.index'), navigate: true);
+            return;
         } elseif ($user && $user->rol === 'encargado_ginecologia') {
             $this->redirect(route('ginecologia.index'), navigate: true);
             return;

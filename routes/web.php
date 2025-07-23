@@ -14,29 +14,54 @@ Route::view('dashboard', 'dashboard')
 // --- GRUPO DE RUTAS PROTEGIDAS PARA 'odontologia_consultorio' ---
 // Solo usuarios autenticados con el rol 'odontologia_consultorio' podrán acceder.
 Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
-    Route::get('/odontologia/consultorio', function () {
+    Route::get('/odontologia/consultorio/', function () {
         return view('odontologia.consultorio.index');
     })->name('odontologia.consultorio.index');
 
-    Route::get('/odontologia/materiales', function () {
+    Route::get('/odontologia/consultorio/materiales', function () {
         return view('odontologia.consultorio.materiales');
     })->name('odontologia.consultorio.materiales');
 
-    Route::get('/odontologia/almacen', function () {
+    Route::get('/odontologia/consultorio/almacen', function () {
         return view('odontologia.consultorio.almacen');
     })->name('odontologia.consultorio.almacen');
 
-    Route::get('/odontologia/insumos', function () {
+    Route::get('/odontologia/consultorio/insumos', function () {
         return view('odontologia.consultorio.insumos');
     })->name('odontologia.consultorio.insumos');
 
-    Route::get('/odontologia/peticiones', function () {
+    Route::get('/odontologia/consultorio/peticiones', function () {
         return view('odontologia.consultorio.peticiones');
     })->name('odontologia.consultorio.peticiones');
 
-    Route::get('/odontologia/lyp', function () {
+    Route::get('/odontologia/consultorio/lyp', function () {
         return view('odontologia.consultorio.lyp');
     })->name('odontologia.consultorio.lyp');
+});
+// --- FIN DEL GRUPO PROTEGIDO ---
+
+// --- GRUPO DE RUTAS PROTEGIDAS PARA 'odontologia_almacen' ---
+// Solo usuarios autenticados con el rol 'odontologia_almacen' podrán acceder.
+Route::middleware(['auth', 'role:odontologia_almacen'])->group(function () {
+    Route::get('/odontologia/almacen/consultorio', function () {
+        return view('odontologia.almacen.consultorio');
+    })->name('odontologia.almacen.consultorio');
+
+    Route::get('/odontologia/almacen/', function () {
+        return view('odontologia.almacen.index');
+    })->name('odontologia.almacen.index');
+
+    Route::get('/odontologia/almacen/insumos', function () {
+        return view('odontologia.almacen.insumos');
+    })->name('odontologia.almacen.insumos');
+
+    Route::get('/odontologia/almacen/peticiones', function () {
+        return view('odontologia.almacen.peticiones');
+    })->name('odontologia.almacen.peticiones');
+
+    Route::get('/odontologia/almacen/lyp', function () {
+        return view('odontologia.almacen.lyp');
+    })->name('odontologia.almacen.lyp');
 });
 // --- FIN DEL GRUPO PROTEGIDO ---
 
