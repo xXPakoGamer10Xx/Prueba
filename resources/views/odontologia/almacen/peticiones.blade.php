@@ -1,4 +1,4 @@
-@extends('components.layouts.odontologia.almacen.navbar')
+@extends('components.layouts.odontologia.navbar')
 
 @section('contenido')
 

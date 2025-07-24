@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Odontología | Almacén</title>
+    <title>Odontología | Consultorio</title>
     <!-- Google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,28 +60,52 @@
     <nav class="navbar navbar-expand-lg bg-cafe text-white">
         <div class="container-fluid container">
 
-            <a class="navbar-brand logo px-5" href="{{ route('odontologia.almacen.index') }}">
+            <a class="navbar-brand logo px-5" href="{{ route('odontologia.consultorio.index') }}">
               <img src="/img/logo_IB.svg" alt="Logo Edo. Mex.">
             </a>
 
                 <div class="navbar" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.consultorio')) font-bold @endif">
-                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.consultorio') }}">Consultorio</a>
-                        </li>
-                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.index')) font-bold @endif">
-                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.index') }}">Almacén</a>
-                        </li>
-                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.insumos')) font-bold @endif">
-                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.insumos') }}">Insumos</a>
-                        </li>
-                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.peticiones')) font-bold @endif">
-                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.peticiones') }}">Peticiones</a>
-                        </li>
-                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.lyp')) font-bold @endif">
-                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.lyp') }}">Laboratorios y Presentaciones</a>
-                        </li>
-                    </ul>
+                    @if(Auth::user()->rol == 'odontologia_consultorio')
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.index')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.index') }}">Consultorio</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.materiales')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.materiales') }}">Materiales Externos</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.almacen')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.almacen') }}">Almacén</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.insumos')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.insumos') }}">Insumos</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.peticiones')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.peticiones') }}">Peticiones</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.lyp')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.lyp') }}">Laboratorios y Presentaciones</a>
+                            </li>
+                        </ul>
+                        
+                    @elseif(Auth::user()->rol == 'odontologia_almacen')
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.consultorio')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.consultorio') }}">Consultorio</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.index')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.index') }}">Almacén</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.insumos')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.insumos') }}">Insumos</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.peticiones')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.peticiones') }}">Peticiones</a>
+                            </li>
+                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.lyp')) font-bold @endif">
+                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.lyp') }}">Laboratorios y Presentaciones</a>
+                            </li>
+                        </ul>
+                    @endif
                 </div>
             </div>
         </nav>
