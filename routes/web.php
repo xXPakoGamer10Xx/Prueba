@@ -23,7 +23,7 @@ Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
     })->name('odontologia.consultorio.materiales');
 
     Route::get('/odontologia/consultorio/almacen', function () {
-        return view('odontologia.consultorio.almacen');
+        return view('odontologia.almacen');
     })->name('odontologia.consultorio.almacen');
 
     Route::get('/odontologia/consultorio/insumos', function () {
@@ -48,7 +48,7 @@ Route::middleware(['auth', 'role:odontologia_almacen'])->group(function () {
     })->name('odontologia.almacen.consultorio');
 
     Route::get('/odontologia/almacen/', function () {
-        return view('odontologia.almacen.index');
+        return view('odontologia.almacen');
     })->name('odontologia.almacen.index');
 
     Route::get('/odontologia/almacen/insumos', function () {

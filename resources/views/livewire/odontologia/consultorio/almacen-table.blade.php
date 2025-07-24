@@ -27,12 +27,34 @@
                             <td>{{ $item->insumo->presentacion->descripcion ?? 'N/A' }}</td>
                             <td>{{ $item->insumo->contenido ?? 'N/A' }}</td>
                             <td>{{ $item->insumo->caducidad ? $item->insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</td>
-                            <td>{{ $item->cantidad }}</td>
                             <td>
-                                <i
+                                {{-- Input para la cantidad que actualiza la BD --}}
+                                @if(Auth::user()->rol == 'odontologia_consultorio')
+                                    {{ $item->cantidad }}
+                                @elseif(Auth::user()->rol == 'odontologia_almacen')
+                                    <input
+                                        class="w-[3rem] text-center"
+                                        type="number"
+                                        value="{{ $item->cantidad }}"
+                                       {{-- wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
+                                        wire:keydown.enter.prevent="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
+                                        min="0" --}}
+                                    >
+                                @endif
+                            </td>
+                            <td>
+                                @if(Auth::user()->rol == 'odontologia_consultorio')
+                                    <i
                                     class='fa-solid fa-plus cursor-pointer'
                                     title="Pedir insumo"
-                                ></i>
+                                    ></i>
+                                @else
+                                    <i
+                                    class='fa-solid fa-trash-can cursor-pointer'
+                                    
+                                    title="Eliminar registro"
+                                    ></i>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
