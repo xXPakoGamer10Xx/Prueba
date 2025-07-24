@@ -8,6 +8,7 @@
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Descripción</th>
+                        <th scope="col" class="w-[8rem]">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -15,6 +16,13 @@
                         <tr>
                             <td>{{ $laboratorio->id_laboratorio }}</td>
                             <td>{{ $laboratorio->descripcion }}</td>
+                            <td>
+                                <i
+                                    class='fa-solid fa-trash-can cursor-pointer'
+                                    wire:click="confirmDelete({{ $laboratorio->id_laboratorio }})"
+                                    title="Eliminar registro"
+                                ></i>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -25,5 +33,13 @@
         <div class="mt-4">
             {{ $laboratorios->links() }}
         </div>
+
+        {{-- Modal de confirmación de eliminación --}}
+        <x-modals.delete-confirmation
+            modalId="modalEliminarLaboratorio"
+            formId="formularioEliminarLaboratorio"
+            wireModel="laboratorioToDeleteId"
+            confirmAction="deleteLaboratorio"
+        />
     @endif
 </div>

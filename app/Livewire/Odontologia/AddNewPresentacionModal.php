@@ -41,7 +41,7 @@ class AddNewPresentacionModal extends Component
             $this->resetForm();
         
             $this->dispatch('close-modal', 'modalAgregarPresentacion');
-            $this->dispatch('presentacionAdded');
+            $this->dispatch('insumoAdded');
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
