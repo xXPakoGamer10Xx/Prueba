@@ -7,25 +7,23 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('encargados_mantenimiento', function (Blueprint $table) {
-            $table->integer('id_encargado_man')->primary();
-        
-            $table->string('nombre', 100)->notNull();
-            $table->string('apellidos', 100)->notNull();
-        
+            // CAMBIO: Usa id() para crear una llave primaria auto-incremental.
+            $table->id('id_encargado_man');
+            
+            $table->string('nombre', 100);
+            $table->string('apellidos', 100);
             $table->string('contacto', 100)->nullable();
             $table->string('cargo', 100)->nullable();
-        
-            // $table->timestamps();
         });
     }
 
     /**
-     * Revierte las migraciones.
+     * Reverse the migrations.
      */
     public function down(): void
     {

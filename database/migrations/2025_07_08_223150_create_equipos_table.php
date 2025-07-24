@@ -7,26 +7,24 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('equipos', function (Blueprint $table) {
-            $table->integer('id_equipo')->primary();
+            // CAMBIO: Usa id() para la llave primaria.
+            $table->id('id_equipo');
             
-            $table->string('nombre', 100)->notNull();
+            $table->string('nombre', 100);
             $table->string('marca', 50)->nullable();
             $table->string('modelo', 50)->nullable();
-           
-            $table->integer('cantidad')->notNull();
-            $table->integer('frecuencia_mantenimiento')->notNull();
-           
-            // $table->timestamps();
+            $table->integer('cantidad');
+            $table->integer('frecuencia_mantenimiento');
         });
     }
 
     /**
-     * Revierte las migraciones.
+     * Reverse the migrations.
      */
     public function down(): void
     {

@@ -7,28 +7,25 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('areas', function (Blueprint $table) {
-            $table->integer('id_area')->primary();
-        
-            $table->integer('id_encargado_area_fk')->nullable();
-        
-            $table->foreign('id_encargado_area_fk')
-                  ->references('id_encargado_area')
-                  ->on('encargados_area')
+            // CAMBIO: Usa id() para la llave primaria.
+            $table->id('id_area');
+            $table->string('nombre', 100);
+
+            // Usa foreignId() para asegurar que los tipos de datos coincidan.
+            $table->foreignId('id_encargado_area_fk')
+                  ->nullable()
+                  ->constrained('encargados_area', 'id_encargado_area')
                   ->onDelete('set null');
-        
-            $table->string('nombre', 100)->notNull();
-        
-            // $table->timestamps();
         });
     }
 
     /**
-     * Revierte las migraciones.
+     * Reverse the migrations.
      */
     public function down(): void
     {

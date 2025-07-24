@@ -7,45 +7,31 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('inventarios', function (Blueprint $table) {
-            $table->integer('id_inventario')->primary(); 
+            $table->id('id_inventario');
+            $table->string('num_serie', 50)->nullable();
+            $table->string('num_serie_sicopa', 50)->nullable();
+            $table->string('num_serie_sia', 50)->nullable();
+            $table->enum('pertenencia', ['propia', 'prestamo', 'comodato']);
+            $table->enum('status', ['funcionando', 'sin funcionar', 'parcialmente funcional', 'proceso de baja']);
+
+            // --- LLAVES FORÁNEAS CORREGIDAS ---
+            // Este método asegura que el tipo de dato es correcto.
+            $table->foreignId('id_equipo_fk')->constrained('equipos', 'id_equipo');
             
-            $table->integer('id_equipo_fk')->notNull(); 
-            $table->foreign('id_equipo_fk')
-                  ->references('id_equipo')
-                  ->on('equipos')
-                  ->onDelete('restrict'); 
+            // Esta es la línea que causaba el error, ahora corregida.
+            $table->foreignId('id_area_fk')->constrained('areas', 'id_area');
             
-            $table->string('num_serie', 50)->nullable(); 
-            $table->string('num_serie_sicopa', 50)->nullable(); 
-            $table->string('num_serie_sia', 50)->nullable(); 
-            
-            $table->enum('pertenencia', ['propia', 'prestamo', 'comodato'])->notNull(); 
-            
-            $table->enum('status', ['funcionando', 'sin funcionar', 'parcialmente funcional', 'proceso de baja'])->notNull(); 
-            
-            $table->integer('id_area_fk')->notNull(); 
-            $table->foreign('id_area_fk')
-                  ->references('id_area')
-                  ->on('areas')
-                  ->onDelete('restrict'); 
-            
-            $table->integer('id_garantia_fk')->nullable(); 
-            $table->foreign('id_garantia_fk')
-                  ->references('id_garantia')
-                  ->on('garantias')
-                  ->onDelete('set null'); 
-            
-            // $table->timestamps();
+            $table->foreignId('id_garantia_fk')->nullable()->constrained('garantias', 'id_garantia')->onDelete('set null');
         });
     }
 
     /**
-     * Revierte las migraciones.
+     * Reverse the migrations.
      */
     public function down(): void
     {
