@@ -36,7 +36,7 @@
                 <!-- Modal para agregar insumo existente -->
                 @livewire('odontologia.add-existing-insumo-modal', ['formulario' => 'almacen'])
                 <!-- Modal para agregar un nuevo insumo a almacen e inventario -->
-                @livewire('odontologia.add-new-insumo-modal')
+                @livewire('odontologia.add-new-insumo-modal', ['formulario' => 'almacen'])
             @endif
         </div>
 
