@@ -15,7 +15,7 @@ Route::view('dashboard', 'dashboard')
 // Solo usuarios autenticados con el rol 'odontologia_consultorio' podrán acceder.
 Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
     Route::get('/odontologia/consultorio/', function () {
-        return view('odontologia.consultorio.index');
+        return view('odontologia.consultorio');
     })->name('odontologia.consultorio.index');
 
     Route::get('/odontologia/consultorio/materiales', function () {
@@ -23,7 +23,7 @@ Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
     })->name('odontologia.consultorio.materiales');
 
     Route::get('/odontologia/consultorio/almacen', function () {
-        return view('odontologia.consultorio.almacen');
+        return view('odontologia.almacen');
     })->name('odontologia.consultorio.almacen');
 
     Route::get('/odontologia/consultorio/insumos', function () {
@@ -44,11 +44,11 @@ Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
 // Solo usuarios autenticados con el rol 'odontologia_almacen' podrán acceder.
 Route::middleware(['auth', 'role:odontologia_almacen'])->group(function () {
     Route::get('/odontologia/almacen/consultorio', function () {
-        return view('odontologia.almacen.consultorio');
+        return view('odontologia.consultorio');
     })->name('odontologia.almacen.consultorio');
 
     Route::get('/odontologia/almacen/', function () {
-        return view('odontologia.almacen.index');
+        return view('odontologia.almacen');
     })->name('odontologia.almacen.index');
 
     Route::get('/odontologia/almacen/insumos', function () {

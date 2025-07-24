@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Odontologia\Consultorio;
+namespace App\Livewire\Odontologia;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -10,7 +10,7 @@ use App\Models\Odontologia\Laboratorio;
 use App\Models\Odontologia\Presentacion;
 use Illuminate\Support\Facades\Validator; // Importar la fachada Validator
 
-class InsumosTable extends Component
+class ConsultorioTable extends Component
 {
     use WithPagination;
 
@@ -130,7 +130,7 @@ class InsumosTable extends Component
             })
             ->paginate(10); // Pagina los resultados, 10 por página
 
-        return view('livewire.odontologia.consultorio.insumos-table', [
+        return view('livewire.odontologia.consultorio-table', [
             'insumosConsultorio' => $insumosConsultorio,
         ]);
     }

@@ -60,7 +60,14 @@
     <nav class="navbar navbar-expand-lg bg-cafe text-white">
         <div class="container-fluid container">
 
-            <a class="navbar-brand logo px-5" href="{{ route('odontologia.consultorio.index') }}">
+            <a 
+                class="navbar-brand logo px-5" 
+                @if(Auth::user()->rol == 'odontologia_consultorio')
+                    href="{{ route('odontologia.consultorio.index') }}"
+                @elseif(Auth::user()->rol == 'odontologia_almacen')
+                    href="{{ route('odontologia.almacen.index') }}"
+                @endif
+                >
               <img src="/img/logo_IB.svg" alt="Logo Edo. Mex.">
             </a>
 
