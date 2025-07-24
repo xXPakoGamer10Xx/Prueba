@@ -92,21 +92,15 @@ class AddNewInsumoModal extends Component
                     'cantidad' => $this->cantidad,
                 ]);
                 $this->message = 'Nuevo insumo registrado y agregado al consultorio exitosamente.';
-                $this->dispatch('close-modal', 'modalAgregarNuevoInsumo');
-                $this->dispatch('insumoAdded');
             } elseif ($this->formulario === 'almacen') {
                 Almacen::create([
                     'id_insumo_fk' => $insumo->id_insumo,
                     'cantidad' => $this->cantidad,
                 ]);
                 $this->message = 'Nuevo insumo registrado y agregado al almacén exitosamente.';
-                $this->dispatch('close-modal', 'modalAgregarNuevoInsumo');
-                $this->dispatch('insumoAdded');
-            } else {
-                $this->message = 'Error: Tipo de formulario desconocido.';
-                $this->messageType = 'danger';
-                return; // Stop execution if formulario is invalid
             }
+            $this->dispatch('close-modal', 'modalAgregarNuevoInsumo');
+            $this->dispatch('insumoAdded');
 
             $this->messageType = 'success';
             $this->resetForm();
