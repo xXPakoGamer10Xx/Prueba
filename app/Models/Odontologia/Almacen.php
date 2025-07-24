@@ -11,8 +11,10 @@ class Almacen extends Model
     use HasFactory;
 
     protected $table = 'almacen'; // Asegúrate de que el nombre de la tabla sea correcto
-    protected $primaryKey = 'id_almacen'; // Asegúrate de que la clave primaria sea correcta
+    protected $primaryKey = 'id_insumo_almacen'; // Asegúrate de que la clave primaria sea correcta
     protected $fillable = ['id_insumo_fk', 'cantidad']; // Campos que se pueden asignar masivamente
+
+    public $timestamps = false;
 
     public function insumo()
     {

@@ -13,6 +13,8 @@ class AlmacenTable extends Component
     public $search = ''; // Propiedad para la búsqueda, si se desea implementar
     public $itemToDeleteId; // Propiedad para almacenar el ID del ítem a eliminar
 
+    protected $listeners = ['insumoAdded' => '$refresh'];
+
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
     {
