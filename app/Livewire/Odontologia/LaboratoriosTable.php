@@ -12,6 +12,9 @@ class LaboratoriosTable extends Component
 
     public $search = ''; // Propiedad para búsqueda, si se desea implementar
 
+    protected $listeners = ['laboratorioAdded' => '$refresh'];
+
+
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
     {
