@@ -35,7 +35,7 @@ Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
     })->name('odontologia.consultorio.peticiones');
 
     Route::get('/odontologia/consultorio/lyp', function () {
-        return view('odontologia.consultorio.lyp');
+        return view('odontologia.lyp');
     })->name('odontologia.consultorio.lyp');
 });
 // --- FIN DEL GRUPO PROTEGIDO ---
@@ -60,7 +60,7 @@ Route::middleware(['auth', 'role:odontologia_almacen'])->group(function () {
     })->name('odontologia.almacen.peticiones');
 
     Route::get('/odontologia/almacen/lyp', function () {
-        return view('odontologia.almacen.lyp');
+        return view('odontologia.lyp');
     })->name('odontologia.almacen.lyp');
 });
 // --- FIN DEL GRUPO PROTEGIDO ---
