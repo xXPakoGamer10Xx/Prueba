@@ -5,6 +5,7 @@ namespace App\Livewire\Odontologia;
 use Livewire\Component;
 use App\Models\Odontologia\Insumo;
 use App\Models\Odontologia\Consultorio;
+use App\Models\Odontologia\Almacen;
 use App\Models\Odontologia\Laboratorio;
 use App\Models\Odontologia\Presentacion;
 
@@ -26,6 +27,9 @@ class AddNewInsumoModal extends Component
     // Propiedades para mensajes de estado
     public $message = '';
     public $messageType = ''; // 'success' o 'danger'
+
+    // Determinar si la inserción se hará en "consultorio" o "almacén"
+    public $formulario;
 
     protected $rules = [
         'clave' => 'required|string|max:255|unique:insumos,clave', // Clave debe ser única en la tabla insumos
@@ -52,8 +56,9 @@ class AddNewInsumoModal extends Component
         'cantidad.min' => 'La cantidad debe ser al menos 0.',
     ];
 
-    public function mount()
+    public function mount($formulario = null) // Accept the formulario parameter
     {
+        $this->formulario = $formulario;
         // Cargar laboratorios y presentaciones al inicializar el componente
         $this->laboratorios = Laboratorio::orderBy('descripcion')->get();
         $this->presentaciones = Presentacion::orderBy('descripcion')->get();
@@ -69,8 +74,6 @@ class AddNewInsumoModal extends Component
         $this->validate();
 
         try {
-            // Asegurarse de que caducidad sea NULL si el campo está vacío (cadena vacía)
-            // Esto es una comprobación defensiva, Eloquent a menudo lo maneja con el casting.
             $caducidadParaGuardar = empty($this->caducidad) ? null : $this->caducidad;
 
             $insumo = Insumo::create([
@@ -79,26 +82,28 @@ class AddNewInsumoModal extends Component
                 'id_laboratorio' => $this->id_laboratorio,
                 'contenido' => $this->contenido,
                 'id_presentacion' => $this->id_presentacion,
-                'caducidad' => $caducidadParaGuardar, // Usa el valor que puede ser NULL
+                'caducidad' => $caducidadParaGuardar,
             ]);
 
-            // ... (el resto de tu lógica para agregar al consultorio, mensajes, etc.) ...
-            // 2. Agregar el insumo recién creado al 'consultorio'
-            Consultorio::create([
-                'id_insumo_fk' => $insumo->id_insumo,
-                'cantidad' => $this->cantidad,
-            ]);
-
-            $this->message = 'Nuevo insumo registrado y agregado al consultorio exitosamente.';
-            $this->messageType = 'success';
-
-            // Limpiar los campos del formulario después del éxito
-            $this->resetForm();
-
-            // Despachar evento para cerrar la modal
+            // Insertar dependiendo el apartado
+            if ($this->formulario === 'consultorio') {
+                Consultorio::create([
+                    'id_insumo_fk' => $insumo->id_insumo,
+                    'cantidad' => $this->cantidad,
+                ]);
+                $this->message = 'Nuevo insumo registrado y agregado al consultorio exitosamente.';
+            } elseif ($this->formulario === 'almacen') {
+                Almacen::create([
+                    'id_insumo_fk' => $insumo->id_insumo,
+                    'cantidad' => $this->cantidad,
+                ]);
+                $this->message = 'Nuevo insumo registrado y agregado al almacén exitosamente.';
+            }
             $this->dispatch('close-modal', 'modalAgregarNuevoInsumo');
-            // Despachar evento para que la tabla de insumos se refresque
             $this->dispatch('insumoAdded');
+
+            $this->messageType = 'success';
+            $this->resetForm();
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
@@ -108,27 +113,23 @@ class AddNewInsumoModal extends Component
         }
     }
 
-    // Método para limpiar los campos del formulario y los mensajes
     protected function resetForm()
     {
         $this->reset([
             'clave', 'descripcion', 'id_laboratorio', 'contenido',
             'id_presentacion', 'caducidad', 'cantidad'
         ]);
-        $this->caducidad = now()->format('Y-m-d'); // Restablecer a fecha actual
-        $this->cantidad = 0; // Restablecer cantidad
+        $this->caducidad = now()->format('Y-m-d');
+        $this->cantidad = 0;
         $this->resetMessage();
     }
 
-    // Método para resetear solo los mensajes de estado
     public function resetMessage()
     {
         $this->message = '';
         $this->messageType = '';
     }
 
-    // Escuchar el evento 'hidden.bs.modal' para limpiar el formulario cuando la modal se cierra
-    // Esto es útil si el usuario cierra la modal manualmente sin enviar el formulario
     public function hydrate()
     {
         $this->listeners = [

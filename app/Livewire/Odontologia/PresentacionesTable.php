@@ -12,6 +12,8 @@ class PresentacionesTable extends Component
 
     public $search = ''; // Propiedad para búsqueda, si se desea implementar
 
+    protected $listeners = ['presentacionAdded' => '$refresh'];
+
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
     {

@@ -41,14 +41,6 @@
                                     @endforeach
                                 </select>
                                 @error('id_laboratorio') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                {{-- El botón de agregar laboratorio necesitaría su propia lógica o modal --}}
-                                <!-- <button
-                                    type="button"
-                                    class="btn-agregar border-0 bg-cafe text-white rounded-5 px-2 mb-1"
-                                    data-form="laboratorio"
-                                >
-                                    <i class="fa-solid fa-plus"></i>
-                                </button> -->
                             </div>
                         </div>
                     </div>
@@ -70,14 +62,6 @@
                                     @endforeach
                                 </select>
                                 @error('id_presentacion') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                {{-- El botón de agregar presentación necesitaría su propia lógica o modal --}}
-                                <!-- <button
-                                    type="button"
-                                    class="btn-agregar border-0 bg-cafe text-white rounded-5 px-2 mb-1"
-                                    data-form="presentacion"
-                                >
-                                    <i class="fa-solid fa-plus"></i>
-                                </button> -->
                             </div>
                         </div>
                     </div>
@@ -91,12 +75,13 @@
                             </div>
                             @error('caducidad') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-
-                        <div class="mb-3 col">
-                            <label for="cantidad" class="form-label">Cantidad</label>
-                            <input type="number" class="form-control text-center form-nuevo-input @error('cantidad') is-invalid @enderror" wire:model="cantidad" id="cantidad" min="0" placeholder="0">
-                            @error('cantidad') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
+                        @if(request()->routeIs('odontologia.consultorio.index') || request()->routeIs('odontologia.almacen.index'))
+                            <div class="mb-3 col">
+                                <label for="cantidad" class="form-label">Cantidad</label>
+                                <input type="number" class="form-control text-center form-nuevo-input @error('cantidad') is-invalid @enderror" wire:model="cantidad" id="cantidad" min="0" placeholder="0">
+                                @error('cantidad') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                        @endif
                     </div>
 
                     <div class="modal-footer d-flex justify-content-between px-0">
