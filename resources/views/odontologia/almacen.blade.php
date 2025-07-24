@@ -8,9 +8,9 @@
 
             @if(Auth::user()->rol == 'odontologia_consultorio')
                 <!-- Modal para agregar insumo existente -->
-                @livewire('odontologia.consultorio.add-existing-insumo-modal')
+                @livewire('odontologia.add-existing-insumo-modal')
                 <!-- Modal para agergar un nuevo insumo a consultorio e inventario -->
-                @livewire('odontologia.consultorio.add-new-insumo-modal')
+                @livewire('odontologia.add-new-insumo-modal')
             @elseif(Auth::user()->rol == 'odontologia_almacen')
                 <div class="flex gap-3">
                     <!-- Boton para agregar insumo existente -->
@@ -34,9 +34,9 @@
                 </div>
 
                 <!-- Modal para agregar insumo existente -->
-                @livewire('odontologia.consultorio.add-existing-insumo-modal', ['formulario' => 'almacen'])
+                @livewire('odontologia.add-existing-insumo-modal', ['formulario' => 'almacen'])
                 <!-- Modal para agregar un nuevo insumo a almacen e inventario -->
-                @livewire('odontologia.consultorio.add-new-insumo-modal')
+                @livewire('odontologia.add-new-insumo-modal')
             @endif
         </div>
 

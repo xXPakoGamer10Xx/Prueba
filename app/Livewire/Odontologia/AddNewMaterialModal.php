@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Odontologia\Consultorio;
+namespace App\Livewire\Odontologia;
 
 use Livewire\Component;
 use App\Models\Odontologia\MaterialesExternos; // Usamos el modelo de Materiales Externos
@@ -91,6 +91,6 @@ class AddNewMaterialModal extends Component
 
     public function render()
     {
-        return view('livewire.odontologia.consultorio.add-new-material-modal');
+        return view('livewire.odontologia.add-new-material-modal');
     }
 }

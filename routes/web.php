@@ -20,7 +20,7 @@ Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
     })->name('odontologia.consultorio.index');
 
     Route::get('/odontologia/consultorio/materiales', function () {
-        return view('odontologia.consultorio.materiales');
+        return view('odontologia.materiales');
     })->name('odontologia.consultorio.materiales');
 
     Route::get('/odontologia/consultorio/almacen', function () {
@@ -28,11 +28,11 @@ Route::middleware(['auth', 'role:odontologia_consultorio'])->group(function () {
     })->name('odontologia.consultorio.almacen');
 
     Route::get('/odontologia/consultorio/insumos', function () {
-        return view('odontologia.consultorio.insumos');
+        return view('odontologia.insumos');
     })->name('odontologia.consultorio.insumos');
 
     Route::get('/odontologia/consultorio/peticiones', function () {
-        return view('odontologia.consultorio.peticiones');
+        return view('odontologia.peticiones');
     })->name('odontologia.consultorio.peticiones');
 
     Route::get('/odontologia/consultorio/lyp', function () {
@@ -53,11 +53,11 @@ Route::middleware(['auth', 'role:odontologia_almacen'])->group(function () {
     })->name('odontologia.almacen.index');
 
     Route::get('/odontologia/almacen/insumos', function () {
-        return view('odontologia.almacen.insumos');
+        return view('odontologia.insumos');
     })->name('odontologia.almacen.insumos');
 
     Route::get('/odontologia/almacen/peticiones', function () {
-        return view('odontologia.almacen.peticiones');
+        return view('odontologia.peticiones');
     })->name('odontologia.almacen.peticiones');
 
     Route::get('/odontologia/almacen/lyp', function () {

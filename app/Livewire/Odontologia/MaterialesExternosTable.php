@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Odontologia\Consultorio;
+namespace App\Livewire\Odontologia;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -108,7 +108,7 @@ class MaterialesExternosTable extends Component
             })
             ->paginate(10); // Paginar 10 resultados por página
 
-        return view('livewire.odontologia.consultorio.materiales-externos-table', [
+        return view('livewire.odontologia.materiales-externos-table', [
             'materialesExternos' => $materialesExternos,
         ]);
     }
