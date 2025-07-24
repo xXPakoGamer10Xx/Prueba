@@ -14,7 +14,7 @@
                         <th scope="col">Contenido</th>
                         <th scope="col">Caducidad</th>
                         <th scope="col">Cantidad</th>
-                        @if(request()->routeIs('odontologia.consultorio.index'))
+                        @if(Auth::user()->rol == 'odontologia_consultorio')
                             <th scope="col">Acciones</th>
                         @endif
                     </tr>
@@ -33,16 +33,20 @@
                             <td>{{ $insumoConsultorio->insumo->caducidad ? $insumoConsultorio->insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</td>
                             <td>
                                 {{-- Input para la cantidad que actualiza la BD --}}
-                                <input
-                                    class="w-[3rem] text-center"
-                                    type="number"
-                                    value="{{ $insumoConsultorio->cantidad }}"
-                                    wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
-                                    wire:keydown.enter.prevent="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
-                                    min="0"
-                                >
+                                @if(Auth::user()->rol == 'odontologia_consultorio')
+                                    <input
+                                        class="w-[3rem] text-center"
+                                        type="number"
+                                        value="{{ $insumoConsultorio->cantidad }}"
+                                        wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
+                                        wire:keydown.enter.prevent="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
+                                        min="0"
+                                    >
+                                @elseif(Auth::user()->rol == 'odontologia_almacen')
+                                    {{ $insumoConsultorio->cantidad }}
+                                @endif
                             </td>
-                            @if(request()->routeIs('odontologia.consultorio.index'))
+                            @if(Auth::user()->rol == 'odontologia_consultorio')
                                 <td>
                                     <i
                                     class='fa-solid fa-trash-can cursor-pointer'
