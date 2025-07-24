@@ -35,7 +35,7 @@
             @endif
         </div>
         <!-- Componente para mostrar insumos en consultorio -->
-        @livewire('odontologia.consultorio.insumos-table')
+        @livewire('odontologia.consultorio-table')
     </main>
 
 @endsection
