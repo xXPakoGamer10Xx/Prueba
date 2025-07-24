@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Odontologia\Consultorio;
+namespace App\Livewire\Odontologia;
 
 use App\Models\Odontologia\Almacen;
 use Livewire\Component;
@@ -94,6 +94,6 @@ class AddExistingInsumoModal extends Component
 
     public function render()
     {
-        return view('livewire.odontologia.consultorio.add-existing-insumo-modal');
+        return view('livewire.odontologia.add-existing-insumo-modal');
     }
 }

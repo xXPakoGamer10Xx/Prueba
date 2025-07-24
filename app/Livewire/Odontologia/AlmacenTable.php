@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Odontologia\Almacen;
+namespace App\Livewire\Odontologia;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -12,6 +12,8 @@ class AlmacenTable extends Component
 
     public $search = ''; // Propiedad para la búsqueda, si se desea implementar
     public $itemToDeleteId; // Propiedad para almacenar el ID del ítem a eliminar
+
+    protected $listeners = ['insumoAdded' => '$refresh'];
 
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
@@ -29,7 +31,7 @@ class AlmacenTable extends Component
     {
         $this->itemToDeleteId = $id;
         // Asumiendo que tienes una modal de confirmación similar a las otras
-        $this->dispatch('open-modal', 'deleteAlmacenItemModal');
+        $this->dispatch('open-modal', 'modalEliminarInsumo');
     }
 
     /**
@@ -37,13 +39,13 @@ class AlmacenTable extends Component
      *
      * @return void
      */
-    public function deleteItem()
+    public function deleteInsumo()
     {
         if ($this->itemToDeleteId) {
             Almacen::find($this->itemToDeleteId)->delete();
             $this->itemToDeleteId = null;
-            $this->dispatch('close-modal', 'deleteAlmacenItemModal');
-            session()->flash('message', 'Ítem de almacén eliminado exitosamente.');
+            $this->dispatch('close-modal', 'modalEliminarInsumo');
+            session()->flash('message', 'Insumo eliminado exitosamente.');
             $this->dispatch('$refresh'); // Recargar la tabla
         }
     }
@@ -62,7 +64,7 @@ class AlmacenTable extends Component
             })
             ->paginate(10); // Paginar 10 resultados por página
 
-        return view('livewire.odontologia.almacen.almacen-table', [
+        return view('livewire.odontologia.almacen-table', [
             'almacenItems' => $almacenItems,
         ]);
     }
