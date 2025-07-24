@@ -43,7 +43,7 @@ class AddNewLaboratorioModal extends Component
 
             // Dispatch events to close the modal and refresh the table
             $this->dispatch('close-modal', 'modalAgregarLaboratorio');
-            $this->dispatch('laboratorioAdded'); // Event to refresh the LaboratoriosTable
+            $this->dispatch('insumoAdded'); // Event to refresh the LaboratoriosTable
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Re-throw validation exceptions so Livewire can handle displaying errors
             throw $e;

@@ -46,7 +46,7 @@ class AlmacenTable extends Component
             $this->itemToDeleteId = null;
             $this->dispatch('close-modal', 'modalEliminarInsumo');
             session()->flash('message', 'Insumo eliminado exitosamente.');
-            $this->dispatch('$refresh'); // Recargar la tabla
+            $this->dispatch('$insumoAdded'); // Recargar la tabla
         }
     }
 

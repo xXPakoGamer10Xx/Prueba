@@ -11,14 +11,37 @@ class LaboratoriosTable extends Component
     use WithPagination;
 
     public $search = ''; // Propiedad para búsqueda, si se desea implementar
-
-    protected $listeners = ['laboratorioAdded' => '$refresh'];
+    public $laboratorioToDeleteId;
+    protected $listeners = ['insumoAdded' => '$refresh'];
 
 
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->laboratorioToDeleteId = $id;
+        // Despacha un evento para abrir la modal de confirmación de eliminación
+        $this->dispatch('open-modal', 'modalEliminarLaboratorio');
+    }
+
+    /**
+     * Elimina el insumo de la base de datos.
+     *
+     * @return void
+     */
+    public function deleteLaboratorio()
+    {
+        if ($this->laboratorioToDeleteId) {
+            Laboratorio::find($this->laboratorioToDeleteId)->delete();
+            $this->laboratorioToDeleteId = null; // Limpia el ID después de la eliminación
+            $this->dispatch('close-modal', 'modalEliminarLaboratorio'); // Cierra la modal
+            session()->flash('message', 'Laboratorio eliminado exitosamente.'); // Mensaje de éxito
+            $this->dispatch('insumoAdded'); // Despacha un evento para refrescar la tabla
+        }
     }
 
     public function render()

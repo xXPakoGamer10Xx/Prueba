@@ -13,9 +13,7 @@ class InsumosTable extends Component
     public $search = '';
     public $itemToDeleteId;
     protected $listeners = [
-        'insumoAddedConsultorio' => '$refresh',
-        'insumoAddedAlmacen' => '$refresh',
-        'insumoDeleted' => '$refresh', // Puedes usar un evento genérico para eliminaciones
+        'insumoAdded' => '$refresh',
     ];
 
     public function updatingSearch()
@@ -48,7 +46,7 @@ class InsumosTable extends Component
             $this->itemToDeleteId = null; // Limpia el ID después de la eliminación
             $this->dispatch('close-modal', 'modalEliminarInsumo'); // Cierra la modal
             session()->flash('message', 'Insumo eliminado exitosamente.'); // Mensaje de éxito
-            $this->dispatch('insumoDeleted'); // Despacha un evento para refrescar la tabla
+            $this->dispatch('insumoAdded'); // Despacha un evento para refrescar la tabla
         }
     }
 

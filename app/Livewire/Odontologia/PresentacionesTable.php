@@ -11,13 +11,36 @@ class PresentacionesTable extends Component
     use WithPagination;
 
     public $search = ''; // Propiedad para búsqueda, si se desea implementar
-
-    protected $listeners = ['presentacionAdded' => '$refresh'];
+    public $presentacionToDeleteId;
+    protected $listeners = ['insumoAdded' => '$refresh'];
 
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->presentacionToDeleteId = $id;
+        // Despacha un evento para abrir la modal de confirmación de eliminación
+        $this->dispatch('open-modal', 'modalEliminarPresentacion');
+    }
+
+    /**
+     * Elimina el insumo de la base de datos.
+     *
+     * @return void
+     */
+    public function deletePresentacion()
+    {
+        if ($this->presentacionToDeleteId) {
+            Presentacion::find($this->presentacionToDeleteId)->delete();
+            $this->presentacionToDeleteId = null; // Limpia el ID después de la eliminación
+            $this->dispatch('close-modal', 'modalEliminarPresentacion'); // Cierra la modal
+            session()->flash('message', 'Presentación eliminada exitosamente.'); // Mensaje de éxito
+            $this->dispatch('insumoAdded'); // Despacha un evento para refrescar la tabla
+        }
     }
 
     public function render()
