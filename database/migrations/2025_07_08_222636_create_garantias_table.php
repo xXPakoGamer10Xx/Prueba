@@ -7,26 +7,23 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('garantias', function (Blueprint $table) {
-            $table->integer('id_garantia')->primary();
+            // CAMBIO: Usa id() para crear una llave primaria UNSIGNED BIGINT.
+            $table->id('id_garantia');
         
-            $table->enum('status', ['activa', 'terminada'])->notNull();
-        
+            $table->enum('status', ['activa', 'terminada']);
             $table->string('empresa', 100)->nullable();
             $table->string('contacto', 100)->nullable();
-        
             $table->date('fecha_garantia')->nullable();
-        
-            // $table->timestamps();
         });
     }
 
     /**
-     * Revierte las migraciones.
+     * Reverse the migrations.
      */
     public function down(): void
     {

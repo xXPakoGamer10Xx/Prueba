@@ -7,35 +7,31 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('procesos_baja', function (Blueprint $table) {
-            $table->integer('id_proceso_baja')->primary();
+            // CAMBIO: Usa id() para la llave primaria auto-incremental.
+            $table->id('id_proceso_baja');
         
-            $table->integer('id_inventario_fk')->notNull();
-            $table->foreign('id_inventario_fk')
-                  ->references('id_inventario')
-                  ->on('inventarios')
+            // CAMBIO: Usa foreignId() para las llaves foráneas.
+            $table->foreignId('id_inventario_fk')
+                  ->constrained('inventarios', 'id_inventario') // Apunta a la tabla y columna correctas
                   ->onDelete('restrict');
         
-            $table->integer('id_mantenimiento_fk')->nullable();
-            $table->foreign('id_mantenimiento_fk')
-                  ->references('id_mantenimiento')
-                  ->on('mantenimientos')
+            $table->foreignId('id_mantenimiento_fk')
+                  ->nullable()
+                  ->constrained('mantenimientos', 'id_mantenimiento') // Apunta a la tabla y columna correctas
                   ->onDelete('set null');
         
-            $table->text('motivo')->notNull();
-        
-            $table->enum('estado', ['en proceso', 'baja completa', 'cancelado'])->notNull();
-
-            // $table->timestamps();
+            $table->text('motivo');
+            $table->enum('estado', ['en proceso', 'baja completa', 'cancelado']);
         });
     }
 
     /**
-     * Revierte las migraciones.
+     * Reverse the migrations.
      */
     public function down(): void
     {
