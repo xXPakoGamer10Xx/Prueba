@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Odontologia\Consultorio;
 
+use App\Models\Odontologia\Almacen;
 use Livewire\Component;
 use App\Models\Odontologia\Insumo;
 use App\Models\Odontologia\Consultorio;
 
 class AddExistingInsumoModal extends Component
 {
+    public $formulario; // Propiedad que recibirá 'consultorio' o 'almacen'
     public $insumos; // Para almacenar la lista de insumos para el select
     public $selectedInsumoId; // Para el ID del insumo seleccionado
     public $cantidad; // Para la cantidad a agregar
@@ -29,8 +31,10 @@ class AddExistingInsumoModal extends Component
         'cantidad.min' => 'La cantidad debe ser al menos 1.',
     ];
 
-    public function mount()
+    // Recibe el valor de 'formulario' al montar el componente
+    public function mount($formulario = 'consultorio') // Valor por defecto si no se pasa nada
     {
+        $this->formulario = $formulario; // Asigna el valor recibido a la propiedad
         // Carga todos los insumos disponibles para el select
         $this->insumos = Insumo::orderBy('id_insumo', 'desc')->get();
     }
@@ -41,19 +45,25 @@ class AddExistingInsumoModal extends Component
         $this->validate();
 
         try {
-            // Buscar si el insumo ya existe en el consultorio
-            $consultorioInsumo = Consultorio::where('id_insumo_fk', $this->selectedInsumoId)->first();
-
-            if ($consultorioInsumo) {
-                // Si existe, actualizar la cantidad
-                $consultorioInsumo->cantidad += $this->cantidad;
-                $consultorioInsumo->save();
+            // Buscar si el insumo ya existe en la tabla correspondiente (consultorio o almacen)
+            if ($this->formulario == 'consultorio') {
+                $targetModel = Consultorio::class;
             } else {
-                // Si no existe, crear un nuevo registro en consultorio
-                Consultorio::create([
+                $targetModel = Almacen::class;
+            }
+
+            $existingInsumo = $targetModel::where('id_insumo_fk', $this->selectedInsumoId)->first();
+
+            if ($existingInsumo) {
+                // Si existe, actualizar la cantidad
+                $existingInsumo->cantidad += $this->cantidad;
+                $existingInsumo->save();
+            } else {
+                // Si no existe, crear un nuevo registro
+                $targetModel::create([
                     'id_insumo_fk' => $this->selectedInsumoId,
                     'cantidad' => $this->cantidad,
-                    // Otros campos que Consultorio necesite, si los hay y son obligatorios
+                    // Otros campos que Consultorio o Almacen necesiten, si los hay y son obligatorios
                 ]);
             }
 

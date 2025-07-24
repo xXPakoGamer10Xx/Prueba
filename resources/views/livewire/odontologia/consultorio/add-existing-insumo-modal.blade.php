@@ -7,8 +7,6 @@
             </div>
             <div class="modal-body">
                 <form wire:submit.prevent="addInsumoToConsultorio" id="formularioAgregarExistente">
-                    <input type="hidden" name="formulario" value="agregar">
-
                     {{-- Mensaje de éxito/error --}}
                     @if ($message)
                         <div class="text-center text-white fw-bold rounded py-2 mb-3
@@ -21,7 +19,7 @@
                         <label for="select-insumo" class="form-label">Insumo:</label>
                         <select id="select-insumo" wire:model.live="selectedInsumoId" class="form-select @error('selectedInsumoId') is-invalid @enderror" aria-label="Default select example">
                             <option value="" class="text-center">-- Seleccione un insumo --</option>
-                            @foreach ($this->insumos as $insumo) {{-- Asegúrate de usar $this->insumos si es una propiedad computada --}}
+                            @foreach ($this->insumos as $insumo)
                                 <option value="{{ $insumo->id_insumo }}">(ID: {{ $insumo->id_insumo }}) {{ $insumo->descripcion }}</option>
                             @endforeach
                         </select>
