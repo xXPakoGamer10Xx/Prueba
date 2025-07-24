@@ -27,34 +27,22 @@
                             <td>{{ $item->insumo->presentacion->descripcion ?? 'N/A' }}</td>
                             <td>{{ $item->insumo->contenido ?? 'N/A' }}</td>
                             <td>{{ $item->insumo->caducidad ? $item->insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</td>
+                            <td>{{ $item->cantidad }}</td>
                             <td>
-                                {{-- Input para la cantidad que actualiza la BD --}}
-                                @if(Auth::user()->rol == 'odontologia_consultorio')
-                                    {{ $item->cantidad }}
-                                @elseif(Auth::user()->rol == 'odontologia_almacen')
-                                    <input
-                                        class="w-[3rem] text-center"
-                                        type="number"
-                                        value="{{ $item->cantidad }}"
-                                       {{-- wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
-                                        wire:keydown.enter.prevent="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
-                                        min="0" --}}
-                                    >
-                                @endif
-                            </td>
-                            <td>
-                                @if(Auth::user()->rol == 'odontologia_consultorio')
-                                    <i
-                                    class='fa-solid fa-plus cursor-pointer'
-                                    title="Pedir insumo"
-                                    ></i>
-                                @else
-                                    <i
+                                <i
                                     class='fa-solid fa-trash-can cursor-pointer'
-                                    
+                                    wire:click="confirmDelete({{ $item->id_almacen }})"
                                     title="Eliminar registro"
-                                    ></i>
-                                @endif
+                                ></i>
+                                {{-- Si quieres un input de cantidad actualizable, sería similar al de insumos --}}
+                                <!-- <input
+                                    class="w-[3rem] text-center"
+                                    type="number"
+                                    value="{{ $item->cantidad }}"
+                                    wire:change="updateCantidad({{ $item->id_almacen }}, $event.target.value)"
+                                    wire:keydown.enter.prevent="updateCantidad({{ $item->id_almacen }}, $event.target.value)"
+                                    min="0"
+                                > -->
                             </td>
                         </tr>
                     @endforeach
@@ -66,4 +54,13 @@
             {{ $almacenItems->links() }}
         </div>
     @endif
+
+    {{-- Modal de confirmación de eliminación (asegúrate de que existe en x-modals) --}}
+    <x-modals.delete-confirmation
+        modalId="deleteAlmacenItemModal"
+        formId="deleteAlmacenItemForm"
+        wireModel="itemToDeleteId"
+        confirmAction="deleteItem"
+        message="¿Está seguro que desea eliminar este ítem del almacén?"
+    />
 </div>
