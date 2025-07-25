@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('equipos', function (Blueprint $table) {
-            // CAMBIO: Usa id() para la llave primaria.
             $table->id('id_equipo');
             
             $table->string('nombre', 100);
             $table->string('marca', 50)->nullable();
             $table->string('modelo', 50)->nullable();
             $table->integer('cantidad');
+
+            // CAMBIO: Se ajusta el tipo de dato a integer para coincidir con tu base de datos.
+            // El número representará la frecuencia en meses (ej: 6 para semestral).
             $table->integer('frecuencia_mantenimiento');
         });
     }
