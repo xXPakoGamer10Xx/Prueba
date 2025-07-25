@@ -32,17 +32,23 @@ class GestionInventario extends Component
 
     protected function rules()
     {
-        return [
+        $rules = [
             'nombre' => 'required|string|max:100',
             'cantidad' => 'required|integer|min:1',
             'frecuencia_mantenimiento' => 'required|string',
             'id_area_fk' => 'required|exists:areas,id_area',
         ];
+
+        if ($this->showNewWarrantyFields && $this->nueva_garantia_status === 'activa') {
+            $rules['nueva_garantia_fecha'] = 'required|date';
+            $rules['nueva_garantia_empresa'] = 'required|string|max:100';
+        }
+
+        return $rules;
     }
     
     public function render()
     {
-        // ... (la lógica de renderizado no cambia)
         $inventario = Inventario::with(['equipo', 'area', 'garantia'])
             ->whereHas('equipo', function ($query) {
                 $query->where('nombre', 'like', '%' . $this->search . '%');
@@ -76,7 +82,6 @@ class GestionInventario extends Component
         $this->modelo = $inventario->equipo->modelo;
         $this->cantidad = $inventario->equipo->cantidad;
 
-        // CAMBIO: Convierte el número de la BD a texto para el select del formulario.
         $this->frecuencia_mantenimiento = match ($inventario->equipo->frecuencia_mantenimiento) {
             1 => 'mensual',
             3 => 'trimestral',
@@ -100,8 +105,8 @@ class GestionInventario extends Component
         $this->validate();
 
         DB::transaction(function () {
-            // ... (la lógica de la garantía no cambia)
             $garantiaId = $this->id_garantia_fk;
+            
             if ($this->id_garantia_fk === 'new_warranty') {
                 $garantia = Garantia::create([
                     'status' => $this->nueva_garantia_status,
@@ -112,7 +117,6 @@ class GestionInventario extends Component
                 $garantiaId = $garantia->id_garantia;
             }
 
-            // CAMBIO: Convierte el texto del formulario a un número para la BD.
             $frecuenciaEnMeses = match($this->frecuencia_mantenimiento) {
                 'mensual' => 1,
                 'trimestral' => 3,
@@ -128,7 +132,7 @@ class GestionInventario extends Component
                     'marca' => $this->marca,
                     'modelo' => $this->modelo,
                     'cantidad' => $this->cantidad,
-                    'frecuencia_mantenimiento' => $frecuenciaEnMeses, // Se guarda el número
+                    'frecuencia_mantenimiento' => $frecuenciaEnMeses,
                 ]
             );
 
@@ -140,7 +144,9 @@ class GestionInventario extends Component
                     'pertenencia' => $this->pertenencia,
                     'status' => $this->status,
                     'id_area_fk' => $this->id_area_fk,
-                    'id_garantia_fk' => $garantiaId,
+                    // CORRECCIÓN: Si $garantiaId es una cadena vacía (por la opción "Sin garantía"),
+                    // se convierte a null para que sea aceptado por la base de datos.
+                    'id_garantia_fk' => $garantiaId === '' ? null : $garantiaId,
                 ]
             );
         });
@@ -149,21 +155,13 @@ class GestionInventario extends Component
         $this->closeModal();
     }
     
-    /**
-     * AÑADIDO: Método para redirigir a la página de mantenimiento.
-     */
     public function registrarMantenimiento($inventarioId)
     {
-        // Nota: La ruta 'servicios.mantenimiento' necesitará ser actualizada para aceptar este parámetro.
         return redirect()->route('servicios.mantenimiento', ['inventario' => $inventarioId]);
     }
 
-    /**
-     * AÑADIDO: Método para redirigir a la página de bajas.
-     */
     public function registrarBaja($inventarioId)
     {
-        // Nota: La ruta 'servicios.bajas' necesitará ser actualizada para aceptar este parámetro.
         return redirect()->route('servicios.bajas', ['inventario' => $inventarioId]);
     }
     
