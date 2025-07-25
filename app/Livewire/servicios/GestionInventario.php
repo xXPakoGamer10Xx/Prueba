@@ -144,8 +144,6 @@ class GestionInventario extends Component
                     'pertenencia' => $this->pertenencia,
                     'status' => $this->status,
                     'id_area_fk' => $this->id_area_fk,
-                    // CORRECCIÓN: Si $garantiaId es una cadena vacía (por la opción "Sin garantía"),
-                    // se convierte a null para que sea aceptado por la base de datos.
                     'id_garantia_fk' => $garantiaId === '' ? null : $garantiaId,
                 ]
             );
