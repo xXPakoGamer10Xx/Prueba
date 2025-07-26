@@ -92,7 +92,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-6 max-w-md mx-auto my-8">
     <header class="text-black text-center">
         <h1 class="text-3xl font-bold mb-2">Iniciar Sesión</h1>
         <p class="text-zinc-700">Ingrese su correo y contraseña designados para iniciar sesión</p>

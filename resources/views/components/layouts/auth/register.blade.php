@@ -13,15 +13,15 @@
         </header>
 
         <div class="flex-grow container mx-auto py-16 px-6 flex flex-col items-center justify-center">
-            <div class="w-full max-w-md flex flex-col gap-6">
+            <div class="w-full max-w-sm flex flex-col gap-6">
                 <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>
                 {{ $slot }}
             </div>
         </div>
         @fluxScripts
 
-        <footer class="w-full bg-custom-red py-3">
+        <footer class="w-full bg-custom-red py-2">
             <p class="text-center text-white">© 2025 Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
         </footer>
     </body>
-</html>
+</html> 
