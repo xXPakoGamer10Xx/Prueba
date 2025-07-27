@@ -24,11 +24,11 @@
                 {{-- Botones de acción --}}
                 <div class="space-x-4">
                     <a href="{{ route('login') }}"
-                       class="px-4 py-2 text-sm font-semibold text-white border border-white rounded-md hover:bg-white hover:text-rojo transition-colors duration-300">
+                       class="px-4 py-2 text-sm font-semibold text-white border border-white rounded-md hover:bg-white hover:text-custom-red transition-colors duration-300">
                         Iniciar sesión
                     </a>
                     <a href="{{ route('register') }}"
-                       class="px-4 py-2 text-sm font-semibold text-white bg-transparent border border-white rounded-md hover:bg-white hover:text-rojo transition-colors duration-300">
+                       class="px-4 py-2 text-sm font-semibold text-white bg-transparent border border-white rounded-md hover:bg-white hover:text-custom-red transition-colors duration-300">
                         Registrarse
                     </a>
                 </div>

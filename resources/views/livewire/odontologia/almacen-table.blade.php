@@ -33,7 +33,7 @@
                                     {{ $item->cantidad }}
                                 @elseif(Auth::user()->rol == 'odontologia_almacen')
                                     <input
-                                        class="w-[3rem] text-center"
+                                        class="w-[3rem] text-center border-0"
                                         type="number"
                                         value="{{ $item->cantidad }}"
                                         {{-- 
