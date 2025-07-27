@@ -36,10 +36,8 @@
                                         class="w-[3rem] text-center border-0"
                                         type="number"
                                         value="{{ $item->cantidad }}"
-                                        {{-- 
-                                        wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
-                                        wire:keydown.enter.prevent="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
-                                        --}}
+                                        wire:change="updateCantidad({{ $item->id_insumo_almacen }}, $event.target.value)"
+                                        wire:keydown.enter.prevent="updateCantidad({{ $item->id_insumo_almacen }}, $event.target.value)"
                                         min="0"
                                     > 
                                 @endif

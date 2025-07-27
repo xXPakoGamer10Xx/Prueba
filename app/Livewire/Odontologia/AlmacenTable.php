@@ -5,6 +5,7 @@ namespace App\Livewire\Odontologia;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Odontologia\Almacen;
+use Illuminate\Support\Facades\Validator; // Importar la fachada Validator
 
 class AlmacenTable extends Component
 {
@@ -19,6 +20,52 @@ class AlmacenTable extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    /**
+     * Actualiza la cantidad de un insumo en la tabla almacén.
+     * Se llama al perder el foco o al presionar Enter en el input de cantidad.
+     *
+     * @param int $id_almacen El ID del registro en la tabla 'almacén'.
+     * @param int $newCantidad La nueva cantidad a establecer.
+     * @return void
+     */
+    public function updateCantidad($id_almacen, $newCantidad)
+    {
+        // Define las reglas y mensajes de validación
+        $rules = [
+            'cantidad' => 'required|integer|min:0',
+        ];
+        $messages = [
+            'cantidad.required' => 'La cantidad es obligatoria.',
+            'cantidad.integer' => 'La cantidad debe ser un número entero.',
+            'cantidad.min' => 'La cantidad no puede ser negativa.',
+        ];
+
+        // Crea una instancia del validador con los datos y las reglas
+        $validator = Validator::make([
+            'cantidad' => $newCantidad // El dato a validar, con una clave 'cantidad'
+        ], $rules, $messages);
+
+        // Realiza la validación
+        try {
+            $validator->validate(); // Llama a validate() en la instancia del validador
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            session()->flash('error', 'Error de validación: ' . implode(', ', \Illuminate\Support\Arr::flatten($e->errors())));
+            throw $e; // Vuelve a lanzar la excepción para que Livewire la capture y muestre los errores si es necesario
+        }
+
+        try {
+            $almacenEntry = Almacen::find($id_almacen);
+
+            if ($almacenEntry) {
+                $almacenEntry->cantidad = $newCantidad; // Usa el valor validado
+                $almacenEntry->save();
+                session()->flash('message', 'Cantidad actualizada exitosamente.');
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al actualizar la cantidad: ' . $e->getMessage());
+        }
     }
 
     /**
