@@ -19,7 +19,7 @@
                             <td>{{ $material->descripcion }}</td>
                             <td>
                                 <input
-                                    class="w-[3rem] text-center"
+                                    class="w-[3rem] text-center border-0"
                                     type="number"
                                     value="{{ $material->cantidad }}"
                                     wire:change="updateCantidad({{ $material->id_material }}, $event.target.value)"

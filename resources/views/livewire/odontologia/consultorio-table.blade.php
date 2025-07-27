@@ -35,7 +35,7 @@
                                 {{-- Input para la cantidad que actualiza la BD --}}
                                 @if(Auth::user()->rol == 'odontologia_consultorio')
                                     <input
-                                        class="w-[3rem] text-center"
+                                        class="w-[3rem] text-center border-0"
                                         type="number"
                                         value="{{ $insumoConsultorio->cantidad }}"
                                         wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"

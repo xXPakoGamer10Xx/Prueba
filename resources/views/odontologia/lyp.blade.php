@@ -10,7 +10,7 @@
               
               <button 
               type="button"
-              class="border-0 bg-cafe text-white fw-semibold rounded-2 px-3 py-2"
+              class="border-0 bg-custom-brown text-white font-semibold rounded-2 px-3 py-2 duration-250"
               data-bs-toggle='modal' 
               data-bs-target='#modalAgregarLaboratorio'
               >
@@ -29,7 +29,7 @@
               
               <button 
               type="button"
-              class="border-0 bg-cafe text-white fw-semibold rounded-2 px-3 py-2"
+              class="border-0 bg-custom-brown text-white font-semibold rounded-2 px-3 py-2 duration-250"
               data-bs-toggle='modal' 
               data-bs-target='#modalAgregarPresentacion'
               >

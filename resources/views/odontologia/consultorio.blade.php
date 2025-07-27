@@ -11,7 +11,7 @@
                     <!-- Boton para agregar insumo existente -->
                     <button 
                         type="button"
-                        class="border-0 bg-custom-brown text-white font-semibold rounded-2 px-3 py-2"
+                        class="border-0 bg-custom-brown text-white font-semibold rounded-2 px-3 py-2 duration-250"
                         data-bs-toggle='modal' 
                         data-bs-target='#modalAgregarInsumo'
                     >
@@ -21,7 +21,7 @@
                     <!-- Boton para agregar insumo nuevo -->
                     <button
                         type="submit"
-                        class="border-0 bg-custom-brown text-white font-semibold rounded-2 px-3 py-2"
+                        class="border-0 bg-custom-brown text-white font-semibold rounded-2 px-3 py-2 duration-250"
                         data-bs-toggle='modal' 
                         data-bs-target='#modalAgregarNuevoInsumo'
                     >Agregar Nuevo
