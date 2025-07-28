@@ -47,6 +47,8 @@
                                     <i
                                     class='fa-solid fa-plus cursor-pointer'
                                     title="Pedir insumo"
+                                    data-bs-toggle='modal' 
+                                    data-bs-target='#modalPedir'
                                     ></i>
                                 @else
                                     <i
