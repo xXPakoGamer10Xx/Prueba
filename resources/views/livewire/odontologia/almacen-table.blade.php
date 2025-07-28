@@ -39,7 +39,7 @@
                                         wire:change="updateCantidad({{ $item->id_insumo_almacen }}, $event.target.value)"
                                         wire:keydown.enter.prevent="updateCantidad({{ $item->id_insumo_almacen }}, $event.target.value)"
                                         min="0"
-                                    > 
+                                    >
                                 @endif
                             </td>
                             <td>
@@ -47,8 +47,7 @@
                                     <i
                                     class='fa-solid fa-plus cursor-pointer'
                                     title="Pedir insumo"
-                                    data-bs-toggle='modal' 
-                                    data-bs-target='#modalPedir'
+                                    wire:click="openPeticionModal({{ $item->id_insumo_almacen }})"
                                     ></i>
                                 @else
                                     <i
