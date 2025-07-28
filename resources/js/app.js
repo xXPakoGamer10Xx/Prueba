@@ -1,0 +1,1 @@
+import './ginecologia/material_crud.js';
