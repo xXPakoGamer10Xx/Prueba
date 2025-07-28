@@ -14,8 +14,8 @@ class AlmacenTable extends Component
 
     public $search = '';
     public $itemToDeleteId;
-
-    protected $listeners = ['insumoAdded' => '$refresh', 'pedidoAdded' => '$refresh'];
+    public $message = '';
+    public $messageType = '';
 
     public function updatingSearch()
     {
@@ -50,11 +50,16 @@ class AlmacenTable extends Component
             if ($almacenEntry) {
                 $almacenEntry->cantidad = $newCantidad;
                 $almacenEntry->save();
-                session()->flash('message', 'Cantidad actualizada exitosamente.');
+                $this->message = 'Cantidad actualizada exitosamente.';
+                $this->messageType = 'success';
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al actualizar la cantidad: ' . $e->getMessage());
+            $this->message = 'Error al actualizar la cantidad.';
+            $this->messageType = 'error';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     public function confirmDelete($id)
@@ -65,13 +70,20 @@ class AlmacenTable extends Component
 
     public function deleteInsumo()
     {
-        if ($this->itemToDeleteId) {
-            Almacen::find($this->itemToDeleteId)->delete();
-            $this->itemToDeleteId = null;
-            $this->dispatch('close-modal', 'modalEliminarInsumo');
-            session()->flash('message', 'Insumo eliminado exitosamente.');
-            $this->dispatch('$insumoAdded');
+        try {
+            if ($this->itemToDeleteId) {
+                Almacen::find($this->itemToDeleteId)->delete();
+                $this->itemToDeleteId = null;
+                $this->message = 'Insumo eliminado exitosamente.';
+                $this->messageType = 'success';
+            }
+        } catch (\Exception) {
+            $this->message = 'No se pudo eliminar el registro ya que está siendo utilizado en otras tablas.';
+            $this->messageType = 'error';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     // Corrected method to open the peticion modal and pass the insumo ID

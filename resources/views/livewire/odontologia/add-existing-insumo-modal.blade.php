@@ -7,13 +7,6 @@
             </div>
             <div class="modal-body">
                 <form wire:submit.prevent="addInsumoToConsultorio" id="formularioAgregarExistente">
-                    {{-- Mensaje de éxito/error --}}
-                    @if ($message)
-                        <div class="text-center text-white fw-bold rounded py-2 mb-3
-                            @if($messageType == 'success') bg-success @else bg-danger @endif">
-                            {{ $message }}
-                        </div>
-                    @endif
 
                     <div class="mb-3">
                         <label for="select-insumo" class="form-label">Insumo:</label>

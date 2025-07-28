@@ -6,6 +6,7 @@ use App\Models\Odontologia\Almacen;
 use Livewire\Component;
 use App\Models\Odontologia\Insumo;
 use App\Models\Odontologia\Consultorio;
+use ParaTest\JUnit\MessageType;
 
 class AddExistingInsumoModal extends Component
 {
@@ -48,8 +49,10 @@ class AddExistingInsumoModal extends Component
             // Buscar si el insumo ya existe en la tabla correspondiente (consultorio o almacen)
             if ($this->formulario == 'consultorio') {
                 $targetModel = Consultorio::class;
+                $this->message = 'El insumo existente ha sido agregado exitosamente al consultorio.';
             } else {
                 $targetModel = Almacen::class;
+                $this->message = 'El insumo existente ha sido agregado exitosamente a almacén.';
             }
 
             $existingInsumo = $targetModel::where('id_insumo_fk', $this->selectedInsumoId)->first();
@@ -63,26 +66,18 @@ class AddExistingInsumoModal extends Component
                 $targetModel::create([
                     'id_insumo_fk' => $this->selectedInsumoId,
                     'cantidad' => $this->cantidad,
-                    // Otros campos que Consultorio o Almacen necesiten, si los hay y son obligatorios
                 ]);
             }
 
-            $this->message = 'Insumo agregado/actualizado exitosamente.';
             $this->messageType = 'success';
 
-            // Limpiar los campos del formulario
-            $this->reset(['selectedInsumoId', 'cantidad']);
-
-            // Cerrar la modal
-            $this->dispatch('close-modal', 'modalAgregarInsumo');
-
-            // Opcional: Despachar un evento para que InsumosTable se refresque si está escuchando
-            $this->dispatch('insumoAdded'); // Para que InsumosTable recargue los datos
         } catch (\Exception $e) {
             $this->message = 'Error al agregar el insumo: ' . $e->getMessage();
             $this->messageType = 'danger';
-            // Para mostrar el mensaje de error dentro de la modal, no la cierres
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     // Método para resetear los mensajes de validación y de estado

@@ -11,8 +11,9 @@ class PresentacionesTable extends Component
     use WithPagination;
 
     public $search = ''; // Propiedad para búsqueda, si se desea implementar
-    public $presentacionToDeleteId;
-    protected $listeners = ['insumoAdded' => '$refresh'];
+    public $itemToBeDeleted;
+    public $message = '';
+    public $messageType = '';
 
     // Opcional: Para resetear la paginación cuando cambia la búsqueda
     public function updatingSearch()
@@ -22,7 +23,7 @@ class PresentacionesTable extends Component
 
     public function confirmDelete($id)
     {
-        $this->presentacionToDeleteId = $id;
+        $this->itemToBeDeleted = $id;
         // Despacha un evento para abrir la modal de confirmación de eliminación
         $this->dispatch('open-modal', 'modalEliminarPresentacion');
     }
@@ -34,13 +35,20 @@ class PresentacionesTable extends Component
      */
     public function deletePresentacion()
     {
-        if ($this->presentacionToDeleteId) {
-            Presentacion::find($this->presentacionToDeleteId)->delete();
-            $this->presentacionToDeleteId = null; // Limpia el ID después de la eliminación
-            $this->dispatch('close-modal', 'modalEliminarPresentacion'); // Cierra la modal
-            session()->flash('message', 'Presentación eliminada exitosamente.'); // Mensaje de éxito
-            $this->dispatch('insumoAdded'); // Despacha un evento para refrescar la tabla
+        try {
+            if ($this->itemToBeDeleted) {
+                Presentacion::find($this->itemToBeDeleted)->delete();
+                $this->itemToBeDeleted = null; // Limpia el ID después de la eliminación
+                $this->message = 'Presentación eliminada exitosamente.';
+                $this->messageType = 'success';
+            }
+        } catch(\Exception) {
+            $this->message = 'No se pudo eliminar el registro ya que está siendo utilizado en otras tablas.';
+            $this->messageType = 'error';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     public function render()

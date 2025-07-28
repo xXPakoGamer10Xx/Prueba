@@ -61,9 +61,11 @@ class MaterialesExternosTable extends Component
             if ($material) {
                 $material->cantidad = $newCantidad; // Usa el valor validado
                 $material->save();
-                session()->flash('message', 'Cantidad actualizada correctamente.');
+                session()->flash('success', 'Cantidad actualizada correctamente.');
+                return redirect(request()->header('Referer'));
             } else {
-                session()->flash('message', 'Material no encontrado.');
+                session()->flash('success', 'Material no encontrado.');
+                return redirect(request()->header('Referer'));
             }
         } catch (\Exception $e) {
             session()->flash('error', 'Error al actualizar la cantidad: ' . $e->getMessage());
@@ -92,9 +94,8 @@ class MaterialesExternosTable extends Component
         if ($this->materialToDeleteId) {
             MaterialesExternos::find($this->materialToDeleteId)->delete();
             $this->materialToDeleteId = null; // Limpiar el ID después de la eliminación
-            $this->dispatch('close-modal', 'deleteMaterialModal'); // Despacha un evento para cerrar la modal
-            session()->flash('message', 'Material externo eliminado exitosamente.'); // Mensaje de éxito
-            $this->dispatch('$refresh'); // Recargar la tabla
+            session()->flash('success', 'Material externo eliminado exitosamente.'); // Mensaje de éxito
+            return redirect(request()->header('Referer'));
         }
     }
 

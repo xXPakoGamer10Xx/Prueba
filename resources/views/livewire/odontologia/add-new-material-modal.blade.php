@@ -9,13 +9,6 @@
             <div class="modal-body">
                 <form wire:submit.prevent="saveNewMaterial" id="formularioAgregarMaterial" class="mt-3">
                     <input type="hidden" name="formulario" value="agregar">
-                    {{-- Mensaje de estado --}}
-                    <div id="mensaje-modal-agregar" class="mb-3
-                        @if ($message) d-block @else d-none @endif
-                        @if($messageType == 'success') bg-verde @else bg-rojo @endif
-                        text-white text-center rounded fw-semibold py-2">
-                        {{ $message }}
-                    </div>
 
                     <div class="mb-3">
                         <label for="formularioAgregarMaterialDescripcion" class="form-label">Descripción:</label>

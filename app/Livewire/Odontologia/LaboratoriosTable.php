@@ -11,6 +11,8 @@ class LaboratoriosTable extends Component
     use WithPagination;
 
     public $search = ''; // Propiedad para búsqueda, si se desea implementar
+    public $message = '';
+    public $messageType = '';
     public $laboratorioToDeleteId;
     protected $listeners = ['insumoAdded' => '$refresh'];
 
@@ -35,13 +37,22 @@ class LaboratoriosTable extends Component
      */
     public function deleteLaboratorio()
     {
-        if ($this->laboratorioToDeleteId) {
-            Laboratorio::find($this->laboratorioToDeleteId)->delete();
-            $this->laboratorioToDeleteId = null; // Limpia el ID después de la eliminación
-            $this->dispatch('close-modal', 'modalEliminarLaboratorio'); // Cierra la modal
-            session()->flash('message', 'Laboratorio eliminado exitosamente.'); // Mensaje de éxito
-            $this->dispatch('insumoAdded'); // Despacha un evento para refrescar la tabla
+        try {
+            if ($this->laboratorioToDeleteId) {
+                Laboratorio::find($this->laboratorioToDeleteId)->delete();
+                $this->laboratorioToDeleteId = null; // Limpia el ID después de la eliminación
+                $this->message = 'Laboratorio eliminado exitosamente.';
+                $this->messageType = 'success';
+
+            }
+        } catch (\Exception $e) {
+            $this->message = 'No se pudo eliminar el registro ya que está siendo utilizado en otras tablas.';
+            $this->messageType = 'error';
+            // session()->flash('error', 'Error al actualizar la cantidad: ' . $e->getMessage());
         }
+            
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     public function render()

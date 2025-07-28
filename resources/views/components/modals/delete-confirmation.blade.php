@@ -19,7 +19,6 @@
                 <form wire:submit.prevent="{{ $confirmAction }}" id="{{ $formId }}">
                     <input type="hidden" name="formulario" value="eliminar">
                     <input type="hidden" wire:model="{{ $wireModel }}">
-                    <div id="mensajeEliminarRegistro" class="text-center text-white fw-bold rounded py-2 mb-3 d-none"></div>
                     <div class="mb-3 d-flex flex-column align-items-center gap-4">
                         <i style="font-size: {{ $iconSize }};" class="{{ $iconClass }}"></i>
                         <h2 class="text-center fs-5 fw-normal" id="{{ $titleId }}">¿Está seguro que desea eliminar este registro?</h2>

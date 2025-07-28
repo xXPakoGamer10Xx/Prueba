@@ -12,6 +12,8 @@ class InsumosTable extends Component
 
     public $search = '';
     public $itemToDeleteId;
+    public $message = '';
+    public $messageType = '';
     protected $listeners = [
         'insumoAdded' => '$refresh',
     ];
@@ -41,13 +43,20 @@ class InsumosTable extends Component
      */
     public function deleteInsumo()
     {
-        if ($this->itemToDeleteId) {
-            Insumo::find($this->itemToDeleteId)->delete();
-            $this->itemToDeleteId = null; // Limpia el ID después de la eliminación
-            $this->dispatch('close-modal', 'modalEliminarInsumo'); // Cierra la modal
-            session()->flash('message', 'Insumo eliminado exitosamente.'); // Mensaje de éxito
-            $this->dispatch('insumoAdded'); // Despacha un evento para refrescar la tabla
+        try {
+            if ($this->itemToDeleteId) {
+                Insumo::find($this->itemToDeleteId)->delete();
+                $this->itemToDeleteId = null; // Limpia el ID después de la eliminación
+                $this->message = 'Insumo eliminado exitosamente.';
+                $this->messageType = 'success';
+            }
+        } catch(\Exception $e) {
+            $this->message = 'No se pudo eliminar el registro ya que está siendo utilizado en otras tablas.';
+            $this->messageType = 'error';
         }
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
+
     }
 
     public function render()

@@ -9,12 +9,6 @@
             <div class="modal-body">
                 <form wire:submit.prevent="saveNewInsumo" id="formularioNuevoInsumo" class="mt-3">
                     <input type="hidden" name="formulario" value="consultorio">
-                    <div id="mensaje" class="mb-3
-                        @if ($message) d-block @else d-none @endif
-                        @if($messageType == 'success') bg-success @else bg-danger @endif
-                        text-white text-center rounded fw-semibold py-2">
-                        {{ $message }}
-                    </div>
 
                     <div class="row">
                         <div class="mb-3 col-6">

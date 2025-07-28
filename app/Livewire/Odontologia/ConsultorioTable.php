@@ -63,7 +63,8 @@ class ConsultorioTable extends Component
             if ($consultorioEntry) {
                 $consultorioEntry->cantidad = $newCantidad; // Usa el valor validado
                 $consultorioEntry->save();
-                session()->flash('message', 'Cantidad actualizada exitosamente.');
+                session()->flash('success', 'Cantidad actualizada exitosamente.');
+                return redirect(request()->header('Referer'));
             }
         } catch (\Exception $e) {
             session()->flash('error', 'Error al actualizar la cantidad: ' . $e->getMessage());
@@ -92,9 +93,8 @@ class ConsultorioTable extends Component
         if ($this->insumoToDeleteId) {
             Consultorio::find($this->insumoToDeleteId)->delete();
             $this->insumoToDeleteId = null; // Limpia el ID después de la eliminación
-            $this->dispatch('close-modal', 'modalEliminarInsumo'); // Despacha un evento para cerrar la modal
-            session()->flash('message', 'Insumo eliminado exitosamente.'); // Opcional: mensaje de éxito
-            $this->dispatch('insumoAdded'); // Despachar para refrescar otras tablas si escuchan
+            session()->flash('success', 'Insumo eliminado exitosamente.'); // Opcional: mensaje de éxito
+            return redirect(request()->header('Referer'));
         }
     }
 

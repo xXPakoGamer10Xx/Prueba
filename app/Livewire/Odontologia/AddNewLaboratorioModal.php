@@ -9,8 +9,8 @@ class AddNewLaboratorioModal extends Component
 {
     public $descripcion; // Property to bind to the form input
 
-    public $message = ''; // For success/error messages
-    public $messageType = ''; // 'success' or 'danger'
+    public $message = '';
+    public $messageType = '';
 
     protected $rules = [
         'descripcion' => 'required|string|max:50|unique:laboratorios,descripcion',
@@ -27,31 +27,26 @@ class AddNewLaboratorioModal extends Component
      */
     public function saveNewLaboratorio()
     {
-        $this->resetMessage(); // Clear previous messages
-        $this->validate(); // Run validation rules
+        $this->resetMessage();
+        $this->validate();
 
         try {
-            // Create a new Laboratorio record
             Laboratorio::create([
                 'descripcion' => $this->descripcion,
             ]);
 
             $this->message = 'Nuevo laboratorio registrado exitosamente.';
             $this->messageType = 'success';
-
-            $this->resetForm(); // Clear form fields
-
-            // Dispatch events to close the modal and refresh the table
-            $this->dispatch('close-modal', 'modalAgregarLaboratorio');
-            $this->dispatch('insumoAdded'); // Event to refresh the LaboratoriosTable
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Re-throw validation exceptions so Livewire can handle displaying errors
+           
             throw $e;
         } catch (\Exception $e) {
-            // Catch any other exceptions and set an error message
             $this->message = 'Error al registrar el nuevo laboratorio: ' . $e->getMessage();
             $this->messageType = 'danger';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     /**

@@ -63,9 +63,6 @@ class AddNewPeticionModal extends Component
 
                 $this->message = 'Petición registrada exitosamente.';
                 $this->messageType = 'success';
-                $this->resetForm(); // Reset form fields
-                $this->dispatch('close-modal', 'modalPedir'); // Close the modal
-                $this->dispatch('pedidoAdded'); // Dispatch event to refresh peticiones table
             } catch (\Illuminate\Validation\ValidationException $e) {
                 // Re-throw validation exceptions for Livewire to handle
                 throw $e;
@@ -77,6 +74,9 @@ class AddNewPeticionModal extends Component
             $this->message = 'No tienes permiso para realizar esta acción.';
             $this->messageType = 'danger';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     public function resetForm()

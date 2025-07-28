@@ -46,21 +46,15 @@ class AddNewMaterialModal extends Component
 
             $this->message = 'Nuevo material registrado exitosamente.';
             $this->messageType = 'success';
-
-            // Limpiar los campos del formulario después del éxito
-            $this->resetForm();
-
-            // Despachar evento para cerrar la modal
-            $this->dispatch('close-modal', 'modalAgregarMaterial');
-            // Despachar evento para que la tabla de materiales se refresque
-            $this->dispatch('materialAdded'); // Crea un nuevo evento para materiales
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
             $this->message = 'Error al registrar el nuevo material: ' . $e->getMessage();
             $this->messageType = 'danger';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     // Método para limpiar los campos del formulario y los mensajes

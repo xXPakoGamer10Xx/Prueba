@@ -3,14 +3,14 @@
 namespace App\Livewire\Odontologia;
 
 use Livewire\Component;
-use App\Models\Odontologia\Presentacion; // Import the Presentacion model
+use App\Models\Odontologia\Presentacion;
 
 class AddNewPresentacionModal extends Component
 {
-    public $descripcion; // Property to bind to the form input
+    public $descripcion;
 
-    public $message = ''; // For success/error messages
-    public $messageType = ''; // 'success' or 'danger'
+    public $message = '';
+    public $messageType = '';
 
     protected $rules = [
         'descripcion' => 'required|string|max:20|unique:presentaciones,descripcion',
@@ -37,17 +37,15 @@ class AddNewPresentacionModal extends Component
 
             $this->message = 'Nueva presentación registrada exitosamente.';
             $this->messageType = 'success';
-
-            $this->resetForm();
-        
-            $this->dispatch('close-modal', 'modalAgregarPresentacion');
-            $this->dispatch('insumoAdded');
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
             $this->message = 'Error al registrar la nuevo presentacion: ' . $e->getMessage();
             $this->messageType = 'danger';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     /**

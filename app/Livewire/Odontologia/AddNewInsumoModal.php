@@ -92,25 +92,26 @@ class AddNewInsumoModal extends Component
                     'cantidad' => $this->cantidad,
                 ]);
                 $this->message = 'Nuevo insumo registrado y agregado al consultorio exitosamente.';
+
             } elseif ($this->formulario === 'almacen') {
                 Almacen::create([
                     'id_insumo_fk' => $insumo->id_insumo,
                     'cantidad' => $this->cantidad,
                 ]);
                 $this->message = 'Nuevo insumo registrado y agregado al almacén exitosamente.';
+            } else {
+                $this->message = 'Nuevo insumo registrado exitosamente.';
+                $this->messageType = 'success';
             }
-            $this->dispatch('close-modal', 'modalAgregarNuevoInsumo');
-            $this->dispatch('insumoAdded');
-
-            $this->messageType = 'success';
-            $this->resetForm();
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
             $this->message = 'Error al registrar el nuevo insumo: ' . $e->getMessage();
             $this->messageType = 'danger';
         }
+
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
     protected function resetForm()

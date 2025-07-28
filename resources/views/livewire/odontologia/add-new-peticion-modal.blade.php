@@ -10,11 +10,6 @@
           <form wire:submit.prevent="savePeticion" id="formularioPedirInsumo">
 					<div class="my-4">
 						<input type="hidden" name="id_insumo_almacen_fk" wire:model="id_insumo_almacen_fk">
-						<div id="mensaje-modal" class="text-center text-white fw-bold rounded mb-3 py-2
-                            @if ($message) d-block @else d-none @endif
-                            @if($messageType == 'success') bg-verde @else bg-rojo @endif">
-                            {{ $message }}
-                        </div>
 						<div class="mb-3">
 							<label for="cantidad_solicitada" class="form-label">Ingrese cuanto desea pedir:</label>
 							<input type="number" class="form-control text-center @error('cantidad_solicitada') is-invalid @enderror" id="cantidad_solicitada" wire:model="cantidad_solicitada" placeholder="0">
