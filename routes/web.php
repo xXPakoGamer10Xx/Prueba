@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-
+use App\Http\Controllers\Ginecologia\MaterialController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -97,7 +97,8 @@ Route::middleware(['auth', 'role:encargado_servicios'])->group(function () {
 });
 // --- FIN DEL GRUPO PROTEGIDO ---
 
-
+// --- GRUPO DE RUTAS PROTEGIDAS PARA 'Ginecologia' ---
+// Solo usuarios autenticados con el rol 'encargado_ginecologia' podrán acceder.
 Route::middleware(['auth', 'role:encargado_ginecologia'])->group(function () {
     Route::get('/ginecologia', function () { return view('ginecologia.index'); })->name('ginecologia.index');
     Route::get('/material', function () { return view('ginecologia.material'); })->name('ginecologia.material');
@@ -106,11 +107,19 @@ Route::middleware(['auth', 'role:encargado_ginecologia'])->group(function () {
     Route::get('/cirugia', function () { return view('ginecologia.cirugia'); })->name('ginecologia.cirugia');
 });
 
+Route::resource('ginecologia/material', MaterialController::class)
+     ->parameters(['material' => 'material'])
+     ->names('material'); 
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
+
+Route::resource('material', MaterialController::class)
+    ->middleware(['auth', 'role:encargado_ginecologia']) // La protegemos aquí
+    ->parameters(['material' => 'material']); // El nombre del parámetro es 'material'
 
 require __DIR__.'/auth.php';

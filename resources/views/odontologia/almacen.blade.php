@@ -35,6 +35,8 @@
             @endif
         </div>
 
+        <!-- Modal para pedir insumo si rol es odontologia_consultorio -->
+        @livewire('odontologia.add-new-peticion-modal')
         @livewire('odontologia.almacen-table')
     </main>
 
