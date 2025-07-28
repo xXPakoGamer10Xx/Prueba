@@ -43,14 +43,17 @@ new #[Layout('components.layouts.auth')] class extends Component {
         // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Lógica de redirección basada en el rol
         if ($user && $user->rol === 'encargado_servicios') {
-            // REDIRIGE A LA RUTA DEFINIDA EN TUS RUTAS PARA 'encargado_servicios'
             $this->redirect(route('servicios.index'), navigate: true);
-            return; // Detiene la ejecución para evitar redirecciones adicionales
-        } elseif ($user && $user->rol === 'odontologia') {
-            // Lógica existente para 'odontologia'
-            $this->redirect(route('odontologia.consultorio'), navigate: true); // Usando nombre de ruta si está definido
+            return;
+        } elseif ($user && $user->rol === 'odontologia_consultorio') {
+            $this->redirect(route('odontologia.consultorio.index'), navigate: true);
+            return;
+        } elseif ($user && $user->rol === 'odontologia_almacen') {
+            $this->redirect(route('odontologia.almacen.index'), navigate: true);
+            return;
+        } elseif ($user && $user->rol === 'encargado_ginecologia') {
+            $this->redirect(route('ginecologia.index'), navigate: true);
             return;
         }
 
@@ -89,7 +92,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-6 max-w-md mx-auto my-8">
     <header class="text-black text-center">
         <h1 class="text-3xl font-bold mb-2">Iniciar Sesión</h1>
         <p class="text-zinc-700">Ingrese su correo y contraseña designados para iniciar sesión</p>

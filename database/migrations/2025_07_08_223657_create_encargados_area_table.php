@@ -7,23 +7,23 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('encargados_area', function (Blueprint $table) {
-            $table->integer('id_encargado_area')->primary();
-        
-            $table->string('nombre', 100)->notNull();
-            $table->string('apellidos', 100)->notNull();
-            $table->string('cargo', 100)->notNull();
+            // CAMBIO: Usa id() para crear una llave primaria auto-incremental.
+            // Esto le dice a la base de datos que genere el ID automáticamente.
+            $table->id('id_encargado_area');
 
-            // $table->timestamps();
+            $table->string('nombre', 100);
+            $table->string('apellidos', 100);
+            $table->string('cargo', 100);
         });
     }
 
     /**
-     * Revierte las migraciones.
+     * Reverse the migrations.
      */
     public function down(): void
     {

@@ -8,7 +8,7 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component {
+new #[Layout('components.layouts.auth.register')] class extends Component {
     public string $name = '';
     public string $email = '';
     public string $password = '';
@@ -35,8 +35,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+<div class="flex flex-col gap-6 max-w-md mx-auto my-8">
+    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" title-class="text-black font-bold" description-class="text-black font-bold" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -93,7 +93,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     </form>
 
     <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-        <span>{{ __('Already have an account?') }}</span>
-        <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
+        <span class="font-bold text-black">{{ __('Already have an account?') }}</span>
+        <flux:link :href="route('login')" wire:navigate class="font-bold text-black">{{ __('Log in') }}</flux:link>
     </div>
 </div>
