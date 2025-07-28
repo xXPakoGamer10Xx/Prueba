@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\Ginecologia\MaterialController;
+use App\Http\Controllers\Ginecologia\PacienteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -110,6 +111,8 @@ Route::middleware(['auth', 'role:encargado_ginecologia'])->group(function () {
 Route::resource('ginecologia/material', MaterialController::class)
      ->parameters(['material' => 'material'])
      ->names('material'); 
+
+Route::resource('expediente', PacienteController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
