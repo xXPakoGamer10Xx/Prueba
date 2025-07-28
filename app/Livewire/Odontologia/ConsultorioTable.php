@@ -5,9 +5,6 @@ namespace App\Livewire\Odontologia;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Odontologia\Consultorio;
-use App\Models\Odontologia\Insumo;
-use App\Models\Odontologia\Laboratorio;
-use App\Models\Odontologia\Presentacion;
 use Illuminate\Support\Facades\Validator; // Importar la fachada Validator
 
 class ConsultorioTable extends Component
