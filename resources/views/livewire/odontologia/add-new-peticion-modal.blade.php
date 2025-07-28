@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalPedir" tabindex="-1" aria-labelledby="modalPedirLabel" aria-hidden="true">
+<div class="modal fade" id="modalPedir" tabindex="-1" aria-labelledby="modalPedirLabel" aria-hidden="true" wire:ignore.self>
    <div style="max-width: 18.75rem;" class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
       	<div class="modal-header">
@@ -7,18 +7,20 @@
         </div>
 
         <div class="modal-body">
-          <!-- Formulario -->
-         	<form id="formularioPedirInsumo">
+          <form wire:submit.prevent="savePeticion" id="formularioPedirInsumo">
 					<div class="my-4">
-						<input type="hidden" name="apartado" value="consultorio">
-						<input type="hidden" name="formulario" value="pedir_insumo">
-						<input id="id_insumo_almacen_fk" type="hidden" name="id_insumo_almacen_fk">
-						<div id="mensaje-modal" class="text-center text-white fw-bold rounded mb-3 py-2 d-none"></div>
+						<input type="hidden" name="id_insumo_almacen_fk" wire:model="id_insumo_almacen_fk">
+						<div id="mensaje-modal" class="text-center text-white fw-bold rounded mb-3 py-2
+                            @if ($message) d-block @else d-none @endif
+                            @if($messageType == 'success') bg-verde @else bg-rojo @endif">
+                            {{ $message }}
+                        </div>
 						<div class="mb-3">
 							<label for="cantidad_solicitada" class="form-label">Ingrese cuanto desea pedir:</label>
-							<input type="number" class="form-control text-center" id="cantidad_solicitada" name="cantidad_solicitada" placeholder="0">
+							<input type="number" class="form-control text-center @error('cantidad_solicitada') is-invalid @enderror" id="cantidad_solicitada" wire:model="cantidad_solicitada" placeholder="0">
+                            @error('cantidad_solicitada') <div class="invalid-feedback">{{ $message }}</div> @enderror
 						</div>
-						</div>
+					</div>
 
 					<div class="modal-footer d-flex justify-content-between px-0">
 						<button type="button" class="border-0 rounded-2 m-0 py-2 px-3 bg-rojo text-white fw-semibold" data-bs-dismiss="modal">Cancelar</button>

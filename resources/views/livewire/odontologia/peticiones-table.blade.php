@@ -20,7 +20,7 @@
                 <tbody>
                     @foreach ($pedidos as $pedido)
                         <tr
-                            @if($pedido->estado_pedido == 'Cancelado')
+                            @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
                             class="opacity-50"
                             @endif
                         >
@@ -32,6 +32,8 @@
                             <td>
                                 @if($pedido->estado_pedido == 'Cancelado')
                                     Cancelado
+                                @elseif($pedido->estado_pedido == 'Pendiente')
+                                    Pendiente
                                 @else
                                     {{ $pedido->cantidad_autorizada }}
                                 @endif
@@ -41,6 +43,9 @@
                             <td>
                                 @if($pedido->estado_pedido == 'Cancelado')
                                     Cancelado
+
+                                @elseif($pedido->estado_pedido == 'Pendiente')
+                                    Pendiente
                                 @else
                                     {{ $pedido->fecha_entrega ? $pedido->fecha_entrega->format('d-m-Y') : 'Pendiente' }}
                                 @endif
@@ -52,7 +57,7 @@
                                     title="Cancelar pedido"
                                     data-bs-toggle='modal' 
                                     data-bs-target='#modalCancelarPedido'
-                                    @if($pedido->estado_pedido == 'Cancelado')
+                                    @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
                                         disabled
                                     @endif
                                 >
