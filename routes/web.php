@@ -80,7 +80,7 @@ Route::middleware(['auth', 'role:encargado_servicios'])->group(function () {
             return view('servicios.areas');
         })->name('areas');
 
-        Route::get('/inventario', function () {
+                Route::get('/inventario', function () {
             return view('servicios.inventario');
         })->name('inventario');
 

@@ -1,12 +1,12 @@
 <?php
 
-// CAMBIO 1: Se actualiza el namespace para que coincida con la nueva carpeta.
+
 namespace App\Http\Controllers\servicios;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-// CAMBIO 2: Se actualiza la ruta de los modelos para apuntar a la subcarpeta "Servicios".
+
 use App\Models\servicios\Area;
 use App\Models\servicios\EncargadoArea;
 
