@@ -35,7 +35,7 @@
                                 @csrf {{-- Token CSRF para seguridad --}}
                                 <button
                                     type="submit"
-                                    class="inline-block px-5 py-1.5 text-white border hover:border-white rounded-sm text-sm leading-normal duration-250 cursor-pointer hover:opacity-75"
+                                    class="btn btn-outline-light btn-sm duration-250 cursor-pointer"
                                 >
                                     Cerrar Sesión
                                 </button>
