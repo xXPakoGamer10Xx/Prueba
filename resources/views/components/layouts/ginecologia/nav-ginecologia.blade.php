@@ -69,7 +69,7 @@
                             <a class="nav-link" href="{{ route('material.index') }}">Material</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="{{ route('ginecologia.expediente') }}">Expediente</a>
+                        <a class="nav-link" href="{{ route('expediente.index') }}">Expediente</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="{{ route('ginecologia.reporte') }}">Reporte</a>
