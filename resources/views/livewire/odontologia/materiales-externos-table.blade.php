@@ -28,11 +28,14 @@
                                 >
                             </td>
                             <td>
-                                <i
-                                    class='fa-solid fa-trash-can cursor-pointer'
+                                <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $material->id_material }})"
                                     title="Eliminar registro"
-                                ></i>
+                                >
+                                    <i
+                                    class='fa-solid fa-trash-can cursor-pointer'
+                                    ></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach

@@ -31,11 +31,14 @@
                                 <p class="m-0 {{ $insumo->caducidad && $insumo->caducidad->isPast() ? 'text-red-500' : '' }}">{{ $insumo->caducidad ? $insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</p>
                             </td>
                             <td>
-                                <i
-                                class='fa-solid fa-trash-can cursor-pointer'
-                                wire:click="confirmDelete({{ $insumo->id_insumo }})"
-                                title="Eliminar registro"
-                                ></i>
+                                <button class="btn btn-danger btn-sm"
+                                    wire:click="confirmDelete({{ $insumo->id_insumo }})"
+                                    title="Eliminar registro"
+                                >
+                                    <i
+                                    class='fa-solid fa-trash-can cursor-pointer'
+                                    ></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach

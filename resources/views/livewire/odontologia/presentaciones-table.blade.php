@@ -17,11 +17,14 @@
                             <td>{{ $presentacion->id_presentacion }}</td>
                             <td>{{ $presentacion->descripcion }}</td>
                             <td>
-                                <i
-                                    class='fa-solid fa-trash-can cursor-pointer'
+                                <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $presentacion->id_presentacion }})"
                                     title="Eliminar registro"
-                                ></i>
+                                >
+                                    <i
+                                    class='fa-solid fa-trash-can cursor-pointer'
+                                    ></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach

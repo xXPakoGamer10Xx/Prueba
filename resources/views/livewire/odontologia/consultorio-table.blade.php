@@ -53,11 +53,14 @@
                             </td>
                             @if(Auth::user()->rol == 'odontologia_consultorio')
                                 <td>
-                                    <i
-                                    class='fa-solid fa-trash-can cursor-pointer'
-                                    wire:click="confirmDelete({{ $insumoConsultorio->id_insumo_consultorio }})"
-                                    title="Eliminar registro"
-                                    ></i>
+                                    <button class="btn btn-danger btn-sm"
+                                        wire:click="confirmDelete({{ $insumoConsultorio->id_insumo_consultorio }})"
+                                        title="Eliminar registro"
+                                    >
+                                        <i
+                                        class='fas fa-trash-alt cursor-pointer'
+                                        ></i>
+                                    </button>
                                 </td>
                             @endif
                         </tr>

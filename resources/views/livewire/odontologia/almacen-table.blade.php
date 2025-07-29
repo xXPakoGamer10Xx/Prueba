@@ -53,11 +53,14 @@
                                     wire:click="openPeticionModal({{ $item->id_insumo_almacen }})"
                                     ></i>
                                 @else
-                                    <i
-                                    class='fa-solid fa-trash-can cursor-pointer'
+                                <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $item->id_insumo_almacen }})"
                                     title="Eliminar registro"
+                                >
+                                    <i
+                                    class='fa-solid fa-trash-can cursor-pointer'
                                     ></i>
+                                </button>
                                 @endif
                             </td>
                         </tr>
