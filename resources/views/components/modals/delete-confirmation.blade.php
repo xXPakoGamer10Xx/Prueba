@@ -7,6 +7,7 @@
     'iconSize' => '4rem', // Tamaño del icono
     'width' => '18.75rem', // Ancho del modal
     'titleId' => 'modalEliminarRegistroLabel', // ID del título del modal
+    'message' => '',
 ])
 
 <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $titleId }}" aria-hidden="true">
@@ -21,7 +22,7 @@
                     <input type="hidden" wire:model="{{ $wireModel }}">
                     <div class="mb-3 d-flex flex-column align-items-center gap-4">
                         <i style="font-size: {{ $iconSize }};" class="{{ $iconClass }}"></i>
-                        <h2 class="text-center fs-5 fw-normal" id="{{ $titleId }}">¿Está seguro que desea eliminar este registro?</h2>
+                        <h2 class="text-center fs-5 fw-normal" id="{{ $titleId }}">{{ $message }}</h2>
                     </div>
 
                     <div class="modal-footer d-flex justify-content-between">

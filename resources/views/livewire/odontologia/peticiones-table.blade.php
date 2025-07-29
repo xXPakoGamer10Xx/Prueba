@@ -55,8 +55,7 @@
                                     type='button'
                                     class='btn-cancelar text-black border-0 bg-transparent'
                                     title="Cancelar pedido"
-                                    data-bs-toggle='modal' 
-                                    data-bs-target='#modalCancelarPedido'
+                                    wire:click="confirmCancel({{ $pedido->id_pedido }})"
                                     @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
                                         disabled
                                     @endif
@@ -75,4 +74,17 @@
             {{ $pedidos->links() }}
         </div>
     @endif
+
+    {{-- Modal de Cancelar Pedido --}}
+    <x-modals.delete-confirmation
+        modalId="modalCancelarPedido"
+        formId="formularioCancelarPedido"
+        wireModel="pedidoToCancelId"
+        confirmAction="cancelPedido"
+        iconClass="fa-solid fa-circle-exclamation"
+        iconSize="4rem"
+        width="18.75rem"
+        titleId="modalEliminarPedidoLabel"
+        message="¿Está seguro que desea cancelar este pedido?"
+    ></x-modals.delete-confirmation>
 </div>

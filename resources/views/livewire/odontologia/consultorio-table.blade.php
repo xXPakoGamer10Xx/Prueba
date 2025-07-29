@@ -76,6 +76,6 @@
         formId="formularioEliminarInsumo"
         wireModel="insumoToDeleteId"
         confirmAction="deleteInsumo"
-        message="¿Está seguro que desea eliminar este insumo?"
+        message="¿Está seguro que desea eliminar este registro?"
     />
 </div>

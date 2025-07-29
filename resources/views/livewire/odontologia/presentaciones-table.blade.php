@@ -40,6 +40,7 @@
             formId="formularioEliminarPresentacion"
             wireModel="presentacionToDeleteId"
             confirmAction="deletePresentacion"
+            message="¿Está seguro que desea eliminar este registro?"
         />
     @endif
 </div>

@@ -40,6 +40,7 @@
             formId="formularioEliminarLaboratorio"
             wireModel="laboratorioToDeleteId"
             confirmAction="deleteLaboratorio"
+            message="¿Está seguro que desea eliminar este registro?"
         />
     @endif
 </div>

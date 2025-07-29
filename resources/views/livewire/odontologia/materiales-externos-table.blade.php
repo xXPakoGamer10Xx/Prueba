@@ -52,6 +52,7 @@
         formId="deleteMaterialForm"
         wireModel="showDeleteConfirmationModal"
         confirmAction="deleteMaterial"
+        message="¿Está seguro que desea eliminar este registro?"
     >
     </x-modals.delete-confirmation>
 </div>
