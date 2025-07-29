@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\Ginecologia\MaterialController;
 use App\Http\Controllers\Ginecologia\PacienteController;
+use App\Http\Controllers\Servicios\MantenimientoController;
+use App\Http\Controllers\Servicios\EncargadoMantenimientoController;
+use App\Http\Controllers\Servicios\BajaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -114,6 +117,29 @@ Route::resource('ginecologia/material', MaterialController::class)
 
 Route::resource('expediente', PacienteController::class);
 
+
+// --- INICIAN RUTAS DE SERVICIOS ---
+
+// Rutas para Mantenimiento
+Route::get('/servicios/mantenimiento', [MantenimientoController::class, 'create'])->name('servicios.mantenimiento');
+Route::post('/servicios/mantenimiento', [MantenimientoController::class, 'store'])->name('servicios.mantenimiento.store');
+
+// Ruta para ver los reportes
+Route::get('/servicios/reportes', [MantenimientoController::class, 'index'])->name('servicios.reportes');
+
+// Ruta para registrar un nuevo encargado desde el modal
+Route::post('/servicios/encargados', [EncargadoMantenimientoController::class, 'store'])->name('servicios.encargados.store');
+
+
+
+   // --- Rutas para Bajas de Equipo ---
+    Route::get('/bajas', [BajaController::class, 'create'])->name('servicios.bajas');
+    Route::post('/bajas', [BajaController::class, 'store'])->name('servicios.bajas.store');
+    Route::get('/bajas/historial', [BajaController::class, 'index'])->name('servicios.bajas.historial');
+
+// --- TERMINAN RUTAS DE SERVICIOS ---
+
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
@@ -124,5 +150,6 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('material', MaterialController::class)
     ->middleware(['auth', 'role:encargado_ginecologia']) // La protegemos aquí
     ->parameters(['material' => 'material']); // El nombre del parámetro es 'material'
+
 
 require __DIR__.'/auth.php';
