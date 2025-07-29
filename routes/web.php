@@ -7,6 +7,9 @@ use App\Http\Controllers\Ginecologia\PacienteController;
 use App\Http\Controllers\Servicios\MantenimientoController;
 use App\Http\Controllers\Servicios\EncargadoMantenimientoController;
 use App\Http\Controllers\Servicios\BajaController;
+use App\Http\Controllers\Ginecologia\CirugiaPageController;
+use App\Http\Controllers\Ginecologia\CirugiaGeneralController;
+use App\Http\Controllers\Ginecologia\CirugiaGinecologicaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -115,6 +118,14 @@ Route::resource('ginecologia/material', MaterialController::class)
      ->parameters(['material' => 'material'])
      ->names('material'); 
 
+     // RUTA PARA MOSTRAR LA PÁGINA PRINCIPAL CON LAS DOS TABLAS
+    Route::get('/cirugia', [CirugiaPageController::class, 'index'])->name('cirugia.index');
+
+    // RUTAS PARA EL CRUD DE CIRUGÍAS GENERALES
+    Route::resource('cirugiageneral', CirugiaGeneralController::class)->except(['index', 'show', 'create', 'edit']);
+
+    // RUTAS PARA EL CRUD DE CIRUGÍAS GINECOLÓGICAS
+    Route::resource('cirugiaginecologica', CirugiaGinecologicaController::class)->except(['index', 'show', 'create', 'edit']);
 Route::resource('expediente', PacienteController::class);
 
 
