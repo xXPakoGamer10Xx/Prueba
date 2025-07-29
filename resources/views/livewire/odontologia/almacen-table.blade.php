@@ -47,11 +47,15 @@
                             </td>
                             <td>
                                 @if(Auth::user()->rol == 'odontologia_consultorio')
-                                    <i
-                                    class='fa-solid fa-plus cursor-pointer'
+                                <button
+                                    class="btn btn-primary btn-sm text-white"
                                     title="Pedir insumo"
                                     wire:click="openPeticionModal({{ $item->id_insumo_almacen }})"
+                                >
+                                    <i
+                                    class='fa-solid fa-plus cursor-pointer'
                                     ></i>
+                                </button>
                                 @else
                                 <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $item->id_insumo_almacen }})"

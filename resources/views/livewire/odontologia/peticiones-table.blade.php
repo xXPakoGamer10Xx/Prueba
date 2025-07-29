@@ -71,7 +71,7 @@
                                     @if($pedido->estado_pedido == 'Pendiente' || Auth::user()->rol == 'odontologia_consultorio')
                                         <button 
                                             type='button'
-                                            class='btn-cancelar text-black border-0 bg-transparent'
+                                            class="btn btn-secondary btn-sm text-white"
                                             title="Cancelar pedido"
                                             wire:click="confirmCancel({{ $pedido->id_pedido }})"
                                             @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
