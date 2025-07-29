@@ -101,8 +101,8 @@ class AddNewInsumoModal extends Component
                 $this->message = 'Nuevo insumo registrado y agregado al almacén exitosamente.';
             } else {
                 $this->message = 'Nuevo insumo registrado exitosamente.';
-                $this->messageType = 'success';
             }
+            $this->messageType = 'success';
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
