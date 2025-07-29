@@ -66,6 +66,8 @@
                                         </button>
                                         @endif
 
+                                    @endif
+
                                         <button 
                                             type='button'
                                             class='btn-cancelar text-black border-0 bg-transparent'
@@ -77,7 +79,6 @@
                                         >
                                             <i class='fa-solid fa-xmark'></i>
                                         </button>
-                                    @endif
 
                                     @if(Auth::user()->rol == 'odontologia_almacen')
                                     <button 
