@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('garantias', function (Blueprint $table) {
-            // CAMBIO: Usa id() para crear una llave primaria UNSIGNED BIGINT.
             $table->id('id_garantia');
         
             $table->enum('status', ['activa', 'terminada']);

@@ -73,8 +73,7 @@
                             <div class="col-md-6"><label class="form-label">Marca</label><input type="text" class="form-control" wire:model="marca"></div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-6"><label class="form-label">Modelo</label><input type="text" class="form-control" wire:model="modelo"></div>
-                            <div class="col-md-6"><label class="form-label">Cantidad</label><input type="number" class="form-control" wire:model="cantidad">@error('cantidad')<span class="text-danger">{{$message}}</span>@enderror</div>
+                            <div class="col-md-12"><label class="form-label">Modelo</label><input type="text" class="form-control" wire:model="modelo"></div>
                         </div>
                         <div class="row mb-4">
                             <div class="col-md-6"><label class="form-label">Frecuencia de Mantenimiento</label><select class="form-select" wire:model="frecuencia_mantenimiento"><option value="mensual">Mensual</option><option value="trimestral">Trimestral</option><option value="semestral">Semestral</option><option value="anual">Anual</option></select></div>

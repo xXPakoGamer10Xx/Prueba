@@ -13,20 +13,17 @@ return new class extends Migration
     {
         Schema::create('inventarios', function (Blueprint $table) {
             $table->id('id_inventario');
-            $table->string('num_serie', 50)->nullable();
-            $table->string('num_serie_sicopa', 50)->nullable();
-            $table->string('num_serie_sia', 50)->nullable();
-            $table->enum('pertenencia', ['propia', 'prestamo', 'comodato']);
-            $table->enum('status', ['funcionando', 'sin funcionar', 'parcialmente funcional', 'proceso de baja']);
+            $table->foreignId('id_equipo_fk')->constrained(table: 'equipos', column: 'id_equipo')->onDelete('cascade');
+            $table->foreignId('id_area_fk')->constrained(table: 'areas', column: 'id_area')->onDelete('cascade');
 
-            // --- LLAVES FORÁNEAS CORREGIDAS ---
-            // Este método asegura que el tipo de dato es correcto.
-            $table->foreignId('id_equipo_fk')->constrained('equipos', 'id_equipo');
-            
-            // Esta es la línea que causaba el error, ahora corregida.
-            $table->foreignId('id_area_fk')->constrained('areas', 'id_area');
-            
-            $table->foreignId('id_garantia_fk')->nullable()->constrained('garantias', 'id_garantia')->onDelete('set null');
+            $table->string('num_serie', 50)->unique()->nullable();
+            $table->string('num_serie_sicopa', 50)->unique()->nullable();
+            $table->string('num_serie_sia', 50)->unique()->nullable();
+            $table->enum('pertenencia', ['propia', 'comodato']);
+            $table->enum('status', ['funcionando', 'sin funcionar', 'parcialmente funcional', 'proceso de baja']);
+            $table->foreignId('id_garantia_fk')->nullable()->constrained(table: 'garantias', column: 'id_garantia')->onDelete('set null');
+
+            $table->timestamps();
         });
     }
 
