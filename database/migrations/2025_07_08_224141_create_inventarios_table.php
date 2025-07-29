@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('num_serie_sicopa', 50)->unique()->nullable();
             $table->string('num_serie_sia', 50)->unique()->nullable();
             $table->enum('pertenencia', ['propia', 'comodato']);
-            $table->enum('status', ['funcionando', 'sin funcionar', 'parcialmente funcional', 'proceso de baja']);
+            $table->enum('status', ['funcionando', 'sin funcionar', 'parcialmente funcional', 'proceso de baja', 'baja']);
             $table->foreignId('id_garantia_fk')->nullable()->constrained(table: 'garantias', column: 'id_garantia')->onDelete('set null');
 
             $table->timestamps();

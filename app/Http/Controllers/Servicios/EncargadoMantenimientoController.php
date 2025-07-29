@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Servicios; // <-- RUTA CORREGIDA
+namespace App\Http\Controllers\Servicios;
 
-use App\Http\Controllers\Controller; // <-- RUTA AÑADIDA
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Servicios\EncargadoMantenimiento; // Se importa el Modelo
 
 class EncargadoMantenimientoController extends Controller
 {
@@ -14,22 +14,17 @@ class EncargadoMantenimientoController extends Controller
     public function store(Request $request)
     {
         // Validación de los datos del modal
-        $request->validate([
+        $validatedData = $request->validate([
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'cargo' => 'required|string|max:100',
             'contacto' => 'nullable|string|max:100',
         ]);
 
-        // Insertar el nuevo encargado
-        DB::table('encargados_mantenimiento')->insert([
-            'nombre' => $request->nombre,
-            'apellidos' => $request->apellidos,
-            'cargo' => $request->cargo,
-            'contacto' => $request->contacto,
-        ]);
+        // Se usa el método create() del Modelo Eloquent, que es más seguro
+        EncargadoMantenimiento::create($validatedData);
 
-        // Redirigir de vuelta al formulario de mantenimiento con un mensaje de éxito
-        return redirect()->route('servicios.mantenimiento')->with('success', 'Encargado registrado exitosamente.');
+        // Redirige a la página de reportes, que es donde se abrió el modal
+        return redirect()->route('servicios.reportes')->with('success', 'Encargado registrado exitosamente.');
     }
 }

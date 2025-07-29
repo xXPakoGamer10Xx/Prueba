@@ -49,7 +49,7 @@
                             <a class="nav-link" href="{{ route('servicios.inventario') }}">Inventario</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="{{ route('servicios.mantenimiento') }}">Mantenimiento</a>
+                         <a class="nav-link" href="{{ route('servicios.mantenimiento') }}">Mantenimiento</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="{{ route('servicios.bajas') }}">Bajas</a>

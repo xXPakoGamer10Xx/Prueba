@@ -1,7 +1,7 @@
 <?php
 
 // El namespace coincide con tu estructura de carpetas en minúsculas.
-namespace App\Livewire\servicios;
+namespace App\Livewire\Servicios;
 
 use Livewire\Component;
 use Livewire\WithPagination;
