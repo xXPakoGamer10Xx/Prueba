@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     {{-- AÑADIDO: Carga los estilos de Livewire --}}
     @livewireStyles
 </head>
@@ -49,7 +49,7 @@
                             <a class="nav-link" href="{{ route('servicios.inventario') }}">Inventario</a>
                         </li>
                         <li class="nav-item">
-                         <a class="nav-link" href="{{ route('servicios.mantenimiento') }}">Mantenimiento</a>
+                           <a class="nav-link" href="{{ route('servicios.mantenimiento') }}">Mantenimiento</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="{{ route('servicios.bajas') }}">Bajas</a>
@@ -73,7 +73,10 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
+    {{-- AÑADIDO CRÍTICO: Carga de Chart.js ANTES de Livewire --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
     {{-- AÑADIDO: Carga los scripts de Livewire --}}
     @livewireScripts
 </body>

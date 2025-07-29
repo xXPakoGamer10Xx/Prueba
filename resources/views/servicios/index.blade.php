@@ -1,10 +1,10 @@
-@extends('components.layouts.servicios.nav-servicios')
+{{-- resources/views/servicios/areas.blade.php --}}
+@extends('components.layouts.servicios.nav-servicios') {{-- O tu layout principal --}}
 
-@section('title', 'Resumen de Equipos') {{-- Puedes ajustar el título de la página aquí --}}
+@section('title', 'Resumen') {{-- Título apropiado --}}
 
 @section('contenido')
-    <main class="container my-5"> {{-- Mantén el contenedor y el margen para el diseño --}}
-        {{-- Aquí se renderiza el componente de Livewire con toda la funcionalidad --}}
-        @livewire('servicios.dashboard-equipos') {{-- Llama a tu nuevo componente Livewire --}}
+    <main class="container my-5"> {{-- Mantén un contenedor si lo necesitas --}}
+        @livewire('servicios.dashboard-equipos') {{-- ¡Aquí se llama al componente! --}}
     </main>
 @endsection

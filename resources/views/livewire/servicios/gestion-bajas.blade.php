@@ -7,9 +7,21 @@
             </button>
         </div>
 
+        {{-- ELIMINAR ESTAS LÍNEAS DE AQUÍ. NO DEBEN ESTAR FUERA DEL MODAL. --}}
+        {{--
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
         @endif
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+        @endif
+        @if (session('warning'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">{{ session('warning') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+        @endif
+        @if (session('info'))
+            <div class="alert alert-info alert-dismissible fade show" role="alert">{{ session('info') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+        @endif
+        --}}
 
         <div class="d-flex mb-4">
             <input wire:model.live.debounce.300ms="search" class="form-control me-2" type="search" placeholder="Buscar por equipo, serie o motivo...">
@@ -46,10 +58,10 @@
                                     'num_serie' => $baja->inventario->num_serie ?? 'N/D',
                                 ];
                             @endphp
-                            <button 
-                                data-reporte='@json($bajaData)' 
-                                onclick='generarPDFDesdeBoton(this)' 
-                                class="btn btn-danger btn-sm" 
+                            <button
+                                data-reporte='@json($bajaData)'
+                                onclick='generarPDFDesdeBoton(this)'
+                                class="btn btn-danger btn-sm"
                                 title="Generar Reporte PDF">
                                 <i class="fas fa-file-pdf"></i>
                             </button>
@@ -73,14 +85,30 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Registrar Baja de Equipo</h5>
+                    <h5 class="modal-title">{{ $isEditing ? 'Actualizar Proceso de Baja' : 'Registrar Nueva Baja de Equipo' }}</h5>
                     <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
                 </div>
                 <div class="modal-body">
+                    {{-- ESTAS SON LAS LÍNEAS CORRECTAS: Mensajes flash DENTRO del modal --}}
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+                    @endif
+                    @if (session('warning'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">{{ session('warning') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+                    @endif
+                    @if (session('info'))
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">{{ session('info') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+                    @endif
+                    {{-- FIN DE MENSAJES MOVIDOS --}}
+
                     <form wire:submit.prevent="saveBaja" id="baja-form" class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">Equipo del Inventario:</label>
-                            <select wire:model.live="id_inventario" class="form-select @error('id_inventario') is-invalid @enderror" required>
+                            <select wire:model.live="id_inventario_fk" class="form-select @error('id_inventario_fk') is-invalid @enderror" required
+                                {{ $isEditing ? 'disabled' : '' }}>
                                 <option value="">Selecciona un equipo...</option>
                                 @foreach ($equipos_inventario as $item)
                                     <option value="{{ $item->id_inventario }}">
@@ -88,7 +116,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('id_inventario') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                            @error('id_inventario_fk') <span class="invalid-feedback">{{ $message }}</span> @enderror
 
                             @if($ultimoMantenimientoInfo)
                                 <div class="form-text mt-2 p-2 bg-light border rounded">{{ $ultimoMantenimientoInfo }}</div>
@@ -103,22 +131,26 @@
                             <label class="form-label">Estado del Proceso:</label>
                             <select wire:model="estado" class="form-select @error('estado') is-invalid @enderror" required>
                                 <option value="">Selecciona un estado...</option>
-                                <option value="en proceso">En proceso</option>
+                                <option value="en proceso" {{ $isEditing && $originalBajaEstado === 'en proceso' ? 'disabled' : '' }}>En proceso</option>
                                 <option value="baja completa">Baja completa</option>
-                                <option value="cancelada">Cancelada</option>
+                                <option value="cancelada" {{ $isEditing && $originalBajaEstado === 'cancelada' ? 'disabled' : '' }}>Cancelada</option>
                             </select>
-                             @error('estado') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                            @error('estado') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-12">
                             <label class="form-label">Motivo de la Baja:</label>
-                            <textarea wire:model="motivo" class="form-control @error('motivo') is-invalid @enderror" rows="3" required></textarea>
+                            <textarea wire:model="motivo" class="form-control @error('motivo') is-invalid @enderror" rows="3" required
+                                {{ $isEditing && $originalBajaEstado === 'cancelada' ? 'disabled' : '' }}></textarea>
                             @error('motivo') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" wire:click="$set('showModal', false)">Cancelar</button>
-                    <button type="submit" form="baja-form" class="btn btn-danger">Registrar Baja</button>
+                    <button type="submit" form="baja-form" class="btn btn-danger"
+                        {{ $isEditing && $originalBajaEstado === 'cancelada' ? 'disabled' : '' }}>
+                        {{ $isEditing ? 'Actualizar Baja' : 'Registrar Baja' }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -145,12 +177,12 @@
             pdf.setFontSize(16);
             pdf.text('Reporte de Baja de Equipo', pdfWidth / 2, y, { align: 'center' });
             y += 8;
-            
+
             pdf.setFont("helvetica", "normal");
             pdf.setFontSize(12);
             pdf.text('Hospital Municipal de Chiconcuac – Servicios Generales', pdfWidth / 2, y, { align: 'center' });
             y += 6;
-            
+
             pdf.setFontSize(10);
             pdf.text(`Generado el: ${fechaGenerado}`, pdfWidth - 15, y, { align: 'right' });
             y += 8;
@@ -179,7 +211,7 @@
             pdf.setFont("helvetica", "normal");
             pdf.text(String(data.nombre_equipo || 'No disponible'), 55, y);
             y += 7;
-            
+
             pdf.setFont("helvetica", "bold");
             pdf.text('Número de Serie:', 20, y);
             pdf.setFont("helvetica", "normal");
@@ -195,16 +227,16 @@
             pdf.setFont("helvetica", "normal");
             const motivo = pdf.splitTextToSize(String(data.motivo), pdfWidth - 30);
             pdf.text(motivo, 15, y);
-            
+
             const firmaY = pdf.internal.pageSize.getHeight() - 40;
-            
+
             pdf.line(25, firmaY, 85, firmaY);
             pdf.setFontSize(10);
             pdf.text('Firma de Autorización', 30, firmaY + 5);
 
             pdf.line(pdfWidth - 85, firmaY, pdfWidth - 25, firmaY);
             pdf.text('Firma del Responsable', pdfWidth - 55, firmaY + 5, { align: 'center' });
-            
+
             pdf.save(`Baja_Equipo_ID_${data.id_proceso_baja}.pdf`);
         }
     </script>

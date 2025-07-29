@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Servicios;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-// --- LÍNEAS CORREGIDAS: Se añade 'Servicios' a la ruta de los modelos ---
 use App\Models\Servicios\Mantenimiento;
 use App\Models\Servicios\Inventario;
 use App\Models\Servicios\EncargadoMantenimiento;
@@ -14,6 +13,7 @@ class MantenimientoController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
+            // CAMBIO AQUÍ: Volver a 'id_inventario' y 'id_encargado_man'
             'id_inventario' => 'required|integer|exists:inventarios,id_inventario',
             'id_encargado_man' => 'required|integer|exists:encargados_mantenimiento,id_encargado_man',
             'fecha' => 'required|date',
@@ -29,6 +29,7 @@ class MantenimientoController extends Controller
 
     public function index(Request $request)
     {
+        // ... (Tu código index() se mantiene igual) ...
         $search_query = $request->input('search');
 
         $reportes = Mantenimiento::with(['Inventario.equipo', 'EncargadoMantenimiento'])
@@ -39,7 +40,7 @@ class MantenimientoController extends Controller
                     })
                     ->orWhereHas('EncargadoMantenimiento', function ($q) use ($search) {
                         $q->where('nombre', 'like', "%{$search}%")
-                          ->orWhere('apellidos', 'like', "%{$search}%");
+                            ->orWhere('apellidos', 'like', "%{$search}%");
                     });
             })
             ->orderBy('fecha', 'desc')
@@ -48,7 +49,7 @@ class MantenimientoController extends Controller
         $equipos_inventario = Inventario::with('equipo')
             ->where('status', '!=', 'proceso de baja')
             ->get();
-            
+
         $encargados = EncargadoMantenimiento::orderBy('nombre')->get();
 
         return view('servicios.reportes', compact('reportes', 'search_query', 'equipos_inventario', 'encargados'));

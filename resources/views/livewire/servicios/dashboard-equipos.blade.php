@@ -4,14 +4,14 @@
     <section class="mb-5 card p-4">
         <h3 class="mb-3">Estado General de Equipos</h3>
         <div class="row">
-            <div class="col-md-6 d-flex justify-content-center align-items-center">
-                <canvas id="equipmentPieChart" style="max-height: 300px; max-width: 300px;"></canvas>
+            <div class="col-md-6 d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <canvas id="equipmentPieChart" style="height: 400px; width: 400px;"></canvas>
             </div>
             <div class="col-md-6 d-flex align-items-center">
-                <ul class="list-unstyled">
+                <ul class="list-unstyled fs-5">
                     @foreach($chartData['labels'] as $index => $label)
-                        <li>
-                            <span style="display:inline-block; width:15px; height:15px; background-color:{{ $chartData['colors'][$index] }}; border-radius:3px; margin-right: 5px;"></span>
+                        <li class="mb-2">
+                            <span style="display:inline-block; width:18px; height:18px; background-color:{{ $chartData['colors'][$index] }}; border-radius:3px; margin-right: 8px;"></span>
                             {{ $label }} ({{ $chartData['data'][$index] }})
                         </li>
                     @endforeach
@@ -27,18 +27,15 @@
             <div class="col-md-6">
                 <input
                     type="text"
-                    wire:model.live="search" {{-- wire:model.live actualiza la propiedad search en tiempo real --}}
+                    wire:model.live="search"
                     class="form-control"
                     placeholder="Buscar equipo..."
                 >
             </div>
             <div>
-                {{-- Muestra la paginación en la parte superior si lo deseas --}}
-                {{-- La paginación de Livewire renderiza los enlaces automáticamente --}}
                 {{ $equipos->links('pagination::bootstrap-5') }}
             </div>
         </div>
-
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
@@ -52,7 +49,7 @@
                 <tbody>
                     @forelse ($equipos as $equipo)
                         <tr>
-                            <td>{{ $equipo->id_inventario }}</td> {{-- Usamos id_inventario ya que la consulta trae ese ID --}}
+                            <td>{{ $equipo->id_inventario }}</td>
                             <td>{{ $equipo->nombre }}</td>
                             <td>{{ $equipo->status }}</td>
                         </tr>
@@ -66,28 +63,25 @@
         </div>
 
         <div class="mt-3">
-            {{-- La paginación de Livewire renderiza los enlaces automáticamente --}}
             {{ $equipos->links('pagination::bootstrap-5') }}
         </div>
     </section>
 
-    {{-- Script para Chart.js - Debe estar dentro del componente para reactividad --}}
     @script
     <script>
-        let chartInstance = null; // Variable para almacenar la instancia de la gráfica
+        let chartInstance = null;
 
         function renderChart() {
             const ctx = document.getElementById('equipmentPieChart');
 
             if (chartInstance) {
-                chartInstance.destroy(); // Destruir instancia anterior si existe
+                chartInstance.destroy();
             }
 
-            // Obtener los datos de la gráfica directamente de la propiedad Livewire
             const chartData = @json($chartData);
 
             chartInstance = new Chart(ctx, {
-                type: 'pie', // Tipo de gráfica a pastel
+                type: 'pie',
                 data: {
                     labels: chartData.labels,
                     datasets: [{
@@ -99,24 +93,21 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Permite controlar mejor el tamaño del canvas
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
-                            display: false, // Ya tenemos un h3 para el título
-                            text: 'Resumen de Estados de Equipos'
+                            display: false
                         },
                         legend: {
-                            display: false, // Ocultar leyenda de Chart.js para usar la nuestra de HTML
+                            display: false
                         }
                     }
                 }
             });
         }
 
-        // Llamar a renderChart cuando el componente se inicializa
         renderChart();
 
-        // Escuchar eventos de Livewire para re-renderizar la gráfica si los datos cambian
         Livewire.on('chartDataUpdated', () => {
             renderChart();
         });

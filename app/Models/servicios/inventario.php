@@ -4,18 +4,18 @@ namespace App\Models\Servicios;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Servicios\Area; // Corregido 'servicios' a 'Servicios'
+use App\Models\Servicios\Equipo; // Corregido 'servicios' a 'Servicios'
+use App\Models\Servicios\Garantia; // Corregido 'servicios' a 'Servicios'
 
 class Inventario extends Model
 {
     use HasFactory;
+
     protected $table = 'inventarios';
     protected $primaryKey = 'id_inventario';
     public $timestamps = false;
 
-    /**
-     * 🛡️ CAMBIO AÑADIDO: Atributos que se pueden asignar de forma masiva.
-     * Esto es necesario para que los métodos create() y updateOrCreate() funcionen.
-     */
     protected $fillable = [
         'id_equipo_fk',
         'num_serie',
@@ -27,27 +27,26 @@ class Inventario extends Model
         'id_garantia_fk',
     ];
 
-    /**
-     * Define la relación: un Inventario pertenece a un Equipo.
-     */
     public function equipo()
     {
         return $this->belongsTo(Equipo::class, 'id_equipo_fk', 'id_equipo');
     }
 
-    /**
-     * RELACIÓN AÑADIDA: Un Inventario pertenece a un Área.
-     */
     public function area()
     {
-        return $this->belongsTo(Area::class, 'id_area_fk', 'id_area');
+        // Asegúrate de que la clave foránea aquí también coincida con tu DB si es diferente
+        return $this->belongsTo(Area::class, 'id_area_fk', 'id_area'); // Asumo id_area_fk en DB
     }
 
-    /**
-     * RELACIÓN AÑADIDA: Un Inventario tiene una Garantía.
-     */
     public function garantia()
     {
-        return $this->belongsTo(Garantia::class, 'id_garantia_fk', 'id_garantia');
+        // Asegúrate de que la clave foránea aquí también coincida con tu DB si es diferente
+        return $this->belongsTo(Garantia::class, 'id_garantia_fk', 'id_garantia'); // Asumo id_garantia_fk en DB
+    }
+
+    // ¡ESTA ES LA CLAVE! Asegúrate de que la clave foránea sea 'id_inventario'
+    public function mantenimientos()
+    {
+        return $this->hasMany(Mantenimiento::class, 'id_inventario', 'id_inventario');
     }
 }
