@@ -5,8 +5,8 @@ namespace App\Livewire\Servicios;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\servicios\Area;
-use App\Models\servicios\EncargadoArea;
+use App\Models\Servicios\Area;
+use App\Models\Servicios\EncargadoArea;
 
 // El nombre de la clase es 'GestionAreasEncargados'
 class GestionAreasEncargados extends Component

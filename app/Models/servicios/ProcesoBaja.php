@@ -14,7 +14,7 @@ class ProcesoBaja extends Model
      * para coincidir con las convenciones de Laravel y la migración.
      */
     protected $table = 'procesos_baja';
-    
+
     protected $primaryKey = 'id_proceso_baja';
     public $timestamps = false;
     protected $fillable = ['id_inventario_fk', 'id_mantenimiento_fk', 'motivo', 'estado'];

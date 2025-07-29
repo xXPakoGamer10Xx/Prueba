@@ -1,9 +1,10 @@
 @extends('components.layouts.servicios.nav-servicios')
 
+@section('title', 'Resumen de Equipos') {{-- Puedes ajustar el título de la página aquí --}}
+
 @section('contenido')
-
-    <main>
-        <img src="https://images.klipfolio.com/website/public/7eab5172-6fe0-4304-9e9d-4750646a9791/powermetrics-dashboard_0.png" alt="imagen">
+    <main class="container my-5"> {{-- Mantén el contenedor y el margen para el diseño --}}
+        {{-- Aquí se renderiza el componente de Livewire con toda la funcionalidad --}}
+        @livewire('servicios.dashboard-equipos') {{-- Llama a tu nuevo componente Livewire --}}
     </main>
-
 @endsection

@@ -7,8 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 
-use App\Models\servicios\Area;
-use App\Models\servicios\EncargadoArea;
+use App\Models\Servicios\Area;
+use App\Models\Servicios\EncargadoArea;
 
 class AreaController extends Controller
 {
@@ -39,7 +39,7 @@ class AreaController extends Controller
             ->paginate(5, ['*'], 'pagina_e');
 
         $listaEncargados = EncargadoArea::orderBy('nombre')->get();
-        
+
         // Renderiza la vista y le pasa los datos
         return view('servicios.areas.index', compact('areas', 'encargados', 'listaEncargados', 'searchAreas', 'searchEncargados'));
     }
@@ -72,7 +72,7 @@ class AreaController extends Controller
         EncargadoArea::create($request->all());
         return redirect()->route('servicios.areas.index', ['#lista-encargados'])->with('mensaje', 'Encargado agregado.')->with('mensaje_tipo', 'success');
     }
-    
+
     public function updateEncargado(Request $request, EncargadoArea $encargado)
     {
         $request->validate(['nombre' => 'required|string|max:100', 'apellidos' => 'required|string|max:100', 'cargo' => 'required|string|max:100']);
