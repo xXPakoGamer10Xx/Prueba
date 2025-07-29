@@ -54,19 +54,32 @@
                                 <div
                                     class="flex gap-2"
                                 >
-                                    <button 
-                                        type='button'
-                                        class='btn-cancelar text-black border-0 bg-transparent'
-                                        title="Cancelar pedido"
-                                        wire:click="confirmCancel({{ $pedido->id_pedido }})"
-                                        @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
-                                            disabled
+                                    @if($pedido->estado_pedido == 'Pendiente')
+                                        @if(Auth::user()->rol == 'odontologia_almacen')
+                                        <button 
+                                            type='button'
+                                            class="btn btn-success btn-sm text-white"
+                                            title="Confirmar pedido"
+                                            wire:click="confirmPedidoModal({{ $pedido->id_pedido }})"
+                                        >
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
                                         @endif
-                                    >
-                                        <i class='fa-solid fa-xmark'></i>
-                                    </button>
+
+                                        <button 
+                                            type='button'
+                                            class='btn-cancelar text-black border-0 bg-transparent'
+                                            title="Cancelar pedido"
+                                            wire:click="confirmCancel({{ $pedido->id_pedido }})"
+                                            @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
+                                                disabled
+                                            @endif
+                                        >
+                                            <i class='fa-solid fa-xmark'></i>
+                                        </button>
+                                    @endif
+
                                     @if(Auth::user()->rol == 'odontologia_almacen')
-                                    
                                     <button 
                                         type='button'
                                         class="btn btn-danger btn-sm"
@@ -89,6 +102,20 @@
             {{ $pedidos->links() }}
         </div>
     @endif
+
+    {{-- Modal de Cancelar Pedido --}}
+    <x-modals.delete-confirmation
+        modalId="modalConfirmarPedido"
+        formId="formularioCancelarPedido"
+        wireModel="pedidoToConfirmId"
+        confirmAction="confirmPedido"
+        iconClass=""
+        iconSize="4rem"
+        width="18.75rem"
+        titleId="modalEliminarPedidoLabel"
+        title="Confirmar pedido"
+        message="¿Está seguro que desea cancelar este pedido?"
+    ></x-modals.delete-confirmation>
 
     {{-- Modal de Cancelar Pedido --}}
     <x-modals.delete-confirmation

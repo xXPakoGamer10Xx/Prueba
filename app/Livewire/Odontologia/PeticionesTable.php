@@ -13,8 +13,10 @@ class PeticionesTable extends Component
     use WithPagination;
 
     public $search = ''; // Propiedad para el campo de búsqueda
-    public $peticionToCancelId; // Propiedad para almacenar el ID del pedido a cancelar
-    public $peticionToDeleteId; // Propiedad para almacenar el ID del pedido a cancelar
+    public $peticionToConfirmId;
+    public $peticionToCancelId;
+    public $peticionToDeleteId;
+    public $cantidad;
     public $message = '';
     public $messageType = '';
     protected $paginationTheme = 'bootstrap'; // Define el tema de paginación de Bootstrap
@@ -23,6 +25,42 @@ class PeticionesTable extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+/**
+     * Confirma la cancelación de un pedido y establece el ID.
+     *
+     * @param int $id
+     * @return void
+     */
+    public function confirmPedidoModal($id)
+    {
+        $this->peticionToConfirmId = $id;
+        $this->dispatch('open-modal', 'modalConfirmarPedido');
+    }
+
+    /**
+     * Cancela el pedido en la base de datos.
+     *
+     * @return void
+     */
+    public function confirmPedido()
+    {
+        if ($this->peticionToConfirmId) {
+            $pedido = Pedido::find($this->peticionToConfirmId);
+            if ($pedido) {
+                $pedido->cantidad_autorizada = $this->cantidad;
+                $pedido->estado_pedido = 'Entregado';
+                $pedido->fecha_entrega = now()->toDateString();
+                $pedido->save();
+                $this->peticionToConfirmId = null;
+                $this->message = 'Pedido editado exitosamente.';
+                $this->messageType = 'success';
+            }
+        }
+        
+        session()->flash($this->messageType, $this->message);
+        return redirect(request()->header('Referer'));
     }
 
 /**
