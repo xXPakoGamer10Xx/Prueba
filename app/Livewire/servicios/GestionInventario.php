@@ -23,7 +23,7 @@ class GestionInventario extends Component
     public $inventarioId, $equipoId;
 
     // Propiedades del formulario
-    public $nombre, $marca, $modelo, $cantidad, $frecuencia_mantenimiento = 6; // Usamos el número por defecto
+    public $nombre, $marca, $modelo, $frecuencia_mantenimiento = 6;
     public $num_serie, $num_serie_sicopa, $num_serie_sia;
     public $pertenencia = 'propia', $status = 'funcionando', $id_area_fk, $id_garantia_fk;
     
@@ -34,7 +34,6 @@ class GestionInventario extends Component
     {
         return [
             'nombre' => 'required|string|max:100',
-            'cantidad' => 'required|integer|min:1',
             'frecuencia_mantenimiento' => 'required|integer',
             'id_area_fk' => 'required|exists:areas,id_area',
         ];
@@ -73,7 +72,6 @@ class GestionInventario extends Component
         $this->nombre = $inventario->equipo->nombre;
         $this->marca = $inventario->equipo->marca;
         $this->modelo = $inventario->equipo->modelo;
-        $this->cantidad = $inventario->equipo->cantidad;
         $this->frecuencia_mantenimiento = $inventario->equipo->frecuencia_mantenimiento;
 
         $this->num_serie = $inventario->num_serie;
@@ -102,7 +100,6 @@ class GestionInventario extends Component
                 ]);
                 $garantiaId = $garantia->id_garantia;
             } else {
-                // CAMBIO: Si el valor de la garantía es una cadena vacía, lo convertimos a NULL.
                 $garantiaId = empty($garantiaId) ? null : $garantiaId;
             }
 
@@ -112,7 +109,6 @@ class GestionInventario extends Component
                     'nombre' => $this->nombre,
                     'marca' => $this->marca,
                     'modelo' => $this->modelo,
-                    'cantidad' => $this->cantidad,
                     'frecuencia_mantenimiento' => $this->frecuencia_mantenimiento,
                 ]
             );
@@ -127,7 +123,7 @@ class GestionInventario extends Component
                     'pertenencia' => $this->pertenencia,
                     'status' => $this->status,
                     'id_area_fk' => $this->id_area_fk,
-                    'id_garantia_fk' => $garantiaId, // Aquí ya se pasa NULL si es necesario
+                    'id_garantia_fk' => $garantiaId,
                 ]
             );
         });
