@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Area extends Model
 {
     use HasFactory;
-    
+
     protected $primaryKey = 'id_area';
     protected $fillable = ['nombre', 'id_encargado_area_fk'];
 

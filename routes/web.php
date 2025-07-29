@@ -75,52 +75,8 @@ Route::middleware(['auth', 'role:odontologia_almacen'])->group(function () {
 });
 // --- FIN DEL GRUPO PROTEGIDO ---
 
-Route::middleware(['auth', 'role:encargado_servicios'])->group(function () {
 
-
-    Route::prefix('servicios')->name('servicios.')->group(function () {
-
-
-
-        Route::get('/', function () {
-
-            return view('servicios.index');
-
-        })->name('index');
-
-
-        Route::get('/areas', function () {
-
-            return view('servicios.areas');
-
-        })->name('areas');
-
-
-        Route::get('/inventario', function () {
-
-            return view('servicios.inventario');
-
-        })->name('inventario');
-
-
-        Route::get('/mantenimiento', function () {
-
-            return view('servicios.mantenimiento');
-
-        })->name('mantenimiento');
-
-
-        Route::get('/bajas', function () {
-
-            return view('servicios.bajas');
-
-        })->name('bajas');
-
-
-
-    });
-
-});
+// --- FIN DEL GRUPO PROTEGIDO ---
 
 // --- GRUPO DE RUTAS PROTEGIDAS PARA 'Ginecologia' ---
 // Solo usuarios autenticados con el rol 'encargado_ginecologia' podrán acceder.
@@ -134,7 +90,7 @@ Route::middleware(['auth', 'role:encargado_ginecologia'])->group(function () {
 
 Route::resource('ginecologia/material', MaterialController::class)
      ->parameters(['material' => 'material'])
-     ->names('material'); 
+     ->names('material');
 
      // RUTA PARA MOSTRAR LA PÁGINA PRINCIPAL CON LAS DOS TABLAS
     Route::get('/cirugia', [CirugiaPageController::class, 'index'])->name('cirugia.index');
