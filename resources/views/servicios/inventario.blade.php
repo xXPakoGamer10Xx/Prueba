@@ -1,5 +1,10 @@
-@extends('components.layouts.servicios.nav-servicios')
+{{-- resources/views/servicios/areas.blade.php --}}
+@extends('components.layouts.servicios.nav-servicios') {{-- O tu layout principal --}}
+
+@section('title', 'Inventario de Equipos') {{-- Título apropiado --}}
 
 @section('contenido')
-    @livewire('servicios.gestion-inventario')
+    <main class="container my-5"> {{-- Mantén un contenedor si lo necesitas --}}
+        @livewire('servicios.gestion-inventario') {{-- ¡Aquí se llama al componente! --}}
+    </main>
 @endsection

@@ -16,33 +16,34 @@ class GestionMantenimiento extends Component
     public $showModal = false;
     public $showEncargadoModal = false;
 
-    // Propiedades para el formulario de Mantenimiento
+    // CAMBIO AQUÍ: Volver a 'id_inventario' y 'id_encargado_man'
     public $id_inventario, $id_encargado_man, $fecha, $tipo, $refacciones_material, $observaciones;
 
-    // Propiedades para el formulario de Encargado
+    // Propiedades para el formulario de Encargado (se mantienen igual)
     public $nombre, $apellidos, $cargo, $contacto;
 
     protected $rules = [
+        // CAMBIO AQUÍ: Volver a 'id_inventario' y 'id_encargado_man'
         'id_inventario' => 'required|integer|exists:inventarios,id_inventario',
         'id_encargado_man' => 'required|integer|exists:encargados_mantenimiento,id_encargado_man',
         'fecha' => 'required|date',
         'tipo' => 'required|in:preventivo,correctivo',
+        'refacciones_material' => 'nullable|string',
+        'observaciones' => 'nullable|string',
     ];
 
-    /**
-     * NUEVO MÉTODO: Se ejecuta al cargar el componente.
-     * Revisa si se pasaron parámetros desde la vista de inventario para abrir el modal.
-     */
     public function mount()
     {
         if (request()->has('equipo_id') && request()->has('abrir_modal')) {
-            $this->openModal(); // Llama a la función que resetea campos y abre el modal.
-            $this->id_inventario = request('equipo_id'); // Asigna el ID del equipo que viene en la URL.
+            $this->openModal();
+            // CAMBIO AQUÍ: Asigna a la propiedad 'id_inventario'
+            $this->id_inventario = request('equipo_id');
         }
     }
 
     public function render()
     {
+        // ... (Tu código render() se mantiene igual) ...
         $reportes = Mantenimiento::with(['inventario.equipo', 'encargadoMantenimiento'])
             ->when($this->search, function ($query) {
                 $query->where('tipo', 'like', '%' . $this->search . '%')
@@ -72,8 +73,9 @@ class GestionMantenimiento extends Component
         $this->validate();
 
         Mantenimiento::create([
-            'id_inventario_fk' => $this->id_inventario,
-            'id_encargado_man_fk' => $this->id_encargado_man,
+            // CAMBIO AQUÍ: Usar las propiedades 'id_inventario' y 'id_encargado_man'
+            'id_inventario' => $this->id_inventario,
+            'id_encargado_man' => $this->id_encargado_man,
             'fecha' => $this->fecha,
             'tipo' => $this->tipo,
             'refacciones_material' => $this->refacciones_material,
@@ -86,6 +88,7 @@ class GestionMantenimiento extends Component
 
     public function saveEncargado()
     {
+        // ... (Tu código saveEncargado() se mantiene igual) ...
         $this->validate([
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
@@ -104,13 +107,14 @@ class GestionMantenimiento extends Component
         session()->flash('success', 'Encargado registrado exitosamente.');
     }
 
-    private function resetInput() { 
-        $this->id_inventario = null; 
-        $this->id_encargado_man = null; 
-        $this->fecha = now()->format('Y-m-d'); 
-        $this->tipo = null; 
-        $this->refacciones_material = ''; 
-        $this->observaciones = ''; 
+    private function resetInput() {
+        // CAMBIO AQUÍ: Resetear 'id_inventario' y 'id_encargado_man'
+        $this->id_inventario = null;
+        $this->id_encargado_man = null;
+        $this->fecha = now()->format('Y-m-d');
+        $this->tipo = null;
+        $this->refacciones_material = '';
+        $this->observaciones = '';
     }
 
     private function resetEncargadoInput() { $this->nombre = ''; $this->apellidos = ''; $this->cargo = ''; $this->contacto = ''; }

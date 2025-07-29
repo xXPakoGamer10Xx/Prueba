@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Servicios;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-// --- LÍNEAS CORREGIDAS: Se añade 'Servicios' a la ruta de los modelos ---
 use App\Models\Servicios\ProcesoBaja;
 use App\Models\Servicios\Inventario;
 use App\Models\Servicios\Mantenimiento;
@@ -16,24 +15,27 @@ class BajaController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'id_inventario' => 'required|integer|exists:inventarios,id_inventario',
-            'id_mantenimiento' => 'nullable|integer|exists:mantenimientos,id_mantenimiento',
+            // CAMBIO CRÍTICO AQUÍ: Las reglas de validación deben usar los nombres de columna de la DB
+            'id_inventario_fk' => 'required|integer|exists:inventarios,id_inventario', // 'exists' usa la clave primaria de la tabla referenciada
+            'id_mantenimiento_fk' => 'nullable|integer|exists:mantenimientos,id_mantenimiento',
             'estado' => 'required|in:en proceso,baja completa,cancelada',
             'motivo' => 'required|string',
         ]);
-        
-        $validatedData['id_inventario_fk'] = $validatedData['id_inventario'];
-        unset($validatedData['id_inventario']);
-        
-        $validatedData['id_mantenimiento_fk'] = $validatedData['id_mantenimiento'];
-        unset($validatedData['id_mantenimiento']);
+
+        // ELIMINAR ESTAS LÍNEAS: Ya no son necesarias si la validación usa los nombres correctos
+        // $validatedData['id_inventario_fk'] = $validatedData['id_inventario'];
+        // unset($validatedData['id_inventario']);
+        // $validatedData['id_mantenimiento_fk'] = $validatedData['id_mantenimiento'];
+        // unset($validatedData['id_mantenimiento']);
 
         DB::beginTransaction();
         try {
+            // Se crea el registro directamente con los datos validados, que ya tienen las claves _fk
             ProcesoBaja::create($validatedData);
 
+            // IMPORTANTE: Aquí también debes usar $request->id_inventario_fk
             if ($request->estado === 'baja completa') {
-                $inventario = Inventario::find($request->id_inventario);
+                $inventario = Inventario::find($request->id_inventario_fk); // CAMBIO AQUÍ
                 $inventario->status = 'baja';
                 $inventario->save();
             }
@@ -52,7 +54,7 @@ class BajaController extends Controller
     {
         $search_query = $request->input('search');
 
-        $bajas = ProcesoBaja::with('inventario.equipo')
+        $bajas = ProcesoBaja::with('inventario.equipo') // La relación inventario() en ProcesoBaja ya usa id_inventario_fk
             ->when($search_query, function ($query, $search) {
                 $query->where('motivo', 'like', "%{$search}%")
                     ->orWhere('estado', 'like', "%{$search}%")

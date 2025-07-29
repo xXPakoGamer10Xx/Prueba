@@ -34,7 +34,7 @@
                         <th>Fecha</th>
                         <th>Tipo</th>
                         <th>Encargado</th>
-                        <th>Acciones</th> {{-- <-- NUEVA COLUMNA --}}
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,7 +46,6 @@
                         <td><span class="badge {{ $reporte->tipo == 'correctivo' ? 'bg-warning text-dark' : 'bg-info text-dark' }}">{{ ucfirst($reporte->tipo) }}</span></td>
                         <td>{{ $reporte->encargadoMantenimiento->nombre ?? '' }} {{ $reporte->encargadoMantenimiento->apellidos ?? '' }}</td>
                         <td>
-                            {{-- VISTAZO RÁPIDO: Prepara los datos para el PDF --}}
                             @php
                                 $reporteData = [
                                     'id_mantenimiento' => $reporte->id_mantenimiento,
@@ -59,11 +58,10 @@
                                     'encargado_nombre_completo' => ($reporte->encargadoMantenimiento->nombre ?? '') . ' ' . ($reporte->encargadoMantenimiento->apellidos ?? ''),
                                 ];
                             @endphp
-                            {{-- BOTÓN CORREGIDO: Pasa los datos a través de un atributo data-* para evitar errores del editor --}}
-                            <button 
-                                data-reporte='@json($reporteData)' 
-                                onclick='generarPDFDesdeBoton(this)' 
-                                class="btn btn-danger btn-sm" 
+                            <button
+                                data-reporte='@json($reporteData)'
+                                onclick='generarPDFDesdeBoton(this)'
+                                class="btn btn-danger btn-sm"
                                 title="Generar Reporte PDF">
                                 <i class="fas fa-file-pdf"></i>
                             </button>
@@ -75,7 +73,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         @if($reportes->hasPages())
             <div class="mt-3">{{ $reportes->links() }}</div>
         @endif
@@ -94,7 +92,8 @@
                     <form wire:submit.prevent="saveMantenimiento" class="row g-3">
                         <div class="col-md-6">
                             <label for="id_inventario" class="form-label">Equipo de inventario:</label>
-                            <select wire:model="id_inventario" class="form-select @error('id_inventario') is-invalid @enderror" required>
+                            {{-- CAMBIO CRÍTICO AQUÍ: wire:model y @error ACTUALIZADOS A 'id_inventario' --}}
+                            <select wire:model="id_inventario" id="id_inventario" class="form-select @error('id_inventario') is-invalid @enderror" required>
                                 <option value="">Seleccionar equipo...</option>
                                 @foreach ($equipos_inventario as $item)
                                     <option value="{{ $item->id_inventario }}">{{ $item->equipo->nombre }} ({{ $item->num_serie }})</option>
@@ -105,7 +104,8 @@
                         <div class="col-md-6">
                             <label for="id_encargado_man" class="form-label">Encargado:</label>
                             <div class="input-group">
-                                <select wire:model="id_encargado_man" class="form-select @error('id_encargado_man') is-invalid @enderror" required>
+                                {{-- CAMBIO CRÍTICO AQUÍ: wire:model y @error ACTUALIZADOS A 'id_encargado_man' --}}
+                                <select wire:model="id_encargado_man" id="id_encargado_man" class="form-select @error('id_encargado_man') is-invalid @enderror" required>
                                     <option value="">Seleccionar encargado...</option>
                                     @foreach ($encargados as $encargado)
                                         <option value="{{ $encargado->id_encargado_man }}">{{ $encargado->nombre }} {{ $encargado->apellidos }}</option>
@@ -131,11 +131,13 @@
                         </div>
                         <div class="col-12">
                             <label class="form-label">Refacciones y Material:</label>
-                            <textarea wire:model="refacciones_material" class="form-control" rows="3"></textarea>
+                            <textarea wire:model="refacciones_material" class="form-control @error('refacciones_material') is-invalid @enderror" rows="3"></textarea>
+                            @error('refacciones_material') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-12">
                             <label class="form-label">Observaciones:</label>
-                            <textarea wire:model="observaciones" class="form-control" rows="3"></textarea>
+                            <textarea wire:model="observaciones" class="form-control @error('observaciones') is-invalid @enderror" rows="3"></textarea>
+                            @error('observaciones') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-12 text-end mt-4">
                             <button type="button" class="btn btn-secondary" wire:click="$set('showModal', false)">Cancelar</button>
@@ -160,10 +162,10 @@
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="saveEncargado">
-                        <div class="mb-3"><label class="form-label">Nombre(s):</label><input type="text" wire:model="nombre" class="form-control"></div>
-                        <div class="mb-3"><label class="form-label">Apellidos:</label><input type="text" wire:model="apellidos" class="form-control"></div>
-                        <div class="mb-3"><label class="form-label">Cargo:</label><input type="text" wire:model="cargo" class="form-control"></div>
-                        <div class="mb-3"><label class="form-label">Contacto:</label><input type="text" wire:model="contacto" class="form-control"></div>
+                        <div class="mb-3"><label class="form-label">Nombre(s):</label><input type="text" wire:model="nombre" class="form-control @error('nombre') is-invalid @enderror">@error('nombre') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
+                        <div class="mb-3"><label class="form-label">Apellidos:</label><input type="text" wire:model="apellidos" class="form-control @error('apellidos') is-invalid @enderror">@error('apellidos') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
+                        <div class="mb-3"><label class="form-label">Cargo:</label><input type="text" wire:model="cargo" class="form-control @error('cargo') is-invalid @enderror">@error('cargo') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
+                        <div class="mb-3"><label class="form-label">Contacto:</label><input type="text" wire:model="contacto" class="form-control @error('contacto') is-invalid @enderror">@error('contacto') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" wire:click="$set('showEncargadoModal', false)">Cancelar</button>
                             <button type="submit" class="btn btn-primary">Guardar Encargado</button>
@@ -176,7 +178,7 @@
     <div class="modal-backdrop fade show" style="z-index: 1055;"></div>
     @endif
 
-    {{-- NUEVO SCRIPT: Carga la librería para generar PDFs --}}
+    {{-- SCRIPT: Carga la librería para generar PDFs --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         // NUEVA FUNCIÓN: Lee los datos desde el botón y llama a la función principal
@@ -199,12 +201,12 @@
             pdf.setFontSize(16);
             pdf.text('Reporte de Mantenimiento de Equipo', pdfWidth / 2, y, { align: 'center' });
             y += 8;
-            
+
             pdf.setFont("helvetica", "normal");
             pdf.setFontSize(12);
             pdf.text('Hospital Municipal de Chiconcuac – Servicios Generales', pdfWidth / 2, y, { align: 'center' });
             y += 6;
-            
+
             pdf.setFontSize(10);
             pdf.text(`Generado el: ${fechaGenerado}`, pdfWidth - 15, y, { align: 'right' });
             y += 8;
@@ -235,7 +237,7 @@
             pdf.setFont("helvetica", "normal");
             pdf.text(String(data.nombre_equipo || 'No disponible'), 55, y);
             y += 7;
-            
+
             pdf.setFont("helvetica", "bold");
             pdf.text('Número de Serie:', 20, y);
             pdf.setFont("helvetica", "normal");
@@ -264,10 +266,10 @@
             pdf.setFont("helvetica", "normal");
             const observaciones = pdf.splitTextToSize(String(data.observaciones), pdfWidth - 30);
             pdf.text(observaciones, 15, y);
-            
+
             // --- Firmas (posicionadas al final de la página) ---
             const firmaY = pdf.internal.pageSize.getHeight() - 40;
-            
+
             pdf.line(25, firmaY, 85, firmaY);
             pdf.setFontSize(10);
             pdf.text('Firma de Autorización', 30, firmaY + 5);
