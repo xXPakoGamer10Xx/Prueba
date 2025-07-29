@@ -1,6 +1,6 @@
 <div>
     @if($insumos->isEmpty())
-        <p class="text-center">No se encontraron insumos en el consultorio.</p>
+        <p class="text-center">No se encontraron insumos en el inventario.</p>
     @else
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped text-center">

@@ -1,6 +1,6 @@
 <div>
     @if($materialesExternos->isEmpty())
-        <p class="text-center">No se encontraron registros</p>
+        <p class="text-center">No se encontraron materiales externos registrados.</p>
     @else
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped text-center">
