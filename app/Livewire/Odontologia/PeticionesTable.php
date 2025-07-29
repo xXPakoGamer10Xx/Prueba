@@ -13,7 +13,8 @@ class PeticionesTable extends Component
     use WithPagination;
 
     public $search = ''; // Propiedad para el campo de búsqueda
-    public $pedidoToCancelId; // Propiedad para almacenar el ID del pedido a cancelar
+    public $peticionToCancelId; // Propiedad para almacenar el ID del pedido a cancelar
+    public $peticionToDeleteId; // Propiedad para almacenar el ID del pedido a cancelar
     public $message = '';
     public $messageType = '';
     protected $paginationTheme = 'bootstrap'; // Define el tema de paginación de Bootstrap
@@ -32,8 +33,7 @@ class PeticionesTable extends Component
      */
     public function confirmCancel($id)
     {
-        $this->pedidoToCancelId = $id;
-        // Dispatch an event to open the confirmation modal (assuming a generic modal component handles this)
+        $this->peticionToCancelId = $id;
         $this->dispatch('open-modal', 'modalCancelarPedido');
     }
 
@@ -44,12 +44,12 @@ class PeticionesTable extends Component
      */
     public function cancelPedido()
     {
-        if ($this->pedidoToCancelId) {
-            $pedido = Pedido::find($this->pedidoToCancelId);
+        if ($this->peticionToCancelId) {
+            $pedido = Pedido::find($this->peticionToCancelId);
             if ($pedido) {
                 $pedido->estado_pedido = 'Cancelado';
                 $pedido->save();
-                $this->pedidoToCancelId = null;
+                $this->peticionToCancelId = null;
                 $this->message = 'Pedido cancelado exitosamente.';
                 $this->messageType = 'success';
             }
@@ -57,6 +57,33 @@ class PeticionesTable extends Component
         
         session()->flash($this->messageType, $this->message);
         return redirect(request()->header('Referer'));
+    }
+
+    /**
+     * Confirma la eliminación de un registro y establece el ID.
+     *
+     * @param int $id
+     * @return void
+     */
+    public function confirmDelete($id)
+    {
+        $this->peticionToDeleteId = $id;
+        $this->dispatch('open-modal', 'modalEliminarRegistro');
+    }
+
+    /**
+     * Elimina el registro de las peticiones.
+     *
+     * @return void
+     */
+    public function deleteRegistro()
+    {
+        if ($this->peticionToDeleteId) {
+            Pedido::find($this->peticionToDeleteId)->delete();
+            $this->peticionToDeleteId = null; // Limpia el ID después de la eliminación
+            session()->flash('success', 'Registro eliminado exitosamente.'); // Opcional: mensaje de éxito
+            return redirect(request()->header('Referer'));
+        }
     }
     public function render()
     {

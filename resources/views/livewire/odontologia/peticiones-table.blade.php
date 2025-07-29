@@ -51,17 +51,32 @@
                                 @endif
                         </td>
                             <td class='d-flex justify-content-evenly'>
-                                <button 
-                                    type='button'
-                                    class='btn-cancelar text-black border-0 bg-transparent'
-                                    title="Cancelar pedido"
-                                    wire:click="confirmCancel({{ $pedido->id_pedido }})"
-                                    @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
-                                        disabled
-                                    @endif
+                                <div
+                                    class="flex gap-2"
                                 >
-                                    <i class='fa-solid fa-xmark'></i>
-                                </button>
+                                    <button 
+                                        type='button'
+                                        class='btn-cancelar text-black border-0 bg-transparent'
+                                        title="Cancelar pedido"
+                                        wire:click="confirmCancel({{ $pedido->id_pedido }})"
+                                        @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
+                                            disabled
+                                        @endif
+                                    >
+                                        <i class='fa-solid fa-xmark'></i>
+                                    </button>
+                                    @if(Auth::user()->rol == 'odontologia_almacen')
+                                    
+                                    <button 
+                                        type='button'
+                                        class="btn btn-danger btn-sm"
+                                        title="Eliminar registro"
+                                        wire:click="confirmDelete({{ $pedido->id_pedido }})"
+                                    >
+                                        <i class='fas fa-trash-alt cursor-pointer'></i>
+                                    </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -86,5 +101,18 @@
         width="18.75rem"
         titleId="modalEliminarPedidoLabel"
         message="¿Está seguro que desea cancelar este pedido?"
+    ></x-modals.delete-confirmation>
+
+        {{-- Modal de Eliminar Registro --}}
+    <x-modals.delete-confirmation
+        modalId="modalEliminarRegistro"
+        formId="formularioCancelarPedido"
+        wireModel="pedidoToCancelId"
+        confirmAction="deleteRegistro"
+        iconClass="fa-solid fa-circle-exclamation"
+        iconSize="4rem"
+        width="18.75rem"
+        titleId="modalEliminarPedidoLabel"
+        message="¿Está seguro que desea eliminar este registro?"
     ></x-modals.delete-confirmation>
 </div>
