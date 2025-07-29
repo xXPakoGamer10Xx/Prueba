@@ -50,10 +50,8 @@
         </main>
 
         <!-- Pie de Página con los colores del Gobierno -->
-        <footer class="bg-rojo text-white py-6">
-            <div class="container mx-auto text-center">
-                &copy; {{ date('Y') }} Hospital Municipal de Chiconcuac | Todos los derechos reservados.
-            </div>
+        <footer class="bg-rojo mt-auto">
+            <p class="text-center p-4 text-white mb-0">© {{ date('Y') }} Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
         </footer>
 
     </div>

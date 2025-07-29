@@ -140,7 +140,7 @@
     @yield('contenido')
 
     <footer class="bg-rojo mt-auto">
-        <p class="text-center p-4 text-white mb-0">© 2025 Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
+        <p class="text-center p-4 text-white mb-0">© {{ date('Y') }} Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 </body>

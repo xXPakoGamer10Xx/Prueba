@@ -139,7 +139,3 @@ select:focus[data-flux-control] {
     background-color: #e6c590 !important;
     color: #611232 !important;
 }
-
-body {
-  font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
-}

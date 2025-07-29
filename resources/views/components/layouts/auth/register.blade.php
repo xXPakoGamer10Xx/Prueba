@@ -24,8 +24,8 @@
         </div>
         @fluxScripts
 
-    <footer class="bg-rojo mt-auto">
-        <p class="text-center p-4 text-white mb-0">© 2025 Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
-    </footer>
+        <footer class="bg-rojo mt-auto">
+            <p class="text-center p-4 text-white mb-0">© {{ date('Y') }} Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
+        </footer>
     </body>
 </html> 
