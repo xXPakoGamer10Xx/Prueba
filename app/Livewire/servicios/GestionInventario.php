@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire\servicios;
+namespace App\Livewire\Servicios;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\servicios\Inventario;
-use App\Models\servicios\Equipo;
-use App\Models\servicios\Area;
-use App\Models\servicios\Garantia;
+use App\Models\Servicios\Inventario;
+use App\Models\Servicios\Equipo;
+use App\Models\Servicios\Area;
+use App\Models\Servicios\Garantia;
 use Illuminate\Support\Facades\DB;
 
 class GestionInventario extends Component
@@ -26,7 +26,7 @@ class GestionInventario extends Component
     public $nombre, $marca, $modelo, $frecuencia_mantenimiento = 6;
     public $num_serie, $num_serie_sicopa, $num_serie_sia;
     public $pertenencia = 'propia', $status = 'funcionando', $id_area_fk, $id_garantia_fk;
-    
+
     public $showNewWarrantyFields = false;
     public $nueva_garantia_status = 'activa', $nueva_garantia_fecha, $nueva_garantia_empresa, $nueva_garantia_contacto;
 
@@ -38,7 +38,7 @@ class GestionInventario extends Component
             'id_area_fk' => 'required|exists:areas,id_area',
         ];
     }
-    
+
     public function render()
     {
         $inventario = Inventario::with(['equipo', 'area', 'garantia'])
@@ -46,6 +46,8 @@ class GestionInventario extends Component
                 $query->where('nombre', 'like', '%' . $this->search . '%');
             })
             ->orWhere('num_serie', 'like', '%' . $this->search . '%')
+            ->orWhere('num_serie_sicopa', 'like', '%' . $this->search . '%')
+            ->orWhere('num_serie_sia', 'like', '%' . $this->search . '%')
             ->orderBy('id_inventario', 'desc')
             ->paginate(10);
 
@@ -54,6 +56,18 @@ class GestionInventario extends Component
             'areas' => Area::orderBy('nombre')->get(),
             'garantias' => Garantia::all(),
         ]);
+    }
+
+    public function actualizarStatus($inventarioId, $nuevoStatus)
+    {
+        $inventario = Inventario::find($inventarioId);
+        if ($inventario && $inventario->status !== 'baja') {
+            Inventario::where('id_inventario', $inventarioId)->update(['status' => $nuevoStatus]);
+            session()->flash('mensaje', 'Estado del equipo actualizado correctamente.');
+        } else if ($inventario && $inventario->status === 'baja') {
+            session()->flash('mensaje', 'Este equipo ya ha sido dado de baja y su estado no puede ser modificado.');
+            $this->js('window.location.reload()');
+        }
     }
 
     public function create()
@@ -75,6 +89,10 @@ class GestionInventario extends Component
         $this->frecuencia_mantenimiento = $inventario->equipo->frecuencia_mantenimiento;
 
         $this->num_serie = $inventario->num_serie;
+        // 👇 ¡AQUÍ ESTÁ EL CAMBIO! Se cargan los números de serie SIA y SICOPA.
+        $this->num_serie_sicopa = $inventario->num_serie_sicopa;
+        $this->num_serie_sia = $inventario->num_serie_sia;
+
         $this->pertenencia = $inventario->pertenencia;
         $this->status = $inventario->status;
         $this->id_area_fk = $inventario->id_area_fk;
@@ -89,7 +107,6 @@ class GestionInventario extends Component
         $this->validate();
 
         DB::transaction(function () {
-            // Lógica para la garantía
             $garantiaId = $this->id_garantia_fk;
             if ($this->id_garantia_fk === 'new_warranty') {
                 $garantia = Garantia::create([
@@ -131,17 +148,17 @@ class GestionInventario extends Component
         session()->flash('mensaje', $this->isEditMode ? 'Equipo actualizado en el inventario.' : 'Equipo agregado al inventario.');
         $this->closeModal();
     }
-    
+
     public function registrarMantenimiento($inventarioId)
     {
-        return redirect()->route('servicios.mantenimiento', ['inventario' => $inventarioId]);
+        return redirect()->to(route('servicios.mantenimiento') . '?equipo_id=' . $inventarioId . '&abrir_modal=true');
     }
 
     public function registrarBaja($inventarioId)
     {
-        return redirect()->route('servicios.bajas', ['inventario' => $inventarioId]);
+        return redirect()->to(route('servicios.bajas') . '?equipo_id=' . $inventarioId . '&abrir_modal=true');
     }
-    
+
     public function updatedIdGarantiaFk($value)
     {
         $this->showNewWarrantyFields = ($value === 'new_warranty');
@@ -157,7 +174,7 @@ class GestionInventario extends Component
     {
         $this->reset();
     }
-    
+
     public function updatingSearch()
     {
         $this->resetPage();

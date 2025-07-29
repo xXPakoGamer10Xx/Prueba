@@ -11,6 +11,7 @@ use App\Http\Controllers\Ginecologia\CirugiaPageController;
 use App\Http\Controllers\Ginecologia\CirugiaGeneralController;
 use App\Http\Controllers\Ginecologia\CirugiaGinecologicaController;
 use App\Http\Controllers\Ginecologia\ReporteController;
+use App\Http\Controllers\Servicios\InventarioController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -74,36 +75,52 @@ Route::middleware(['auth', 'role:odontologia_almacen'])->group(function () {
 });
 // --- FIN DEL GRUPO PROTEGIDO ---
 
-// --- GRUPO DE RUTAS PROTEGIDAS PARA 'encargado_servicios' ---
 Route::middleware(['auth', 'role:encargado_servicios'])->group(function () {
-    
+
+
     Route::prefix('servicios')->name('servicios.')->group(function () {
-        
-        
+
+
+
         Route::get('/', function () {
+
             return view('servicios.index');
+
         })->name('index');
 
+
         Route::get('/areas', function () {
+
             return view('servicios.areas');
+
         })->name('areas');
 
-                Route::get('/inventario', function () {
+
+        Route::get('/inventario', function () {
+
             return view('servicios.inventario');
+
         })->name('inventario');
 
+
         Route::get('/mantenimiento', function () {
+
             return view('servicios.mantenimiento');
+
         })->name('mantenimiento');
 
+
         Route::get('/bajas', function () {
+
             return view('servicios.bajas');
+
         })->name('bajas');
 
-        
+
+
     });
+
 });
-// --- FIN DEL GRUPO PROTEGIDO ---
 
 // --- GRUPO DE RUTAS PROTEGIDAS PARA 'Ginecologia' ---
 // Solo usuarios autenticados con el rol 'encargado_ginecologia' podrán acceder.
@@ -133,21 +150,14 @@ Route::resource('expediente', PacienteController::class);
 // --- INICIAN RUTAS DE SERVICIOS ---
 
 // Rutas para Mantenimiento
-Route::get('/servicios/mantenimiento', [MantenimientoController::class, 'create'])->name('servicios.mantenimiento');
-Route::post('/servicios/mantenimiento', [MantenimientoController::class, 'store'])->name('servicios.mantenimiento.store');
 
-// Ruta para ver los reportes
-Route::get('/servicios/reportes', [MantenimientoController::class, 'index'])->name('servicios.reportes');
-
-// Ruta para registrar un nuevo encargado desde el modal
-Route::post('/servicios/encargados', [EncargadoMantenimientoController::class, 'store'])->name('servicios.encargados.store');
-
-
-
-   // --- Rutas para Bajas de Equipo ---
-    Route::get('/bajas', [BajaController::class, 'create'])->name('servicios.bajas');
-    Route::post('/bajas', [BajaController::class, 'store'])->name('servicios.bajas.store');
-    Route::get('/bajas/historial', [BajaController::class, 'index'])->name('servicios.bajas.historial');
+Route::middleware(['auth', 'role:encargado_servicios'])->prefix('servicios')->name('servicios.')->group(function () {
+    Route::view('/', 'servicios.index')->name('index');
+    Route::view('/areas', 'servicios.areas')->name('areas');
+    Route::view('/inventario', 'servicios.inventario')->name('inventario');
+    Route::view('/mantenimiento', 'servicios.mantenimiento')->name('mantenimiento');
+    Route::view('/bajas', 'servicios.bajas')->name('bajas');
+});
 
 // --- TERMINAN RUTAS DE SERVICIOS ---
 
@@ -165,6 +175,10 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
+
+
+
+
 
 
 
