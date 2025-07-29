@@ -35,7 +35,7 @@
                                 @csrf {{-- Token CSRF para seguridad --}}
                                 <button
                                     type="submit"
-                                    class="btn btn-outline-light btn-sm duration-250 cursor-pointer"
+                                    class="btn btn-outline-light btn-sm duration-250 cursor-pointer font-semibold"
                                 >
                                     Cerrar Sesión
                                 </button>
@@ -77,51 +77,51 @@
               <img src="/img/logo_IB.svg" alt="Logo Edo. Mex.">
             </a>
 
-                <div class="navbar" id="navbarNav">
-                    @if(Auth::user()->rol == 'odontologia_consultorio')
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.index')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.index') }}">Consultorio</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.materiales')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.materiales') }}">Materiales Externos</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.almacen')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.almacen') }}">Almacén</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.insumos')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.insumos') }}">Insumos</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.peticiones')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.peticiones') }}">Peticiones</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.consultorio.lyp')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.lyp') }}">Laboratorios y Presentaciones</a>
-                            </li>
-                        </ul>
-                        
-                    @elseif(Auth::user()->rol == 'odontologia_almacen')
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.consultorio')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.consultorio') }}">Consultorio</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.index')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.index') }}">Almacén</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.insumos')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.insumos') }}">Insumos</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.peticiones')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.peticiones') }}">Peticiones</a>
-                            </li>
-                            <li class="nav-item @if(request()->routeIs('odontologia.almacen.lyp')) font-bold @endif">
-                                <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.lyp') }}">Laboratorios y Presentaciones</a>
-                            </li>
-                        </ul>
-                    @endif
-                </div>
+            <div class="navbar" id="navbarNav">
+                @if(Auth::user()->rol == 'odontologia_consultorio')
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item @if(request()->routeIs('odontologia.consultorio.index')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.index') }}">Consultorio</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.consultorio.materiales')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.materiales') }}">Materiales Externos</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.consultorio.almacen')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.almacen') }}">Almacén</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.consultorio.insumos')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.insumos') }}">Insumos</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.consultorio.peticiones')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.peticiones') }}">Peticiones</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.consultorio.lyp')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.consultorio.lyp') }}">Laboratorios y Presentaciones</a>
+                        </li>
+                    </ul>
+                    
+                @elseif(Auth::user()->rol == 'odontologia_almacen')
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.consultorio')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.consultorio') }}">Consultorio</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.index')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.index') }}">Almacén</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.insumos')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.insumos') }}">Insumos</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.peticiones')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.peticiones') }}">Peticiones</a>
+                        </li>
+                        <li class="nav-item @if(request()->routeIs('odontologia.almacen.lyp')) font-bold @endif">
+                            <a class="nav-link hover:opacity-75 duration-250" href="{{ route('odontologia.almacen.lyp') }}">Laboratorios y Presentaciones</a>
+                        </li>
+                    </ul>
+                @endif
             </div>
-        </nav>
+        </div>
+    </nav>
     
         <!-- Alerta -->
         @if (session('success'))

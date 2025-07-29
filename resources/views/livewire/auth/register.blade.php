@@ -13,6 +13,7 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public string $rol = '';
 
     /**
      * Handle an incoming registration request.
@@ -23,6 +24,7 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'rol' => ['required', 'string', 'max:255'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -31,51 +33,79 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
 
         Auth::login($user);
 
-        $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+        if ($this->rol == 'encargado_ginecologia') {
+            $this->redirectIntended(route('ginecologia.index', absolute: false), navigate: true);
+        } else if ($this->rol == 'odontologia_consultorio') {
+            $this->redirectIntended(route('odontologia.consultorio.index', absolute: false), navigate: true);
+        } else if ($this->rol == 'odontologia_almacen') {
+            $this->redirectIntended(route('odontologia.almacen.index', absolute: false), navigate: true);
+        } else if ($this->rol == 'encargado_servicios') {
+            $this->redirectIntended(route('servicios.index', absolute: false), navigate: true);
+        }
     }
 }; ?>
 
-<div class="flex flex-col gap-6 max-w-md mx-auto my-8">
-    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" title-class="text-black font-bold" description-class="text-black font-bold" />
+<div class="flex flex-col gap-6 max-w-md mx-auto my-[.5rem]">
+    <header class="text-black text-center">
+        <h1 class="text-3xl font-bold mb-2">Crear cuenta</h1>
+        <p class="text-zinc-700">Ingresa los siguientes campos para registrar una cuenta</p>
+    </header>
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="register" class="flex flex-col gap-6">
         <!-- Name -->
-        <flux:input
+        <label for="nombre">Nombre</label>
+        <input
+            id="nombre"
             wire:model="name"
-            :label="__('Name')"
             type="text"
             required
             autofocus
             autocomplete="name"
-            :placeholder="__('Full name')"
+            placeholder="Nombre completo"
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
         />
 
         <!-- Email Address -->
-        <flux:input
+        <label for="correo">Correo</label>
+        <input
+            id="correo"
             wire:model="email"
-            :label="__('Email address')"
             type="email"
             required
             autocomplete="email"
-            placeholder="email@example.com"
+            placeholder="correo@ejemplo.com"
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
         />
 
+        <!-- Rol -->
+        <label for="rol">Rol</label>
+        <select id="rol" wire:model="rol" class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300 cursor-pointer">
+            <option value="">-- Seleccione un rol --</option>
+            <option value="encargado_ginecologia">Ginecología</option>
+            <option value="odontologia_consultorio">Odontología - Consultorio</option>
+            <option value="odontologia_almacen">Odontología - Almacén</option>
+            <option value="encargado_servicios">Servicios generales</option>
+        </select>
+        
         <!-- Password -->
-        <flux:input
+        <label for="contraseña">Contraseña</label>
+        <input
+            id="contraseña"
             wire:model="password"
-            :label="__('Password')"
             type="password"
             required
             autocomplete="new-password"
-            :placeholder="__('Password')"
             viewable
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
         />
 
         <!-- Confirm Password -->
-        <flux:input
+        <label for="confirmar-contraseña">Confirmar Contraseña</label>
+        <input
+            id="confirmar-contraseña"
             wire:model="password_confirmation"
             :label="__('Confirm password')"
             type="password"
@@ -83,17 +113,18 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
             autocomplete="new-password"
             :placeholder="__('Confirm password')"
             viewable
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
         />
 
         <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Create account') }}
-            </flux:button>
+            <flux:button variant="primary" type="submit" class="w-full bg-custom-brown cursor-pointer hover:opacity-75 duration-250 text-white">{{ __('Crear cuenta') }}</flux:button>
         </div>
     </form>
 
+    {{-- 
     <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
         <span class="font-bold text-black">{{ __('Already have an account?') }}</span>
         <flux:link :href="route('login')" wire:navigate class="font-bold text-black">{{ __('Log in') }}</flux:link>
     </div>
+     --}}
 </div>

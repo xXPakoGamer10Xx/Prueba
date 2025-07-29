@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     {{-- Incluye los metadatos, fuentes y CSS principales --}}
     @include('partials.head')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         /* Asegura que el color de fondo del body sea blanco/claro */
         body {
@@ -15,20 +17,20 @@
 
         <!-- Encabezado con los colores del Gobierno -->
         <header class="bg-rojo shadow-lg">
-            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <nav class="h-[4.125rem] container mx-auto flex justify-between items-center">
                 {{-- Logo del Gobierno de México --}}
-                <div>
-                    <img src="{{ asset('img/logo_Mexico.svg') }}" alt="Logo del Gobierno de México" class="h-10 md:h-12">
+                <div class="logo">
+                    <img src="{{ asset('img/logo_Mexico.svg') }}" alt="Logo del Gobierno de México" class="">
                 </div>
 
                 {{-- Botones de acción --}}
-                <div class="space-x-4">
+                <div class="flex gap-2">
                     <a href="{{ route('login') }}"
-                       class="px-4 py-2 text-sm font-semibold text-white border border-white rounded-md hover:bg-white hover:text-custom-red transition-colors duration-300">
+                       class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
                         Iniciar sesión
                     </a>
                     <a href="{{ route('register') }}"
-                       class="px-4 py-2 text-sm font-semibold text-white bg-transparent border border-white rounded-md hover:bg-white hover:text-custom-red transition-colors duration-300">
+                       class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
                         Registrarse
                     </a>
                 </div>
@@ -49,7 +51,7 @@
 
         <!-- Pie de Página con los colores del Gobierno -->
         <footer class="bg-rojo text-white py-6">
-            <div class="container mx-auto text-center text-sm">
+            <div class="container mx-auto text-center">
                 &copy; {{ date('Y') }} Hospital Municipal de Chiconcuac | Todos los derechos reservados.
             </div>
         </footer>

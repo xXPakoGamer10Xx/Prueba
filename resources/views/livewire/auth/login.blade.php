@@ -102,47 +102,59 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
     <form wire:submit="login" class="flex flex-col gap-6">
         <label for="correo" class="text-gray-700">Correo</label>
-        <flux:input
+        <input
             id="correo"
             wire:model="email"
             type="email"
             required
             autofocus
             autocomplete="email"
-            placeholder="email@example.com"
-            class="border-1 rounded text-black"
+            placeholder="correo@ejemplo.com"
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
         />
 
         <label for="contraseña" class="text-gray-700">Contraseña</label>
         <div class="relative">
-            <flux:input
+            <input
                 id="contraseña"
                 wire:model="password"
                 type="password"
                 required
                 autocomplete="current-password"
                 viewable
-                class="border-1 rounded"
+                class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
             />
 
+            {{--     
             @if (Route::has('password.request'))
                 <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
                     {{ __('Forgot your password?') }}
                 </flux:link>
             @endif
+                --}}    
         </div>
 
-        <flux:checkbox wire:model="remember" :label="__('Recuérdame')" />
+        <div class="w-min flex gap-2 cursor-pointer duration-250 hover:opacity-75">
+            <input
+                id="recuerdame"
+                type="checkbox"
+                wire:model="remember"
+                class="cursor-pointer"
+            />
+            <label for="recuerdame" class="text-gray-600 text-sm cursor-pointer">Recuérdame</label>
+        </div>
 
         <div class="flex items-center justify-end">
             <flux:button variant="primary" type="submit" class="w-full bg-custom-brown cursor-pointer hover:opacity-75 duration-250 text-white">{{ __('Iniciar sesión') }}</flux:button>
         </div>
     </form>
 
+    {{-- 
     @if (Route::has('register'))
         <div class="hidden space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
             <span>{{ __('Don\'t have an account?') }}</span>
             <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
         </div>
     @endif
+     --}}
 </div>

@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white antialiased">
-        <header class="w-full bg-custom-red py-0.01">
-                <nav class="container m-auto flex items-center justify-between gap-4">
+        <header class="bg-rojo shadow-lg">
+            <nav class="h-[4.125rem] container mx-auto flex justify-between items-center">
+                {{-- Logo del Gobierno de México --}}
+                <div class="logo">
                     <a href="./">
-                        <img src="/img/logo_Mexico.svg" alt="Logo del gobierno del Méxco">
+                        <img src="{{ asset('img/logo_Mexico.svg') }}" alt="Logo del Gobierno de México" class="">
                     </a>
-                </nav>
+                </div>
+            </nav>
         </header>
 
         <div class="flex-grow container mx-auto py-16 px-6 flex flex-col items-center justify-center">
@@ -20,8 +24,8 @@
         </div>
         @fluxScripts
 
-        <footer class="w-full bg-custom-red py-3">
-            <p class="text-center text-white">© 2025 Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
+        <footer class="bg-rojo mt-auto">
+            <p class="text-center p-4 text-white mb-0">© 2025 Hospital Municipal de Chiconcuac | Todos los derechos reservados</p>
         </footer>
     </body>
 </html>
