@@ -7,6 +7,10 @@ use App\Http\Controllers\Ginecologia\PacienteController;
 use App\Http\Controllers\Servicios\MantenimientoController;
 use App\Http\Controllers\Servicios\EncargadoMantenimientoController;
 use App\Http\Controllers\Servicios\BajaController;
+use App\Http\Controllers\Ginecologia\CirugiaPageController;
+use App\Http\Controllers\Ginecologia\CirugiaGeneralController;
+use App\Http\Controllers\Ginecologia\CirugiaGinecologicaController;
+use App\Http\Controllers\Ginecologia\ReporteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -115,6 +119,14 @@ Route::resource('ginecologia/material', MaterialController::class)
      ->parameters(['material' => 'material'])
      ->names('material'); 
 
+     // RUTA PARA MOSTRAR LA PÁGINA PRINCIPAL CON LAS DOS TABLAS
+    Route::get('/cirugia', [CirugiaPageController::class, 'index'])->name('cirugia.index');
+
+    // RUTAS PARA EL CRUD DE CIRUGÍAS GENERALES
+    Route::resource('cirugiageneral', CirugiaGeneralController::class)->except(['index', 'show', 'create', 'edit']);
+
+    // RUTAS PARA EL CRUD DE CIRUGÍAS GINECOLÓGICAS
+    Route::resource('cirugiaginecologica', CirugiaGinecologicaController::class)->except(['index', 'show', 'create', 'edit']);
 Route::resource('expediente', PacienteController::class);
 
 
@@ -140,6 +152,13 @@ Route::post('/servicios/encargados', [EncargadoMantenimientoController::class, '
 // --- TERMINAN RUTAS DE SERVICIOS ---
 
 
+Route::get('/reporte', [ReporteController::class, 'index'])->name('reporte.index');
+
+Route::resource('material', MaterialController::class)
+    ->middleware(['auth', 'role:encargado_ginecologia']) // La protegemos aquí
+    ->parameters(['material' => 'material']); // El nombre del parámetro es 'material'
+
+    //Fin de grupo Ginecologia
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
@@ -147,9 +166,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-Route::resource('material', MaterialController::class)
-    ->middleware(['auth', 'role:encargado_ginecologia']) // La protegemos aquí
-    ->parameters(['material' => 'material']); // El nombre del parámetro es 'material'
+
 
 
 require __DIR__.'/auth.php';

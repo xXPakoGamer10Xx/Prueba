@@ -3,3 +3,4 @@ import './odontologia/modals';
 import './ginecologia/expediente_crud.js';
 import './bootstrap';
 import 'bootstrap';
+import './ginecologia/cirugia_crud.js';

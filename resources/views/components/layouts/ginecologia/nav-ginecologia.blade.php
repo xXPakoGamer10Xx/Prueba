@@ -72,10 +72,10 @@
                         <a class="nav-link" href="{{ route('expediente.index') }}">Expediente</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="{{ route('ginecologia.reporte') }}">Reporte</a>
+                        <a class="nav-link" href="{{ route('reporte.index') }}">Reporte</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="{{ route('ginecologia.cirugia') }}">Cirugia</a>
+                        <a class="nav-link" href="{{ route('cirugia.index') }}">Cirugia</a>
                         </li>
                         
                     </ul>
