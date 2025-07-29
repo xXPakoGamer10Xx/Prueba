@@ -6,7 +6,9 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Odontologia\Pedido;
 use App\Models\Odontologia\Insumo;
+use App\Models\Odontologia\Almacen;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class PeticionesTable extends Component
 {
@@ -17,6 +19,7 @@ class PeticionesTable extends Component
     public $peticionToCancelId;
     public $peticionToDeleteId;
     public $cantidad;
+    public $almacenCantidadDisponible;
     public $message = '';
     public $messageType = '';
     protected $paginationTheme = 'bootstrap'; // Define el tema de paginación de Bootstrap
@@ -28,7 +31,8 @@ class PeticionesTable extends Component
     }
 
 /**
-     * Confirma la cancelación de un pedido y establece el ID.
+     * Confirma la autorización de un pedido y establece el ID.
+     * Recupera la cantidad disponible del almacén para el insumo.
      *
      * @param int $id
      * @return void
@@ -36,34 +40,92 @@ class PeticionesTable extends Component
     public function confirmPedidoModal($id)
     {
         $this->peticionToConfirmId = $id;
-        $this->dispatch('open-modal', 'modalConfirmarPedido');
+        $pedido = Pedido::with('almacenItem')->find($id); // Cargar la relación almacenItem
+        
+        if ($pedido && $pedido->almacenItem) {
+            $this->almacenCantidadDisponible = $pedido->almacenItem->cantidad;
+            $this->cantidad = $pedido->cantidad_solicitada; // Pre-llenar con la cantidad solicitada
+            $this->message = ''; // Limpiar mensajes previos al abrir el modal
+            $this->messageType = '';
+            $this->dispatch('open-modal', 'modalConfirmarPedido');
+        } else {
+            session()->flash('error', 'Pedido o insumo de almacén no encontrado.');
+            return redirect(request()->header('Referer'));
+        }
     }
 
     /**
-     * Cancela el pedido en la base de datos.
+     * Confirma el pedido, actualiza la cantidad autorizada y la del almacén.
      *
      * @return void
      */
     public function confirmPedido()
     {
-        if ($this->peticionToConfirmId) {
-            $pedido = Pedido::find($this->peticionToConfirmId);
-            if ($pedido) {
-                $pedido->cantidad_autorizada = $this->cantidad;
-                $pedido->estado_pedido = 'Entregado';
-                $pedido->fecha_entrega = now()->toDateString();
-                $pedido->save();
-                $this->peticionToConfirmId = null;
-                $this->message = 'Pedido editado exitosamente.';
-                $this->messageType = 'success';
+        // Reglas de validación
+        $rules = [
+            'cantidad' => [
+                'required',
+                'integer',
+                'min:1',
+                // Validar que la cantidad no exceda la disponible en el almacén
+                function ($attribute, $value, $fail) {
+                    $pedido = Pedido::with('almacenItem')->find($this->peticionToConfirmId);
+                    if ($pedido && $pedido->almacenItem) {
+                        if ($value > $pedido->almacenItem->cantidad) {
+                            $fail('La cantidad autorizada no puede ser mayor que la cantidad disponible en almacén (' . $pedido->almacenItem->cantidad . ').');
+                        }
+                    } else {
+                        $fail('No se pudo encontrar el insumo en almacén para validar la cantidad.');
+                    }
+                },
+            ],
+        ];
+
+        // Mensajes de validación personalizados
+        $messages = [
+            'cantidad.required' => 'La cantidad autorizada es obligatoria.',
+            'cantidad.integer' => 'La cantidad autorizada debe ser un número entero.',
+            'cantidad.min' => 'La cantidad autorizada debe ser al menos 1.',
+        ];
+
+        try {
+            $this->validate($rules, $messages);
+
+            if ($this->peticionToConfirmId) {
+                $pedido = Pedido::with('almacenItem')->find($this->peticionToConfirmId);
+
+                if ($pedido) {
+                    // Restar la cantidad autorizada del almacén
+                    $almacenItem = $pedido->almacenItem;
+                    $almacenItem->cantidad -= $this->cantidad;
+                    $almacenItem->save();
+
+                    // Actualizar el pedido
+                    $pedido->cantidad_autorizada = $this->cantidad;
+                    $pedido->estado_pedido = 'Entregado';
+                    $pedido->fecha_entrega = now()->toDateString();
+                    $pedido->save();
+
+                    $this->peticionToConfirmId = null;
+                    $this->almacenCantidadDisponible = null; // Limpiar la cantidad disponible
+                    $this->message = 'Pedido autorizado y almacén actualizado exitosamente.';
+                    $this->messageType = 'success';
+                }
             }
+        } catch (ValidationException $e) {
+            $this->message = 'Error de validación: ' . $e->getMessage();
+            $this->messageType = 'error';
+            throw $e;
+        } catch (\Exception $e) {
+            $this->message = 'Error al confirmar el pedido: ' . $e->getMessage();
+            $this->messageType = 'error';
         }
         
         session()->flash($this->messageType, $this->message);
         return redirect(request()->header('Referer'));
     }
 
-/**
+    /**
      * Confirma la cancelación de un pedido y establece el ID.
      *
      * @param int $id

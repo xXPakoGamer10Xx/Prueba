@@ -68,6 +68,7 @@
 
                                     @endif
 
+                                    @if($pedido->estado_pedido == 'Pendiente' || Auth::user()->rol == 'odontologia_consultorio')
                                         <button 
                                             type='button'
                                             class='btn-cancelar text-black border-0 bg-transparent'
@@ -78,7 +79,8 @@
                                             @endif
                                         >
                                             <i class='fa-solid fa-xmark'></i>
-                                        </button>
+                                        </button>                                    
+                                    @endif
 
                                     @if(Auth::user()->rol == 'odontologia_almacen')
                                     <button 

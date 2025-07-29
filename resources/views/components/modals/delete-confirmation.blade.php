@@ -1,12 +1,12 @@
 @props([
-    'modalId' => 'modalEliminarRegistro', // ID por defecto si no se especifica
-    'formId' => 'formularioEliminarRegistro', // ID por defecto del formulario
-    'wireModel' => 'itemToDeleteId', // Propiedad Livewire para el ID del elemento
-    'confirmAction' => 'deleteItem', // Método Livewire a llamar al confirmar
-    'iconClass' => 'fa-solid fa-circle-exclamation', // Clase del icono (por defecto de exclamación)
-    'iconSize' => '4rem', // Tamaño del icono
-    'width' => '18.75rem', // Ancho del modal
-    'titleId' => 'modalEliminarRegistroLabel', // ID del título del modal
+    'modalId' => 'modalEliminarRegistro',
+    'formId' => 'formularioEliminarRegistro',
+    'wireModel' => 'itemToDeleteId',
+    'confirmAction' => 'deleteItem',
+    'iconClass' => 'fa-solid fa-circle-exclamation',
+    'iconSize' => '4rem',
+    'width' => '18.75rem',
+    'titleId' => 'modalEliminarRegistroLabel',
     'title' => '',
     'message' => '',
 ])
@@ -23,10 +23,28 @@
                     <input type="hidden" name="formulario" value="eliminar">
                     <input type="hidden" wire:model="{{ $wireModel }}">
 
-                    @if ($title)
-                        <label for="cantidad" class="form-label">Cantidad Autorizada</label>
-                        <input type="number" min="0" placeholder="0" class="text-center form-control form-nuevo-input @error('cantidad') is-invalid @enderror" id="cantidad" wire:model="cantidad">
-                            @error('cantidad') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    {{-- Condicional para mostrar el campo de cantidad si la acción es confirmar pedido --}}
+                    @if ($confirmAction === 'confirmPedido')
+                        <div class="mb-3">
+                            <label for="cantidad" class="form-label">Cantidad Autorizada</label>
+                            <input 
+                                type="number" 
+                                min="0" 
+                                placeholder="0" 
+                                class="text-center form-control form-nuevo-input @error('cantidad') is-invalid @enderror" 
+                                id="cantidad" 
+                                wire:model="cantidad"
+                            >
+                            {{-- 
+                            @error('cantidad') 
+                                <div class="invalid-feedback">{{ $message }}</div> 
+                            @else
+                                @if ($message) 
+                                    <div class="text-danger mt-2">{{ $message }}</div>
+                                @endif
+                            @enderror
+                             --}}
+                        </div>
                     @else
                         <div class="mb-3 d-flex flex-column align-items-center gap-4">
                             <i style="font-size: {{ $iconSize }};" class="{{ $iconClass }}"></i>
