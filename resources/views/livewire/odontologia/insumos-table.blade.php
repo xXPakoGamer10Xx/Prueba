@@ -27,7 +27,9 @@
                             <td>{{ $insumo->presentacion->descripcion }}</td>
                             <td>{{ $insumo->contenido }}</td>
                             {{-- Muestra la caducidad formateada --}}
-                            <td>{{ $insumo->caducidad ? $insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</td>
+                            <td>
+                                <p class="m-0 {{ $insumo->caducidad && $insumo->caducidad->isPast() ? 'text-red-500' : '' }}">{{ $insumo->caducidad ? $insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</p>
+                            </td>
                             <td>
                                 <i
                                 class='fa-solid fa-trash-can cursor-pointer'

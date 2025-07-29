@@ -26,7 +26,10 @@
                             <td>{{ $item->insumo->laboratorio->descripcion ?? 'N/A' }}</td>
                             <td>{{ $item->insumo->presentacion->descripcion ?? 'N/A' }}</td>
                             <td>{{ $item->insumo->contenido ?? 'N/A' }}</td>
-                            <td>{{ $item->insumo->caducidad ? $item->insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}</td>
+                            <td>
+                                <p class="m-0 {{ $item->insumo->caducidad && $item->insumo->caducidad->isPast() ? 'text-red-500' : '' }}">
+                                {{ $item->insumo->caducidad ? $item->insumo->caducidad->format('d-m-Y') : 'Sin fecha' }}
+                            </p>
                             <td>
                                 {{-- Input para la cantidad que actualiza la BD --}}
                                 @if(Auth::user()->rol == 'odontologia_consultorio')
