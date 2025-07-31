@@ -51,11 +51,9 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
         <p class="text-zinc-700">Ingresa los siguientes campos para registrar una cuenta</p>
     </header>
 
-    <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="register" class="flex flex-col gap-6">
-        <!-- Name -->
         <label for="nombre">Nombre</label>
         <input
             id="nombre"
@@ -65,10 +63,12 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
             autofocus
             autocomplete="name"
             placeholder="Nombre completo"
-            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300 @error('name') is-invalid @enderror"
         />
+        @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
 
-        <!-- Email Address -->
         <label for="correo">Correo</label>
         <input
             id="correo"
@@ -77,20 +77,24 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
             required
             autocomplete="email"
             placeholder="correo@ejemplo.com"
-            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300 @error('email') is-invalid @enderror"
         />
+        @error('email')
+            <div class="invalid-feedback">El correo ingresado ya está siendo utilizado por otro usuario.</div>
+        @enderror
 
-        <!-- Rol -->
         <label for="rol">Rol</label>
-        <select id="rol" wire:model="rol" class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300 cursor-pointer">
+        <select id="rol" wire:model="rol" class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300 cursor-pointer @error('rol') is-invalid @enderror">
             <option value="">-- Seleccione un rol --</option>
             <option value="encargado_ginecologia">Ginecología</option>
             <option value="odontologia_consultorio">Odontología - Consultorio</option>
             <option value="odontologia_almacen">Odontología - Almacén</option>
             <option value="encargado_servicios">Servicios generales</option>
         </select>
+        @error('rol')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
         
-        <!-- Password -->
         <label for="contraseña">Contraseña</label>
         <input
             id="contraseña"
@@ -99,10 +103,12 @@ new #[Layout('components.layouts.auth.register')] class extends Component {
             required
             autocomplete="new-password"
             viewable
-            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
+            class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300 @error('password') is-invalid @enderror"
         />
+        @error('password')
+            <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+        @enderror
 
-        <!-- Confirm Password -->
         <label for="confirmar-contraseña">Confirmar Contraseña</label>
         <input
             id="confirmar-contraseña"
