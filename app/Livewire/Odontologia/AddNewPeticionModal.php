@@ -4,8 +4,10 @@ namespace App\Livewire\Odontologia;
 
 use Livewire\Component;
 use App\Models\Odontologia\Pedido;
-use Illuminate\Support\Facades\Auth; // To get the authenticated user's role
-use Carbon\Carbon; // To get the current date
+use App\Models\Odontologia\Almacen;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class AddNewPeticionModal extends Component
 {
@@ -34,9 +36,10 @@ class AddNewPeticionModal extends Component
         'cantidad_solicitada.required' => 'La cantidad solicitada es obligatoria.',
         'cantidad_solicitada.integer' => 'La cantidad solicitada debe ser un número entero.',
         'cantidad_solicitada.min' => 'La cantidad solicitada debe ser al menos 1.',
+        'cantidad_solicitada.max_stock' => 'La cantidad solicitada excede el stock disponible en almacén.',
     ];
 
-    // Esta es la única declaración de la función setInsumoAlmacenId
+    // This is the only declaration of the setInsumoAlmacenId function
     public function setInsumoAlmacenId($id)
     {
         $this->id_insumo_almacen_fk = $id;
@@ -48,6 +51,14 @@ class AddNewPeticionModal extends Component
     {
         $this->resetMessage();
         $this->validate();
+
+        $almacenItem = Almacen::where('id_insumo_almacen', $this->id_insumo_almacen_fk)->first();
+
+        if (!$almacenItem || $this->cantidad_solicitada > $almacenItem->cantidad) {
+            throw ValidationException::withMessages([
+                'cantidad_solicitada' => 'La cantidad solicitada excede el stock disponible en almacén.',
+            ]);
+        }
 
         // Ensure the user has the correct role
         if (Auth::check() && Auth::user()->rol === 'odontologia_consultorio') {
@@ -63,8 +74,7 @@ class AddNewPeticionModal extends Component
 
                 $this->message = 'Petición registrada exitosamente.';
                 $this->messageType = 'success';
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                // Re-throw validation exceptions for Livewire to handle
+            } catch (ValidationException $e) {
                 throw $e;
             } catch (\Exception $e) {
                 $this->message = 'Error al registrar la petición: ' . $e->getMessage();
