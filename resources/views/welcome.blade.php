@@ -22,18 +22,42 @@
                 <div class="logo">
                     <img src="{{ asset('img/logo_Mexico.svg') }}" alt="Logo del Gobierno de México" class="">
                 </div>
-
-                {{-- Botones de acción --}}
-                <div class="flex gap-2">
-                    <a href="{{ route('login') }}"
-                       class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
-                        Iniciar sesión
-                    </a>
-                    <a href="{{ route('register') }}"
-                       class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
-                        Registrarse
-                    </a>
-                </div>
+                
+                @auth
+                    <div class="flex gap-2">
+                        @if(Auth::user()->rol == 'encargado_ginecologia')
+                            <a href="{{ route('ginecologia.index') }}"
+                            class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
+                                Ginecología
+                            </a>
+                        @elseif (Auth::user()->rol == 'odontologia_consultorio' || Auth::user()->rol == 'odontologia_almacen')
+                            @if (Auth::user()->rol == 'odontologia_consultorio')
+                                <a href="{{ route('odontologia.consultorio.index') }}"
+                            @else
+                                <a href="{{ route('odontologia.almacen.index') }}"
+                            @endif
+                            class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
+                                Odontología - @if (Auth::user()->rol == 'odontologia_consultorio') Consultorio @else Almacén @endif
+                            </a>
+                        @elseif (Auth::user()->rol == 'encargado_servicios')
+                            <a href="{{ route('servicios.index') }}"
+                            class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
+                                Servicios Generales
+                            </a>
+                        @endif
+                    </div>
+                @else
+                    <div class="flex gap-2">
+                        <a href="{{ route('login') }}"
+                        class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
+                            Iniciar sesión
+                        </a>
+                        <a href="{{ route('register') }}"
+                        class="px-[10px] py-[6px] text-decoration-none text-sm font-semibold text-white border border-white rounded-md hover:opacity-75 hover:text-custom-red duration-300">
+                            Registrarse
+                        </a>
+                    </div>
+                @endauth
             </nav>
         </header>
 
