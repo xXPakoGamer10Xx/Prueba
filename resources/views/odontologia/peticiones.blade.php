@@ -1,3 +1,5 @@
+@section('title', 'Peticiones')
+
 @extends('components.layouts.odontologia.navbar')
 
 @section('contenido')

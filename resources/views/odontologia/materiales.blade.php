@@ -1,3 +1,5 @@
+@section('title', 'Materiales Externos')
+
 @extends('components.layouts.odontologia.navbar')
 
 @section('contenido')

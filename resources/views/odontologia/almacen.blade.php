@@ -1,3 +1,5 @@
+@section('title', 'Almacén')
+
 @extends('components.layouts.odontologia.navbar')
 
 @section('contenido')

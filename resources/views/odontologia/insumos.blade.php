@@ -1,3 +1,5 @@
+@section('title', 'Insumos')
+
 @extends('components.layouts.odontologia.navbar')
 
 @section('contenido')

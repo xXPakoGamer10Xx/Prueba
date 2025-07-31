@@ -1,3 +1,5 @@
+@section('title', 'Laboratorios y Presentaciones')
+
 @extends('components.layouts.odontologia.navbar')
 
 @section('contenido')
