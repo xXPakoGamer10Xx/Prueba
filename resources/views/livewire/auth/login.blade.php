@@ -33,7 +33,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'email' => __('Correo o contraseña inválidos.'),
             ]);
         }
 
@@ -112,6 +112,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
             placeholder="correo@ejemplo.com"
             class="w-full py-2 px-4 border-1 rounded text-gray-700 border-gray-300"
         />
+        @error('email')
+            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+        @enderror
 
         <label for="contraseña" class="text-gray-700">Contraseña</label>
         <div class="relative">
