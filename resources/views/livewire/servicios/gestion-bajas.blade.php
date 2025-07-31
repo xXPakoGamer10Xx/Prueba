@@ -7,22 +7,6 @@
             </button>
         </div>
 
-        {{-- ELIMINAR ESTAS LÍNEAS DE AQUÍ. NO DEBEN ESTAR FUERA DEL MODAL. --}}
-        {{--
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-        @endif
-        @if (session('warning'))
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">{{ session('warning') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-        @endif
-        @if (session('info'))
-            <div class="alert alert-info alert-dismissible fade show" role="alert">{{ session('info') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-        @endif
-        --}}
-
         <div class="d-flex mb-4">
             <input wire:model.live.debounce.300ms="search" class="form-control me-2" type="search" placeholder="Buscar por equipo, serie o motivo...">
         </div>
@@ -36,7 +20,7 @@
                         <th>Fecha de Baja</th>
                         <th>Estado</th>
                         <th>Motivo</th>
-                        <th>Acciones</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,9 +29,10 @@
                         <td>{{ $baja->id_proceso_baja }}</td>
                         <td>{{ $baja->inventario->equipo->nombre ?? 'N/D' }} ({{ $baja->inventario->num_serie ?? 'N/D' }})</td>
                         <td>{{ isset($baja->fecha_baja) ? \Carbon\Carbon::parse($baja->fecha_baja)->format('d/m/Y') : 'N/A' }}</td>
-                        <td><span class="badge @switch($baja->estado) @case('baja completa') bg-danger @break @case('en proceso') bg-warning text-dark @break @case('cancelada') bg-secondary @break @default bg-light text-dark @endswitch">{{ ucfirst($baja->estado) }}</span></td>
+                        {{-- CORREGIDO: 'cancelada' a 'cancelado' para que el badge se muestre correctamente --}}
+                        <td><span class="badge @switch($baja->estado) @case('baja completa') bg-danger @break @case('en proceso') bg-warning text-dark @break @case('cancelado') bg-secondary @break @default bg-light text-dark @endswitch">{{ ucfirst($baja->estado) }}</span></td>
                         <td>{{ Str::limit($baja->motivo, 50) }}</td>
-                        <td>
+                        <td class="text-center">
                             @php
                                 $bajaData = [
                                     'id_proceso_baja' => $baja->id_proceso_baja,
@@ -89,26 +74,15 @@
                     <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
                 </div>
                 <div class="modal-body">
-                    {{-- ESTAS SON LAS LÍNEAS CORRECTAS: Mensajes flash DENTRO del modal --}}
-                    @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-                    @endif
-                    @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-                    @endif
-                    @if (session('warning'))
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">{{ session('warning') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-                    @endif
-                    @if (session('info'))
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">{{ session('info') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-                    @endif
-                    {{-- FIN DE MENSAJES MOVIDOS --}}
+                    @if (session()->has('success')) <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div> @endif
+                    @if (session()->has('error')) <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div> @endif
+                    @if (session()->has('warning')) <div class="alert alert-warning alert-dismissible fade show" role="alert">{{ session('warning') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div> @endif
+                    @if (session()->has('info')) <div class="alert alert-info alert-dismissible fade show" role="alert">{{ session('info') }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div> @endif
 
                     <form wire:submit.prevent="saveBaja" id="baja-form" class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label">Equipo del Inventario:</label>
-                            <select wire:model.live="id_inventario_fk" class="form-select @error('id_inventario_fk') is-invalid @enderror" required
-                                {{ $isEditing ? 'disabled' : '' }}>
+                            <select wire:model.live="id_inventario_fk" class="form-select @error('id_inventario_fk') is-invalid @enderror" required {{ $isEditing ? 'disabled' : '' }}>
                                 <option value="">Selecciona un equipo...</option>
                                 @foreach ($equipos_inventario as $item)
                                     <option value="{{ $item->id_inventario }}">
@@ -122,33 +96,37 @@
                                 <div class="form-text mt-2 p-2 bg-light border rounded">{{ $ultimoMantenimientoInfo }}</div>
                             @endif
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Baja:</label>
                             <input type="date" wire:model="fecha_baja" class="form-control @error('fecha_baja') is-invalid @enderror" required>
                             @error('fecha_baja') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Estado del Proceso:</label>
-                            <select wire:model="estado" class="form-select @error('estado') is-invalid @enderror" required>
+                            {{-- ===================== CAMBIO IMPORTANTE AQUÍ ===================== --}}
+                            {{-- Este select ahora se genera dinámicamente con las opciones válidas --}}
+                            <select wire:model.live="estado" class="form-select @error('estado') is-invalid @enderror" required>
                                 <option value="">Selecciona un estado...</option>
-                                <option value="en proceso" {{ $isEditing && $originalBajaEstado === 'en proceso' ? 'disabled' : '' }}>En proceso</option>
-                                <option value="baja completa">Baja completa</option>
-                                <option value="cancelada" {{ $isEditing && $originalBajaEstado === 'cancelada' ? 'disabled' : '' }}>Cancelada</option>
+                                @foreach($availableEstados as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
                             </select>
+                             {{-- ===================================================================== --}}
                             @error('estado') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
+
                         <div class="col-12">
                             <label class="form-label">Motivo de la Baja:</label>
-                            <textarea wire:model="motivo" class="form-control @error('motivo') is-invalid @enderror" rows="3" required
-                                {{ $isEditing && $originalBajaEstado === 'cancelada' ? 'disabled' : '' }}></textarea>
+                            <textarea wire:model="motivo" class="form-control @error('motivo') is-invalid @enderror" rows="3" required {{ $isEditing && $originalBajaEstado === 'cancelado' ? 'disabled' : '' }}></textarea>
                             @error('motivo') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" wire:click="$set('showModal', false)">Cancelar</button>
-                    <button type="submit" form="baja-form" class="btn btn-danger"
-                        {{ $isEditing && $originalBajaEstado === 'cancelada' ? 'disabled' : '' }}>
+                    <button type="submit" form="baja-form" class="btn btn-danger" {{ $isEditing && $originalBajaEstado === 'cancelado' ? 'disabled' : '' }}>
                         {{ $isEditing ? 'Actualizar Baja' : 'Registrar Baja' }}
                     </button>
                 </div>
@@ -161,9 +139,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         function generarPDFDesdeBoton(button) {
-            const dataString = button.getAttribute('data-reporte');
-            const data = JSON.parse(dataString);
-            generarPDFBaja(data);
+            try {
+                const dataString = button.getAttribute('data-reporte');
+                if (!dataString) return;
+                const data = JSON.parse(dataString);
+                generarPDFBaja(data);
+            } catch (e) {
+                console.error("Error al generar PDF de baja:", e);
+                alert("No se pudo generar el reporte en PDF.");
+            }
         }
 
         function generarPDFBaja(data) {
@@ -181,7 +165,7 @@
             pdf.setFont("helvetica", "normal");
             pdf.setFontSize(12);
             pdf.text('Hospital Municipal de Chiconcuac – Servicios Generales', pdfWidth / 2, y, { align: 'center' });
-            y += 6;
+            y += 12;
 
             pdf.setFontSize(10);
             pdf.text(`Generado el: ${fechaGenerado}`, pdfWidth - 15, y, { align: 'right' });
@@ -224,12 +208,13 @@
             pdf.setFontSize(12);
             pdf.text('Motivo de la Baja:', 15, y);
             y += 8;
+
             pdf.setFont("helvetica", "normal");
             const motivo = pdf.splitTextToSize(String(data.motivo), pdfWidth - 30);
             pdf.text(motivo, 15, y);
+            y += (motivo.length * 5) + 10;
 
             const firmaY = pdf.internal.pageSize.getHeight() - 40;
-
             pdf.line(25, firmaY, 85, firmaY);
             pdf.setFontSize(10);
             pdf.text('Firma de Autorización', 30, firmaY + 5);

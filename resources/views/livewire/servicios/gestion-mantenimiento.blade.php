@@ -1,15 +1,19 @@
 <div>
-    {{-- Este es el archivo principal que he modificado. --}}
-    {{-- He añadido: --}}
-    {{-- 1. El script de la librería jsPDF. --}}
-    {{-- 2. Una nueva columna "Acciones" en la tabla. --}}
-    {{-- 3. Un botón para generar el PDF en cada fila. --}}
-    {{-- 4. El script con la función `generarPDFMantenimiento` al final. --}}
+    {{--
+        Vista corregida para sincronizar con el componente GestionMantenimiento.
+        Cambios realizados:
+        1.  wire:click para abrir modales actualizado a los nuevos nombres de método.
+        2.  wire:model en los formularios (Mantenimiento y Encargado) actualizado para coincidir
+            con los nombres de las propiedades del componente (ej. 'id_inventario_fk', 'nombre_encargado').
+        3.  La lógica de generación de PDF ahora se activa a través de un evento de Livewire,
+            evitando el error "generarPDFDesdeBoton is not defined".
+    --}}
 
     <main class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <h2 class="h3 mb-0">Historial de Mantenimientos</h2>
-            <button type="button" class="btn btn-primary" wire:click="openModal">
+
+            <button type="button" class="btn btn-primary" wire:click="crearMantenimiento">
                 <i class="fas fa-plus me-2"></i>Añadir Nuevo Reporte
             </button>
         </div>
@@ -34,7 +38,7 @@
                         <th>Fecha</th>
                         <th>Tipo</th>
                         <th>Encargado</th>
-                        <th>Acciones</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,7 +49,7 @@
                         <td>{{ \Carbon\Carbon::parse($reporte->fecha)->format('d/m/Y') }}</td>
                         <td><span class="badge {{ $reporte->tipo == 'correctivo' ? 'bg-warning text-dark' : 'bg-info text-dark' }}">{{ ucfirst($reporte->tipo) }}</span></td>
                         <td>{{ $reporte->encargadoMantenimiento->nombre ?? '' }} {{ $reporte->encargadoMantenimiento->apellidos ?? '' }}</td>
-                        <td>
+                        <td class="text-center">
                             @php
                                 $reporteData = [
                                     'id_mantenimiento' => $reporte->id_mantenimiento,
@@ -89,61 +93,63 @@
                     <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
                 </div>
                 <div class="modal-body">
-                    <form wire:submit.prevent="saveMantenimiento" class="row g-3">
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="id_inventario" class="form-label">Equipo de inventario:</label>
-                            {{-- CAMBIO CRÍTICO AQUÍ: wire:model y @error ACTUALIZADOS A 'id_inventario' --}}
-                            <select wire:model="id_inventario" id="id_inventario" class="form-select @error('id_inventario') is-invalid @enderror" required>
+                            <label for="id_inventario_fk" class="form-label">Equipo de inventario:</label>
+                            <select wire:model="id_inventario_fk" id="id_inventario_fk" class="form-select @error('id_inventario_fk') is-invalid @enderror" required>
                                 <option value="">Seleccionar equipo...</option>
                                 @foreach ($equipos_inventario as $item)
                                     <option value="{{ $item->id_inventario }}">{{ $item->equipo->nombre }} ({{ $item->num_serie }})</option>
                                 @endforeach
                             </select>
-                            @error('id_inventario') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                            @error('id_inventario_fk') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
+
                         <div class="col-md-6">
-                            <label for="id_encargado_man" class="form-label">Encargado:</label>
+                            <label for="id_encargado_man_fk" class="form-label">Encargado:</label>
                             <div class="input-group">
-                                {{-- CAMBIO CRÍTICO AQUÍ: wire:model y @error ACTUALIZADOS A 'id_encargado_man' --}}
-                                <select wire:model="id_encargado_man" id="id_encargado_man" class="form-select @error('id_encargado_man') is-invalid @enderror" required>
+                                <select wire:model="id_encargado_man_fk" id="id_encargado_man_fk" class="form-select @error('id_encargado_man_fk') is-invalid @enderror" required>
                                     <option value="">Seleccionar encargado...</option>
                                     @foreach ($encargados as $encargado)
                                         <option value="{{ $encargado->id_encargado_man }}">{{ $encargado->nombre }} {{ $encargado->apellidos }}</option>
                                     @endforeach
                                 </select>
-                                <button class="btn btn-outline-secondary" type="button" wire:click="openEncargadoModal"><i class="fas fa-user-plus"></i></button>
+                                <button class="btn btn-outline-secondary" type="button" wire:click="crearEncargado"><i class="fas fa-user-plus"></i></button>
                             </div>
-                            @error('id_encargado_man') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                            @error('id_encargado_man_fk') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Fecha:</label>
                             <input type="date" wire:model="fecha" class="form-control @error('fecha') is-invalid @enderror" required>
                             @error('fecha') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Tipo:</label>
                             <select wire:model="tipo" class="form-select @error('tipo') is-invalid @enderror" required>
-                                <option value="">Seleccionar...</option>
                                 <option value="preventivo">Preventivo</option>
                                 <option value="correctivo">Correctivo</option>
                             </select>
                             @error('tipo') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
+
                         <div class="col-12">
                             <label class="form-label">Refacciones y Material:</label>
                             <textarea wire:model="refacciones_material" class="form-control @error('refacciones_material') is-invalid @enderror" rows="3"></textarea>
                             @error('refacciones_material') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
+
                         <div class="col-12">
                             <label class="form-label">Observaciones:</label>
                             <textarea wire:model="observaciones" class="form-control @error('observaciones') is-invalid @enderror" rows="3"></textarea>
                             @error('observaciones') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
-                        <div class="col-12 text-end mt-4">
-                            <button type="button" class="btn btn-secondary" wire:click="$set('showModal', false)">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Guardar Reporte</button>
-                        </div>
-                    </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" wire:click="$set('showModal', false)">Cancelar</button>
+                    <button type="button" class="btn btn-primary" wire:click="saveMantenimiento">Guardar Reporte</button>
                 </div>
             </div>
         </div>
@@ -162,11 +168,27 @@
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="saveEncargado">
-                        <div class="mb-3"><label class="form-label">Nombre(s):</label><input type="text" wire:model="nombre" class="form-control @error('nombre') is-invalid @enderror">@error('nombre') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
-                        <div class="mb-3"><label class="form-label">Apellidos:</label><input type="text" wire:model="apellidos" class="form-control @error('apellidos') is-invalid @enderror">@error('apellidos') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
-                        <div class="mb-3"><label class="form-label">Cargo:</label><input type="text" wire:model="cargo" class="form-control @error('cargo') is-invalid @enderror">@error('cargo') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
-                        <div class="mb-3"><label class="form-label">Contacto:</label><input type="text" wire:model="contacto" class="form-control @error('contacto') is-invalid @enderror">@error('contacto') <span class="invalid-feedback">{{ $message }}</span> @enderror</div>
-                        <div class="modal-footer">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre(s):</label>
+                            <input type="text" wire:model="nombre_encargado" class="form-control @error('nombre_encargado') is-invalid @enderror">
+                            @error('nombre_encargado') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Apellidos:</label>
+                            <input type="text" wire:model="apellidos_encargado" class="form-control @error('apellidos_encargado') is-invalid @enderror">
+                            @error('apellidos_encargado') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cargo:</label>
+                            <input type="text" wire:model="cargo_encargado" class="form-control @error('cargo_encargado') is-invalid @enderror">
+                            @error('cargo_encargado') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contacto (Teléfono/Email):</label>
+                            <input type="text" wire:model="contacto_encargado" class="form-control @error('contacto_encargado') is-invalid @enderror">
+                            @error('contacto_encargado') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="modal-footer px-0 pb-0">
                             <button type="button" class="btn btn-secondary" wire:click="$set('showEncargadoModal', false)">Cancelar</button>
                             <button type="submit" class="btn btn-primary">Guardar Encargado</button>
                         </div>
@@ -178,7 +200,8 @@
     <div class="modal-backdrop fade show" style="z-index: 1055;"></div>
     @endif
 
-    {{-- SCRIPT: Carga la librería para generar PDFs --}}
+    {{-- SCRIPT: Carga la librería para generar PDFs y define la función --}}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         // NUEVA FUNCIÓN: Lee los datos desde el botón y llama a la función principal
