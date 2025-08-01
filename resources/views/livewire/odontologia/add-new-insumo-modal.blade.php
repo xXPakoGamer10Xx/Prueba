@@ -27,7 +27,7 @@
 
                         <div class="mb-3 col-6">
                             <label for="id_laboratorio" class="form-label">Laboratorio</label>
-                            <div class="d-flex gap-3">
+                            <div class="d-flex flex-column">
                                 <select id="id_laboratorio" wire:model.live="id_laboratorio" class="form-select form-nuevo-select @error('id_laboratorio') is-invalid @enderror" aria-label="Default select example">
                                     <option value="">-- Seleccione --</option>
                                     @foreach ($laboratorios as $laboratorio)
@@ -48,7 +48,7 @@
 
                         <div class="mb-3 col-6">
                             <label for="id_presentacion" class="form-label">Presentación</label>
-                            <div class="d-flex gap-3">
+                            <div class="d-flex flex-column">
                                 <select id="id_presentacion" wire:model.live="id_presentacion" class="form-select form-nuevo-select @error('id_presentacion') is-invalid @enderror" aria-label="Default select example">
                                     <option value="">-- Seleccione --</option>
                                     @foreach ($presentaciones as $presentacion)
