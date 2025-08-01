@@ -24,8 +24,6 @@ class PresentacionesTable extends Component
     public function confirmDelete($id)
     {
         $this->itemToBeDeleted = $id;
-        // Despacha un evento para abrir la modal de confirmación de eliminación
-        $this->dispatch('open-modal', 'modalEliminarPresentacion');
     }
 
     /**

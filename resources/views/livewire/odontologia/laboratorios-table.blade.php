@@ -20,6 +20,8 @@
                                 <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $laboratorio->id_laboratorio }})"
                                     title="Eliminar registro"
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#modalEliminarLaboratorio'
                                 >
                                     <i
                                     class='fa-solid fa-trash-can cursor-pointer'

@@ -31,6 +31,8 @@
                                 <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $material->id_material }})"
                                     title="Eliminar registro"
+                                    data-bs-toggle='modal' 
+                                    data-bs-target='#deleteMaterialModal'
                                 >
                                     <i
                                     class='fa-solid fa-trash-can cursor-pointer'

@@ -51,6 +51,8 @@
                                     class="btn btn-primary btn-sm text-white"
                                     title="Pedir insumo"
                                     wire:click="openPeticionModal({{ $item->id_insumo_almacen }})"
+                                    data-bs-toggle='modal' 
+                                    data-bs-target='#modalPedir'
                                 >
                                     <i
                                     class='fa-solid fa-plus cursor-pointer'
@@ -60,6 +62,8 @@
                                 <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $item->id_insumo_almacen }})"
                                     title="Eliminar registro"
+                                    data-bs-toggle='modal' 
+                                    data-bs-target='#modalEliminarInsumo'
                                 >
                                     <i
                                     class='fa-solid fa-trash-can cursor-pointer'

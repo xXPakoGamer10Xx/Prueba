@@ -61,6 +61,8 @@
                                             class="btn btn-success btn-sm text-white"
                                             title="Confirmar pedido"
                                             wire:click="confirmPedidoModal({{ $pedido->id_pedido }})"
+                                            data-bs-toggle='modal' 
+                                            data-bs-target='#modalConfirmarPedido'
                                         >
                                             <i class="fa-solid fa-check"></i>
                                         </button>
@@ -74,6 +76,8 @@
                                             class="btn btn-secondary btn-sm text-white"
                                             title="Cancelar pedido"
                                             wire:click="confirmCancel({{ $pedido->id_pedido }})"
+                                            data-bs-toggle='modal' 
+                                            data-bs-target='#modalCancelarPedido'
                                             @if($pedido->estado_pedido == 'Cancelado' || $pedido->estado_pedido == 'Entregado')
                                                 disabled
                                             @endif
@@ -88,6 +92,8 @@
                                         class="btn btn-danger btn-sm"
                                         title="Eliminar registro"
                                         wire:click="confirmDelete({{ $pedido->id_pedido }})"
+                                        data-bs-toggle='modal' 
+                                        data-bs-target='#modalEliminarRegistro'
                                     >
                                         <i class='fas fa-trash-alt cursor-pointer'></i>
                                     </button>
@@ -106,7 +112,7 @@
         </div>
     @endif
 
-    {{-- Modal de Cancelar Pedido --}}
+    {{-- Modal de Confirmar Pedido --}}
     <x-modals.delete-confirmation
         modalId="modalConfirmarPedido"
         formId="formularioCancelarPedido"
@@ -117,7 +123,6 @@
         width="18.75rem"
         titleId="modalEliminarPedidoLabel"
         title="Confirmar pedido"
-        message="¿Está seguro que desea cancelar este pedido?"
     ></x-modals.delete-confirmation>
 
     {{-- Modal de Cancelar Pedido --}}

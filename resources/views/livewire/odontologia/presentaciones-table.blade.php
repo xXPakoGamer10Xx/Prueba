@@ -20,6 +20,8 @@
                                 <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $presentacion->id_presentacion }})"
                                     title="Eliminar registro"
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#modalEliminarPresentacion'
                                 >
                                     <i
                                     class='fa-solid fa-trash-can cursor-pointer'

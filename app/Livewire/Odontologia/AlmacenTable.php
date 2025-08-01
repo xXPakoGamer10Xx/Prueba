@@ -65,7 +65,6 @@ class AlmacenTable extends Component
     public function confirmDelete($id)
     {
         $this->itemToDeleteId = $id;
-        $this->dispatch('open-modal', 'modalEliminarInsumo');
     }
 
     public function deleteInsumo()
@@ -89,7 +88,6 @@ class AlmacenTable extends Component
     // Corrected method to open the peticion modal and pass the insumo ID
     public function openPeticionModal($id_insumo_almacen)
     {
-        $this->dispatch('open-modal', 'modalPedir'); // Open the modal
         // Pass the ID directly as an argument, not a named parameter
         $this->dispatch('openPeticionModal', $id_insumo_almacen);
     }

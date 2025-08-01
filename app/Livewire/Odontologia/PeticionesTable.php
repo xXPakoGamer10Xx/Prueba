@@ -48,7 +48,6 @@ class PeticionesTable extends Component
             $this->cantidad = $pedido->cantidad_solicitada; // Pre-llenar con la cantidad solicitada
             $this->message = ''; // Limpiar mensajes previos al abrir el modal
             $this->messageType = '';
-            $this->dispatch('open-modal', 'modalConfirmarPedido');
         } else {
             session()->flash('error', 'Pedido o insumo de almacén no encontrado.');
             return redirect(request()->header('Referer'));
@@ -150,7 +149,6 @@ class PeticionesTable extends Component
     public function confirmCancel($id)
     {
         $this->peticionToCancelId = $id;
-        $this->dispatch('open-modal', 'modalCancelarPedido');
     }
 
     /**
@@ -184,7 +182,6 @@ class PeticionesTable extends Component
     public function confirmDelete($id)
     {
         $this->peticionToDeleteId = $id;
-        $this->dispatch('open-modal', 'modalEliminarRegistro');
     }
 
     /**

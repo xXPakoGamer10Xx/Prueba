@@ -32,8 +32,6 @@ class InsumosTable extends Component
     public function confirmDelete($id)
     {
         $this->itemToDeleteId = $id;
-        // Despacha un evento para abrir la modal de confirmación de eliminación
-        $this->dispatch('open-modal', 'modalEliminarInsumo');
     }
 
     /**

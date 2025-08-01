@@ -34,6 +34,8 @@
                                 <button class="btn btn-danger btn-sm"
                                     wire:click="confirmDelete({{ $insumo->id_insumo }})"
                                     title="Eliminar registro"
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#modalEliminarInsumo'
                                 >
                                     <i
                                     class='fa-solid fa-trash-can cursor-pointer'

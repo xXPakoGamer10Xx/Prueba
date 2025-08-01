@@ -80,7 +80,7 @@ class ConsultorioTable extends Component
     public function confirmDelete($id)
     {
         $this->insumoToDeleteId = $id;
-        $this->dispatch('open-modal', 'modalEliminarInsumo'); // Despacha un evento para abrir la modal
+        // $this->dispatch('open-modal', 'modalEliminarInsumo'); // Despacha un evento para abrir la modal
     }
 
     /**

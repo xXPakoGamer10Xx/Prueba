@@ -81,7 +81,6 @@ class MaterialesExternosTable extends Component
     public function confirmDelete($id)
     {
         $this->materialToDeleteId = $id;
-        $this->dispatch('open-modal', 'deleteMaterialModal'); // Despacha un evento para 
     }
 
     /**
