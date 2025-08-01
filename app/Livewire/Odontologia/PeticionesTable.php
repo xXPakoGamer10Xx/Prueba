@@ -72,7 +72,7 @@ class PeticionesTable extends Component
                     $pedido = Pedido::with('almacenItem')->find($this->peticionToConfirmId);
                     if ($pedido && $pedido->almacenItem) {
                         if ($value > $pedido->almacenItem->cantidad) {
-                            $fail('La cantidad autorizada no puede ser mayor que la cantidad disponible en almacén (' . $pedido->almacenItem->cantidad . ').');
+                            $fail('La cantidad autorizada no puede ser mayor que la cantidad disponible en almacén (' . $pedido->almacenItem->cantidad . ' en stock).');
                         }
                     } else {
                         $fail('No se pudo encontrar el insumo en almacén para validar la cantidad.');

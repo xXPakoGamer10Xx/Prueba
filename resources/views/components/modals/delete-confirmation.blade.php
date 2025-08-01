@@ -35,7 +35,6 @@
                                 id="cantidad" 
                                 wire:model="cantidad"
                             >
-                            {{-- 
                             @error('cantidad') 
                                 <div class="invalid-feedback">{{ $message }}</div> 
                             @else
@@ -43,7 +42,6 @@
                                     <div class="text-danger mt-2">{{ $message }}</div>
                                 @endif
                             @enderror
-                             --}}
                         </div>
                     @else
                         <div class="mb-3 d-flex flex-column align-items-center gap-4">
