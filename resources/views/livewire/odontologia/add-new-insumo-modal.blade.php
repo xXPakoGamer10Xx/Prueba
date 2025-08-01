@@ -72,7 +72,7 @@
                         @if($formulario === 'consultorio' || $formulario === 'almacen')
                             <div class="mb-3 col">
                                 <label for="cantidad" class="form-label">Cantidad</label>
-                                <input type="number" class="form-control text-center form-nuevo-input @error('cantidad') is-invalid @enderror" wire:model="cantidad" id="cantidad" min="0" placeholder="0">
+                                <input type="number" class="form-control text-center form-nuevo-input @error('cantidad') is-invalid @enderror" wire:model="cantidad" id="cantidad" min="0" max="1000" placeholder="0">
                                 @error('cantidad') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         @endif

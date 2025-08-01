@@ -45,7 +45,7 @@
                                         value="{{ $insumoConsultorio->cantidad }}"
                                         wire:change="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
                                         wire:keydown.enter.prevent="updateCantidad({{ $insumoConsultorio->id_insumo_consultorio }}, $event.target.value)"
-                                        min="0"
+                                        min="0" max="1000"
                                     >
                                 @elseif(Auth::user()->rol == 'odontologia_almacen')
                                     {{ $insumoConsultorio->cantidad }}

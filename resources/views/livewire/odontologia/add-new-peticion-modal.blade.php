@@ -12,7 +12,7 @@
 						<input type="hidden" name="id_insumo_almacen_fk" wire:model="id_insumo_almacen_fk">
 						<div class="mb-3">
 							<label for="cantidad_solicitada" class="form-label">Ingrese cuanto desea pedir:</label>
-							<input type="number" class="form-control text-center @error('cantidad_solicitada') is-invalid @enderror" id="cantidad_solicitada" wire:model="cantidad_solicitada" placeholder="0">
+							<input type="number" class="form-control text-center @error('cantidad_solicitada') is-invalid @enderror" id="cantidad_solicitada" wire:model="cantidad_solicitada" placeholder="0" min="1">
                             @error('cantidad_solicitada') <div class="invalid-feedback">{{ $message }}</div> @enderror
 						</div>
 					</div>

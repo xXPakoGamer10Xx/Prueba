@@ -17,7 +17,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="formularioAgregarMaterialCantidad" class="form-label">Cantidad:</label>
-                        <input type="number" class="form-control text-center @error('cantidad') is-invalid @enderror" id="formularioAgregarMaterialCantidad" wire:model="cantidad" min="0" placeholder="0">
+                        <input type="number" class="form-control text-center @error('cantidad') is-invalid @enderror" id="formularioAgregarMaterialCantidad" wire:model="cantidad" min="0" max="1000" placeholder="0">
                         @error('cantidad') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
     
