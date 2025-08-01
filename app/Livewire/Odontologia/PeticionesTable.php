@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Odontologia\Pedido;
 use App\Models\Odontologia\Insumo;
 use App\Models\Odontologia\Almacen;
+use App\Models\Odontologia\Consultorio;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -106,9 +107,24 @@ class PeticionesTable extends Component
                     $pedido->fecha_entrega = now()->toDateString();
                     $pedido->save();
 
+                    // Lógica para actualizar o insertar en la tabla 'consultorio'
+                    $insumoConsultorio = Consultorio::where('id_insumo_fk', $almacenItem->id_insumo_fk)->first();
+
+                    if ($insumoConsultorio) {
+                        // Si existe, actualizar la cantidad
+                        $insumoConsultorio->cantidad += $this->cantidad;
+                        $insumoConsultorio->save();
+                    } else {
+                        // Si no existe, crear un nuevo registro
+                        Consultorio::create([
+                            'id_insumo_fk' => $almacenItem->id_insumo_fk,
+                            'cantidad' => $this->cantidad,
+                        ]);
+                    }
+
                     $this->peticionToConfirmId = null;
-                    $this->almacenCantidadDisponible = null; // Limpiar la cantidad disponible
-                    $this->message = 'Pedido autorizado y almacén actualizado exitosamente.';
+                    $this->almacenCantidadDisponible = null;
+                    $this->message = 'Pedido autorizado, almacén y consultorio actualizados exitosamente.';
                     $this->messageType = 'success';
                 }
             }
@@ -120,7 +136,7 @@ class PeticionesTable extends Component
             $this->message = 'Error al confirmar el pedido: ' . $e->getMessage();
             $this->messageType = 'error';
         }
-        
+
         session()->flash($this->messageType, $this->message);
         return redirect(request()->header('Referer'));
     }
@@ -200,7 +216,7 @@ class PeticionesTable extends Component
                             ->orWhere('descripcion', 'like', '%' . $this->search . '%');
                       });
             })
-            ->orderBy('fecha_pedido', 'desc')
+            ->orderBy('id_pedido', 'desc')
             ->paginate(10);
 
         return view('livewire.odontologia.peticiones-table', [
