@@ -1,33 +1,97 @@
 <div>
-    {{--
-        Vista corregida para sincronizar con el componente GestionMantenimiento.
-        Cambios realizados:
-        1.  wire:click para abrir modales actualizado a los nuevos nombres de método.
-        2.  wire:model en los formularios (Mantenimiento y Encargado) actualizado para coincidir
-            con los nombres de las propiedades del componente (ej. 'id_inventario_fk', 'nombre_encargado').
-        3.  La lógica de generación de PDF ahora se activa a través de un evento de Livewire,
-            evitando el error "generarPDFDesdeBoton is not defined".
-    --}}
-
     <main class="container my-5">
+
+        <h2 class="h3 mb-3">Panel de Control</h2>
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <div class="fs-1 text-primary"><i class="fas fa-calendar-alt"></i></div>
+                        <h5 class="card-title mt-2">Reportes este Mes</h5>
+                        <p class="card-text fs-2 fw-bold">{{ $stats['totalMesActual'] }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-center mb-3"><i class="fas fa-tools me-2 text-warning"></i>Top 5 Equipos con Más Mantenimiento</h5>
+                        @if($stats['equiposTopMantenimiento']->isNotEmpty())
+                            <ul class="list-group list-group-flush">
+                                @foreach($stats['equiposTopMantenimiento'] as $item)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ $loop->iteration }}. {{ $item->equipo->nombre }}</span>
+                                    <span class="badge bg-secondary rounded-pill">{{ $item->mantenimientos_count }}</span>
+                                </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="card-text text-center fst-italic mt-4">No hay datos de equipos con mantenimientos.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <div class="fs-1 text-info"><i class="fas fa-chart-pie"></i></div>
+                        <h5 class="card-title mt-2">Mantenimientos (Último Año)</h5>
+                        <div>
+                            <span class="badge bg-info text-dark fs-6 me-2">Preventivos: {{ $stats['ratioPreventivo'] }}</span>
+                            <span class="badge bg-warning text-dark fs-6">Correctivos: {{ $stats['ratioCorrectivo'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <h2 class="h3 mb-0">Historial de Mantenimientos</h2>
-
             <button type="button" class="btn btn-primary" wire:click="crearMantenimiento">
                 <i class="fas fa-plus me-2"></i>Añadir Nuevo Reporte
             </button>
         </div>
 
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         @endif
 
-        <div class="d-flex mb-4">
-            <input wire:model.live.debounce.300ms="search" class="form-control me-2" type="search" placeholder="Buscar por equipo, encargado o tipo...">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-filter me-2"></i>Filtros y Acciones</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input wire:model.live.debounce.300ms="search" class="form-control" type="search" placeholder="Buscar por palabra clave...">
+                    </div>
+                    <div class="col-md-2">
+                        <select wire:model.live="filtroTipo" class="form-select">
+                            <option value="">Todo Tipo</option>
+                            <option value="preventivo">Preventivo</option>
+                            <option value="correctivo">Correctivo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input wire:model.live="filtroFechaInicio" type="date" class="form-control" title="Fecha de inicio">
+                    </div>
+                    <div class="col-md-2">
+                        <input wire:model.live="filtroFechaFin" type="date" class="form-control" title="Fecha de fin">
+                    </div>
+                    <div class="col-md-2 d-grid gap-2">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary" wire:click="resetearFiltros" title="Limpiar filtros"><i class="fas fa-times"></i></button>
+                            <button class="btn btn-success" wire:click="exportarCSV" title="Exportar a CSV">
+                                <i wire:loading.remove wire:target="exportarCSV" class="fas fa-file-csv"></i>
+                                <span wire:loading wire:target="exportarCSV" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered table-hover">
@@ -45,7 +109,13 @@
                     @forelse ($reportes as $reporte)
                     <tr>
                         <td>{{ $reporte->id_mantenimiento }}</td>
-                        <td>{{ $reporte->inventario->equipo->nombre ?? 'N/D' }} ({{ $reporte->inventario->num_serie ?? 'N/D' }})</td>
+                        <td>
+                            <a href="#" wire:click.prevent="verHistorial({{ $reporte->inventario->id_inventario }})" title="Ver historial del equipo">
+                                {{ $reporte->inventario->equipo->nombre ?? 'N/D' }}
+                            </a>
+                            <br>
+                            <small class="text-muted">({{ $reporte->inventario->num_serie ?? 'N/D' }})</small>
+                        </td>
                         <td>{{ \Carbon\Carbon::parse($reporte->fecha)->format('d/m/Y') }}</td>
                         <td><span class="badge {{ $reporte->tipo == 'correctivo' ? 'bg-warning text-dark' : 'bg-info text-dark' }}">{{ ucfirst($reporte->tipo) }}</span></td>
                         <td>{{ $reporte->encargadoMantenimiento->nombre ?? '' }} {{ $reporte->encargadoMantenimiento->apellidos ?? '' }}</td>
@@ -72,18 +142,60 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class='text-center fst-italic'>No hay reportes disponibles.</td></tr>
+                    <tr><td colspan="6" class='text-center fst-italic'>No hay reportes que coincidan con los filtros actuales.</td></tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
         @if($reportes->hasPages())
-            <div class="mt-3">{{ $reportes->links() }}</div>
+        <div class="mt-3">{{ $reportes->links() }}</div>
         @endif
     </main>
 
-    {{-- Modal para Mantenimiento --}}
+    @if($showHistorialModal && $equipoSeleccionadoHistorial)
+    <div class="modal fade show" style="display: block;" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-history me-2"></i> Historial para: <strong>{{ $equipoSeleccionadoHistorial['nombre'] }}</strong>
+                    </h5>
+                    <button type="button" class="btn-close" wire:click="cerrarHistorialModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-4"><strong>Número de Serie:</strong> {{ $equipoSeleccionadoHistorial['num_serie'] }}</p>
+                    
+                    @if($equipoSeleccionadoHistorial['mantenimientos']->isEmpty())
+                        <div class="alert alert-info text-center">Este equipo aún no tiene reportes de mantenimiento.</div>
+                    @else
+                        <div class="list-group">
+                            @foreach($equipoSeleccionadoHistorial['mantenimientos'] as $mantenimiento)
+                                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">
+                                            <span class="badge {{ $mantenimiento->tipo == 'correctivo' ? 'bg-warning text-dark' : 'bg-info text-dark' }}">{{ ucfirst($mantenimiento->tipo) }}</span>
+                                        </h6>
+                                        <small>{{ \Carbon\Carbon::parse($mantenimiento->fecha)->format('d/m/Y') }}</small>
+                                    </div>
+                                    <p class="mb-1"><strong>Observaciones:</strong> {{ $mantenimiento->observaciones ?: 'Sin observaciones.' }}</p>
+                                    <small class="text-muted">Encargado: {{ $mantenimiento->encargadoMantenimiento->nombre ?? '' }} {{ $mantenimiento->encargadoMantenimiento->apellidos ?? 'N/A' }}</small>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" wire:click="cerrarHistorialModal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+    @endif
+
+    {{-- EL RESTO DE LA VISTA (MODALES Y SCRIPT) SE MANTIENE IGUAL --}}
+
     @if($showModal)
     <div class="modal fade show" style="display: block;" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -157,7 +269,6 @@
     <div class="modal-backdrop fade show"></div>
     @endif
 
-    {{-- Modal para Encargado --}}
     @if($showEncargadoModal)
     <div class="modal fade show" style="display: block; z-index: 1060;" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -200,18 +311,14 @@
     <div class="modal-backdrop fade show" style="z-index: 1055;"></div>
     @endif
 
-    {{-- SCRIPT: Carga la librería para generar PDFs y define la función --}}
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        // NUEVA FUNCIÓN: Lee los datos desde el botón y llama a la función principal
         function generarPDFDesdeBoton(button) {
             const dataString = button.getAttribute('data-reporte');
             const data = JSON.parse(dataString);
             generarPDFMantenimiento(data);
         }
 
-        // FUNCIÓN PRINCIPAL: Crea el PDF con los datos del reporte
         function generarPDFMantenimiento(data) {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
@@ -219,7 +326,6 @@
             const pdfWidth = pdf.internal.pageSize.getWidth();
             let y = 20;
 
-            // --- Cabecera del Documento ---
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(16);
             pdf.text('Reporte de Mantenimiento de Equipo', pdfWidth / 2, y, { align: 'center' });
@@ -227,7 +333,7 @@
 
             pdf.setFont("helvetica", "normal");
             pdf.setFontSize(12);
-            pdf.text('Hospital Municipal de Chiconcuac – Servicios Generales', pdfWidth / 2, y, { align: 'center' });
+            pdf.text('HOSPITAL MUNICIPAL DE CHICONCUAC – Servicios Generales', pdfWidth / 2, y, { align: 'center' });
             y += 6;
 
             pdf.setFontSize(10);
@@ -238,7 +344,6 @@
             pdf.line(15, y, pdfWidth - 15, y);
             y += 10;
 
-            // --- Información General del Reporte ---
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(12);
             pdf.text(`Reporte ID: ${data.id_mantenimiento}`, 15, y);
@@ -250,7 +355,6 @@
             pdf.setLineWidth(0.2);
             pdf.line(15, y - 4, pdfWidth - 15, y - 4);
 
-            // --- Información del Equipo ---
             pdf.setFontSize(12);
             pdf.text('Información del Equipo', 15, y);
             y += 8;
@@ -269,7 +373,6 @@
 
             pdf.line(15, y - 4, pdfWidth - 15, y - 4);
 
-            // --- Detalles del Mantenimiento ---
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(12);
             pdf.text('Detalles del Servicio', 15, y);
@@ -290,7 +393,6 @@
             const observaciones = pdf.splitTextToSize(String(data.observaciones), pdfWidth - 30);
             pdf.text(observaciones, 15, y);
 
-            // --- Firmas (posicionadas al final de la página) ---
             const firmaY = pdf.internal.pageSize.getHeight() - 40;
 
             pdf.line(25, firmaY, 85, firmaY);
@@ -301,8 +403,7 @@
             pdf.text(String(data.encargado_nombre_completo.trim() || 'Firma del Responsable'), pdfWidth - 55, firmaY + 5, { align: 'center' });
             pdf.setFontSize(8);
             pdf.text('Encargado del Mantenimiento', pdfWidth - 55, firmaY + 9, { align: 'center' });
-
-            // --- Guardar PDF ---
+            
             pdf.save(`Mantenimiento_Reporte_ID_${data.id_mantenimiento}.pdf`);
         }
     </script>

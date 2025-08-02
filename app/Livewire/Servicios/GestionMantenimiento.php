@@ -7,6 +7,9 @@ use Livewire\WithPagination;
 use App\Models\Servicios\Mantenimiento;
 use App\Models\Servicios\Inventario;
 use App\Models\Servicios\EncargadoMantenimiento;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Carbon\Carbon; // Importar Carbon
 
 class GestionMantenimiento extends Component
 {
@@ -16,12 +19,13 @@ class GestionMantenimiento extends Component
     public $search = '';
     public $showModal = false;
     public $showEncargadoModal = false;
+    public $showHistorialModal = false;
 
     // Propiedades para el formulario de Mantenimiento
     public $id_inventario_fk;
     public $id_encargado_man_fk;
     public $fecha;
-    public $tipo = 'preventivo'; // Valor por defecto
+    public $tipo = 'preventivo';
     public $refacciones_material;
     public $observaciones;
 
@@ -31,26 +35,24 @@ class GestionMantenimiento extends Component
     public $cargo_encargado;
     public $contacto_encargado;
 
+    // Propiedades para los filtros
+    public $filtroTipo = '';
+    public $filtroFechaInicio = '';
+    public $filtroFechaFin = '';
 
-    /**
-     * El método mount() se ejecuta al iniciar el componente.
-     * Aquí leemos los parámetros de la URL para precargar datos.
-     */
+    // Propiedades para el historial de equipo
+    public $equipoSeleccionadoHistorial = null;
+
     public function mount()
     {
-        // Revisa si los parámetros 'equipo_id' y 'abrir_modal' vienen en la URL
         $equipoId = request('equipo_id');
         $abrirModal = request('abrir_modal');
 
-        // Si ambos existen, llama a la función para abrir el modal con el equipo ya seleccionado.
         if ($equipoId && $abrirModal) {
             $this->crearMantenimiento($equipoId);
         }
     }
 
-    /**
-     * Define las reglas de validación para el formulario de Mantenimiento.
-     */
     protected function rules()
     {
         return [
@@ -63,12 +65,9 @@ class GestionMantenimiento extends Component
         ];
     }
 
-    /**
-     * Renderiza la vista del componente y le pasa los datos necesarios.
-     */
     public function render()
     {
-        $reportes = Mantenimiento::with(['inventario.equipo', 'encargadoMantenimiento'])
+        $query = Mantenimiento::with(['inventario.equipo', 'encargadoMantenimiento'])
             ->when($this->search, function ($query) {
                 $query->where('tipo', 'like', '%' . $this->search . '%')
                     ->orWhereHas('inventario.equipo', function ($q) {
@@ -79,42 +78,152 @@ class GestionMantenimiento extends Component
                             ->orWhere('apellidos', 'like', '%' . $this->search . '%');
                     });
             })
-            ->orderBy('fecha', 'desc')
-            ->paginate(10);
+            ->when($this->filtroTipo, fn($q) => $q->where('tipo', $this->filtroTipo))
+            ->when($this->filtroFechaInicio, fn($q) => $q->where('fecha', '>=', $this->filtroFechaInicio))
+            ->when($this->filtroFechaFin, fn($q) => $q->where('fecha', '<=', $this->filtroFechaFin));
 
-        // Se obtienen solo equipos que puedan recibir mantenimiento
+        $reportes = $query->orderBy('fecha', 'desc')->paginate(10);
+
         $equipos_inventario = Inventario::with('equipo')
             ->whereNotIn('status', ['baja', 'proceso de baja'])
             ->get();
 
         $encargados = EncargadoMantenimiento::orderBy('nombre')->get();
+        $stats = $this->calcularEstadisticas();
 
         return view('livewire.servicios.gestion-mantenimiento', [
             'reportes' => $reportes,
             'equipos_inventario' => $equipos_inventario,
             'encargados' => $encargados,
+            'stats' => $stats,
         ]);
     }
 
     /**
-     * Prepara y abre el modal para registrar un nuevo mantenimiento.
-     * @param int|null $equipoId El ID del equipo a preseleccionar (opcional).
+     * MODIFICADO: Ahora calcula un top 5 de equipos.
      */
-    public function crearMantenimiento($equipoId = null)
+    private function calcularEstadisticas()
     {
-        $this->resetMantenimientoInput(); // Resetea los campos del formulario
-        if ($equipoId) {
-            $this->id_inventario_fk = $equipoId; // Asigna el ID del equipo si se proporcionó
-        }
-        $this->showModal = true; // Abre el modal
+        // MODIFICADO: Obtiene el top 5 de equipos con más mantenimientos.
+        $equiposTopMantenimiento = Inventario::with('equipo')
+            ->withCount('mantenimientos')
+            ->having('mantenimientos_count', '>', 0) // Solo los que tienen al menos 1
+            ->orderBy('mantenimientos_count', 'desc')
+            ->limit(5) // Límite de 5
+            ->get();
+
+        $ratio = Mantenimiento::select('tipo', DB::raw('count(*) as total'))
+            ->where('fecha', '>=', now()->subYear())
+            ->groupBy('tipo')
+            ->pluck('total', 'tipo');
+
+        $totalMesActual = Mantenimiento::whereMonth('fecha', now()->month)
+            ->whereYear('fecha', now()->year)
+            ->count();
+
+        return [
+            'totalMesActual' => $totalMesActual,
+            'equiposTopMantenimiento' => $equiposTopMantenimiento, // Se cambia el nombre de la variable
+            'ratioPreventivo' => $ratio->get('preventivo', 0),
+            'ratioCorrectivo' => $ratio->get('correctivo', 0),
+        ];
+    }
+    
+    /**
+     * MODIFICADO: Se añade formato profesional y se corrige la fecha.
+     */
+    public function exportarCSV()
+    {
+        $reportesQuery = Mantenimiento::with(['inventario.equipo', 'encargadoMantenimiento'])
+            ->when($this->filtroTipo, fn ($q) => $q->where('tipo', $this->filtroTipo))
+            ->when($this->filtroFechaInicio, fn ($q) => $q->where('fecha', '>=', $this->filtroFechaInicio))
+            ->when($this->filtroFechaFin, fn ($q) => $q->where('fecha', '<=', $this->filtroFechaFin))
+            ->orderBy('fecha', 'desc');
+
+        $reportes = $reportesQuery->get();
+        $fileName = 'Reportes_Mantenimiento_' . date('Y-m-d_H-i') . '.csv';
+
+        $headers = [
+            "Content-type"        => "text/csv; charset=utf-8", // Se añade charset
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function () use ($reportes) {
+            $file = fopen('php://output', 'w');
+            
+            // --- NUEVO: Encabezado personalizado para el hospital ---
+            fputcsv($file, ['HOSPITAL MUNICIPAL DE CHICONCUAC']);
+            fputcsv($file, ['Reporte de Historial de Mantenimientos']);
+            fputcsv($file, ['Generado el: ' . Carbon::now('America/Mexico_City')->format('d/m/Y H:i')]);
+            fputcsv($file, []); // Línea en blanco para separar
+
+            // Encabezados de la tabla
+            fputcsv($file, ['ID Reporte', 'Fecha Mantenimiento', 'Equipo', 'Num. Serie', 'Tipo', 'Encargado', 'Observaciones', 'Refacciones y Material']);
+
+            foreach ($reportes as $reporte) {
+                fputcsv($file, [
+                    $reporte->id_mantenimiento,
+                    Carbon::parse($reporte->fecha)->format('d/m/Y'), // CORREGIDO: Se formatea la fecha
+                    $reporte->inventario->equipo->nombre ?? 'N/A',
+                    $reporte->inventario->num_serie ?? 'N/A',
+                    ucfirst($reporte->tipo),
+                    ($reporte->encargadoMantenimiento->nombre ?? '') . ' ' . ($reporte->encargadoMantenimiento->apellidos ?? ''),
+                    $reporte->observaciones ?? '',
+                    $reporte->refacciones_material ?? '',
+                ]);
+            }
+            fclose($file);
+        };
+
+        return new StreamedResponse($callback, 200, $headers);
     }
 
-    /**
-     * Guarda el nuevo reporte de mantenimiento en la base de datos.
-     */
+
+    // --- El resto de funciones se mantienen sin cambios ---
+
+    public function verHistorial($inventarioId)
+    {
+        $inventario = Inventario::with(['equipo', 'mantenimientos' => function ($query) {
+            $query->orderBy('fecha', 'desc');
+        }, 'mantenimientos.encargadoMantenimiento'])->find($inventarioId);
+
+        if ($inventario) {
+            $this->equipoSeleccionadoHistorial = [
+                'nombre' => $inventario->equipo->nombre,
+                'num_serie' => $inventario->num_serie,
+                'mantenimientos' => $inventario->mantenimientos,
+            ];
+            $this->showHistorialModal = true;
+        }
+    }
+
+    public function cerrarHistorialModal()
+    {
+        $this->showHistorialModal = false;
+        $this->equipoSeleccionadoHistorial = null;
+    }
+
+    public function resetearFiltros()
+    {
+        $this->reset('filtroTipo', 'filtroFechaInicio', 'filtroFechaFin', 'search');
+        $this->resetPage();
+    }
+    
+    public function crearMantenimiento($equipoId = null)
+    {
+        $this->resetMantenimientoInput();
+        if ($equipoId) {
+            $this->id_inventario_fk = $equipoId;
+        }
+        $this->showModal = true;
+    }
+
     public function saveMantenimiento()
     {
-        $this->validate(); // Valida usando el método rules()
+        $this->validate();
 
         Mantenimiento::create([
             'id_inventario_fk' => $this->id_inventario_fk,
@@ -129,18 +238,12 @@ class GestionMantenimiento extends Component
         session()->flash('success', 'Reporte de mantenimiento guardado exitosamente.');
     }
 
-    /**
-     * Prepara y abre el modal para registrar un nuevo encargado.
-     */
     public function crearEncargado()
     {
         $this->resetEncargadoInput();
         $this->showEncargadoModal = true;
     }
 
-    /**
-     * Guarda el nuevo encargado en la base de datos.
-     */
     public function saveEncargado()
     {
         $this->validate([
@@ -161,21 +264,11 @@ class GestionMantenimiento extends Component
         session()->flash('success', 'Encargado registrado exitosamente.');
     }
 
-    /**
-     * Método para emitir el evento de generación de PDF.
-     * Se llama desde la vista con wire:click.
-     * Los datos del reporte se pasan al evento de JavaScript.
-     * @param array $reporteData Los datos del reporte a generar.
-     */
     public function generarPDF($reporteData)
     {
-        // Livewire 3 utiliza dispatch para emitir eventos
         $this->dispatch('generarPDF', $reporteData);
     }
 
-    /**
-     * Resetea los campos del formulario de mantenimiento a sus valores iniciales.
-     */
     private function resetMantenimientoInput()
     {
         $this->resetErrorBag();
@@ -187,9 +280,6 @@ class GestionMantenimiento extends Component
         $this->observaciones = '';
     }
 
-    /**
-     * Resetea los campos del formulario de encargado de mantenimiento.
-     */
     private function resetEncargadoInput()
     {
         $this->resetErrorBag();
@@ -199,9 +289,6 @@ class GestionMantenimiento extends Component
         $this->contacto_encargado = '';
     }
 
-    /**
-     * Resetea la paginación al buscar.
-     */
     public function updatingSearch()
     {
         $this->resetPage();
